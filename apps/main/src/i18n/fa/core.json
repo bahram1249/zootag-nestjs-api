@@ -1,0 +1,17 @@
+{
+  "duplicate_request": "درخواست تکراری است",
+  "phoneNumber_must_not_changed": "شماره تلفن نباید تغییر کند",
+  "firstname_or_lastname_must_be_send_it": "نام یا نام خانوادگی میبایست ارسال شود",
+  "national_code_must_be_send_it": "کد ملی میبایست ارسال گردد",
+  "code_was_send_it_is_not_true": "کد ارسالی صحیح نمیباشد",
+  "item_exists": "آیتم تکراری میباشد",
+  "user": "کاربر",
+  "requested_item": "آیتم درخواستی",
+  "item": "ایتم",
+  "not_found": "یافت نشد",
+  "not_found_id": "آیتم مورد نظر توسط شناسه ارسال شده یافت نشد",
+  "not_found_role": "نقش کاربری مورد نظر یافت نشد",
+  "not_found_slug": "آیتم مورد نظر توسط جداکننده یا لینک مورد نظر یافت نشد",
+  "dont_access_to_this_file": "شما دسترسی به این فایل را ندارید",
+  "success": "با موفقیت انجام شد"
+}

@@ -1,0 +1,43 @@
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/blogphotos
+mc anonymous set download myminio/blogphotos
+
+
+mc mb myminio/homepages
+mc anonymous set download myminio/homepages
+
+
+mc mb myminio/brands
+mc anonymous set download myminio/brands
+
+
+
+mc mb myminio/guarantees
+mc anonymous set download myminio/guarantees
+
+
+
+mc mb myminio/products
+mc anonymous set download myminio/products
+
+
+
+mc mb myminio/productvideos
+mc anonymous set download myminio/productvideos
+
+
+mc mb myminio/vendors
+mc anonymous set download myminio/vendors
+
+
+
+mc mb myminio/entitytypes
+mc anonymous set download myminio/entitytypes
+
+
+mc mb myminio/blogphotos
+mc anonymous set download myminio/blogphotos
+
+
+mc mb myminio/publicphotos
+mc anonymous set download myminio/publicphotos
