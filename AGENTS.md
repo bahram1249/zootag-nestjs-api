@@ -96,7 +96,417 @@ Each feature should be a self-contained NestJS module with:
 - `*.service.ts` - Main service
 - `*.module.ts` - Module file
 - `dto/` subdirectory - Data Transfer Objects
+- `mapper/` subdirectory - AutoMapper profiles
+- `file-options/` subdirectory - Multer file upload config
 - `processor/` subdirectory - BullMQ processors (if needed)
+
+#### Module File (`*.module.ts`)
+
+Import models via `SequelizeModule.forFeature()`, register controllers and providers:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { SomeModel } from '@rahino/localdatabase/models';
+import { SomeController } from './some.controller';
+import { SomeService } from './some.service';
+
+@Module({
+  imports: [SequelizeModule.forFeature([User, Permission, SomeModel])],
+  controllers: [SomeController],
+  providers: [SomeService],
+})
+export class SomeModule {}
+```
+
+#### Controller (`*.controller.ts`)
+
+Use class-level guards and interceptor, method-level permissions:
+
+```typescript
+import {
+  Body, Controller, Delete, Get, HttpCode, HttpStatus,
+  Param, Post, Put, Query, UseGuards, UseInterceptors,
+} from '@nestjs/common';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
+import { SomeService } from './some.service';
+import { SomeDto, SomeFilterDto } from './dto';
+
+@ApiTags('Some-Feature')
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/some/feature', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {
+  constructor(private readonly service: SomeService) {}
+
+  @ApiOperation({ description: 'show all items' })
+  @CheckPermission({ permissionSymbol: 'some.feature.getall' })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() filter: SomeFilterDto) {
+    return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'show item by given id' })
+  @CheckPermission({ permissionSymbol: 'some.feature.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findById(@Param('id') id: number) {
+    return await this.service.findById(id);
+  }
+
+  @ApiOperation({ description: 'create item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: SomeDto) {
+    return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: number, @Body() dto: SomeDto) {
+    return await this.service.update(id, dto);
+  }
+
+  @ApiOperation({ description: 'delete item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') id: number) {
+    return await this.service.deleteById(id);
+  }
+}
+```
+
+#### Service (`*.service.ts`)
+
+Inject models via `@InjectModel()`, connection via `@InjectConnection()`, use `QueryOptionsBuilder`, return `{ result, total }`:
+
+```typescript
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
+import { SomeModel } from '@rahino/localdatabase/models';
+import { SomeFilterDto, SomeDto } from './dto';
+
+@Injectable()
+export class SomeService {
+  constructor(
+    @InjectModel(SomeModel)
+    private readonly repository: typeof SomeModel,
+    private readonly localizationService: LocalizationService,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+  ) {}
+
+  async findAll(filter: SomeFilterDto) {
+    let qb = new QueryOptionsBuilder()
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        name: { [Op.like]: filter.search },
+      });
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .attributes(['id', 'name'])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = await this.repository.findAll(qb.build());
+    return { result, total };
+  }
+
+  async findById(id: number) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    return { result: item };
+  }
+
+  async create(dto: SomeDto) {
+    const item = await this.repository.create({ ...dto });
+    return { result: item };
+  }
+
+  async update(id: number, dto: SomeDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    await item.update({ ...dto });
+    return { result: item };
+  }
+
+  async deleteById(id: number) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    await item.destroy();
+    return { result: item };
+  }
+}
+```
+
+#### DTOs (`dto/`)
+
+Use `class-validator` decorators for validation, `@ApiProperty()` for Swagger docs, `@AutoMap()` for mapping:
+
+```typescript
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { AutoMap } from 'automapper-classes';
+
+export class SomeDto {
+  @AutoMap()
+  @MinLength(3)
+  @MaxLength(256)
+  @IsNotEmpty()
+  @ApiProperty({ required: true, type: String, description: 'name' })
+  name: string;
+
+  @AutoMap()
+  @IsOptional()
+  @ApiProperty({ required: false, type: String, description: 'description' })
+  description?: string;
+}
+```
+
+**Filter DTO** — combine `ListFilter` with domain-specific filters via `IntersectionType`:
+
+```typescript
+import { IntersectionType } from '@nestjs/swagger';
+import { ListFilter, IgnorePagingFilter } from '@rahino/query-filter/types';
+
+export class SomeFilterDto extends IntersectionType(
+  ListFilter,
+  IgnorePagingFilter,
+) {}
+```
+
+#### Response Interceptor (`JsonResponseTransformInterceptor`)
+
+Located at `@rahino/response/interceptor`. Wraps all controller responses into a standard envelope:
+
+```typescript
+{
+  statusCode: number,
+  reqId: string,
+  message: string,       // from data.message or 'Success'
+  result: any,           // from data.result or falls back to data
+  timestamp: string,
+  path: string,
+  total: number,         // from data.total or 0
+}
+```
+
+Apply at **class level** (applies to all methods) or **method level** (single endpoint):
+
+```typescript
+// Class level (applies to all methods in controller):
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {}
+
+// Method level (single endpoint):
+@UseInterceptors(JsonResponseTransformInterceptor)
+@Post('/')
+async create() {}
+```
+
+Services must return objects with `{ result, total? }` structure for paginated responses.
+
+#### Permission Guard
+
+Apply `JwtGuard` and `PermissionGuard` at the class level, then `@CheckPermission` on each method:
+
+```typescript
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/some/feature', version: ['1'] })
+export class SomeController {
+  @CheckPermission({ permissionSymbol: 'some.feature.getall' })
+  @Get('/')
+  async findAll() { }
+}
+```
+
+Permission symbols follow the pattern: `{domain}.{group}.{action}` (e.g., `eav.admin.attributetypes.getall`, `core.admin.users.create`).
+
+#### Permission Migration Files
+
+For each new module, create a permission seeding file in `apps/main/src/migrator/permissions/`:
+
+```typescript
+import { Sequelize } from 'sequelize';
+import { createCrudPermissions } from '../permission-helper';
+import { createDialectHelpers } from '../migration-helper';
+
+export const name = 'YYYYMMDD-NNNN-SomeFeature';
+
+export async function up(sequelize: Sequelize): Promise<void> {
+  const { checkSetting } = createDialectHelpers(sequelize);
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
+  await createCrudPermissions(sequelize, {
+    entityName: 'SomeFeature',       // CamelCase entity name
+    groupName: 'some.feature',        // Dot-notation group (used in permissionSymbol)
+    parentMenuName: 'Parent Menu',    // Parent menu in sidebar
+    menuName: 'Feature Name',         // Menu item name
+    menuUrl: '/some/feature',         // Frontend route
+  });
+}
+
+export async function down(_sequelize: Sequelize): Promise<void> {}
+```
+
+Then register it in `apps/main/src/migrator/permissions/index.ts`.
+
+The `createCrudPermissions` helper (from `../permission-helper`) automatically creates:
+- A `PermissionGroup` with the group name
+- CRUD permissions: `showmenu`, `getall`, `getone`, `create`, `update`, `delete`
+- A parent menu item (or links to existing via `findParentMenu: true`)
+- A sub-menu item
+- `PermissionMenu` links
+- `RolePermission` assignments for the super admin role
+
+Override the default permission set with `includePermissions`:
+
+```typescript
+await createCrudPermissions(sequelize, {
+  entityName: 'SomeFeature',
+  groupName: 'some.feature',
+  findParentMenu: true,
+  parentMenuName: 'Parent',
+  menuName: 'Feature',
+  menuUrl: '/some/feature',
+  includePermissions: ['showmenu', 'getall', 'getone', 'create', 'update'],
+  // excludes 'delete'
+});
+```
+
+#### Mapper (`automapper-classes`)
+
+Use `@AutoMap()` on entity model fields and DTO fields for automatic mapping:
+
+```typescript
+// Entity model
+@Table({ tableName: 'SomeModels' })
+export class SomeModel extends Model {
+  @AutoMap()
+  @Column({ type: DataType.STRING })
+  name: string;
+}
+
+// DTO
+export class SomeDto {
+  @AutoMap()
+  @IsString()
+  name: string;
+}
+
+// In service — inject Mapper and use it:
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
+
+@Injectable()
+export class SomeService {
+  constructor(
+    @InjectMapper() private readonly mapper: Mapper,
+    @InjectModel(SomeModel) private readonly repository: typeof SomeModel,
+  ) {}
+
+  async create(dto: SomeDto) {
+    const mapped = this.mapper.map(dto, SomeDto, SomeModel);
+    const item = await this.repository.create({ ...mapped });
+    return { result: item };
+  }
+}
+```
+
+Create mapper profiles in a `mapper/` subdirectory when complex mapping logic is needed (though `@AutoMap()` decorators handle most cases automatically).
+
+#### File Upload with Multer
+
+Create a `file-options/` directory with an options file:
+
+```typescript
+// file-options/image.options.ts
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
+import { v4 as uuidv4 } from 'uuid';
+import * as multer from 'multer';
+import * as fs from 'fs';
+import * as path from 'path';
+
+export function imageOptions(): MulterOptions {
+  return {
+    storage: multer.diskStorage({
+      destination: function (req, file, cb) {
+        fs.mkdirSync(path.join(process.cwd(), '/tmp/attachmentFile'), {
+          recursive: true,
+        });
+        cb(null, path.join(process.cwd(), '/tmp/attachmentFile'));
+      },
+      filename: function (req, file, cb) {
+        cb(null, uuidv4() + path.extname(file.originalname));
+      },
+    }),
+  };
+}
+```
+
+In the controller, apply `FileInterceptor` with `ParseFilePipe` or `ParseFilePipeBuilder`:
+
+```typescript
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options/image.options';
+
+@UseInterceptors(FileInterceptor('file', imageOptions()))
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: { file: { type: 'string', format: 'binary' } },
+  },
+})
+@Post('/image')
+@HttpCode(HttpStatus.OK)
+async uploadImage(
+  @GetUser() user: User,
+  @UploadedFile(
+    new ParseFilePipeBuilder()
+      .addFileTypeValidator({ fileType: /(jpg|jpeg|png)/ })
+      .addMaxSizeValidator({ maxSize: 2097152 })
+      .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+  )
+  file: Express.Multer.File,
+) {
+  return await this.service.uploadImage(user, file);
+}
+```
+
+Or use `ParseFilePipe` directly for more control:
+
+```typescript
+@UploadedFile(
+  new ParseFilePipe({
+    validators: [new MaxFileSizeValidator({ maxSize: 2097152 })],
+    fileIsRequired: false,
+    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  }),
+)
+file?: Express.Multer.File,
+```
 
 ### Authentication & Authorization
 
