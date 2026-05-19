@@ -14,7 +14,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'permissionName ' + nv('256') + ' NULL',
       'permissionUrl ' + nv('1024') + ' NULL',
       'permissionMethod ' + nv('10') + ' NULL',
-      'permissionGroupId INT NULL ' + ref('PermissionGroups', 'id'),
+      'permissionGroupId INT NULL ' + ref('PermissionGroups', 'id', 'Permissions', 'permissionGroupId'),
       '[visibility] ' + bit() + ' NULL',
       '[createdAt] ' + dt(),
       '[updatedAt] ' + dt(),

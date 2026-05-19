@@ -11,8 +11,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
   await createTable(
     'BPMNOrganizationUsers',
     [
-      'organizationId INT NOT NULL ' + ref('BPMNOrganizations', 'id'),
-      'userId BIGINT NOT NULL ' + ref('Users', 'id'),
+      'organizationId INT NOT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNOrganizationUsers', 'organizationId'),
+      'userId BIGINT NOT NULL ' + ref('Users', 'id', 'BPMNOrganizationUsers', 'userId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
       'PRIMARY KEY (organizationId, userId)',

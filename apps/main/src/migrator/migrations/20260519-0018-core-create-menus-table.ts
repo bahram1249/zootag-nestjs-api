@@ -15,7 +15,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'icon ' + nv('256') + ' NULL',
       'className ' + nv('256') + ' NULL',
       '[order] INT NULL',
-      'parentMenuId INT NULL ' + ref('Menus', 'id'),
+      'parentMenuId INT NULL ' + ref('Menus', 'id', 'Menus', 'parentMenuId'),
       '[visibility] ' + bit() + ' NULL',
       '[createdAt] ' + dt(),
       '[updatedAt] ' + dt(),

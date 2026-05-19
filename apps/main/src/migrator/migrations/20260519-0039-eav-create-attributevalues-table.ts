@@ -10,7 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'EAVAttributeValues',
     [
       'id BIGINT ' + idCol + ' ' + pk,
-      'attributeId BIGINT NOT NULL ' + ref('EAVAttributes', 'id'),
+      'attributeId BIGINT NOT NULL ' + ref('EAVAttributes', 'id', 'EAVAttributeValues', 'attributeId'),
       'value ' + nv('256') + ' NULL',
       'isDeleted ' + bit() + ' NULL',
       '"createdAt" ' + dt(),

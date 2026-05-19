@@ -13,7 +13,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     [
       'id INT ' + idCol + ' ' + pk,
       'name ' + nv('256') + ' NOT NULL',
-      'conditionTypeId INT NOT NULL ' + ref('BPMNConditionTypes', 'id'),
+      'conditionTypeId INT NOT NULL ' + ref('BPMNConditionTypes', 'id', 'BPMNConditions', 'conditionTypeId'),
       'conditionSource ' + nv('1024') + ' NULL',
       'conditionText ' + nv('MAX') + ' NULL',
       'isDeleted ' + bit() + ' NULL',

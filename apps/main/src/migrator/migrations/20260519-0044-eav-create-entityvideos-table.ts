@@ -9,8 +9,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
   await createTable(
     'EAVEntityVideos',
     [
-      'entityId BIGINT NOT NULL ' + ref('EAVEntities', 'entityId'),
-      'attachmentId BIGINT NOT NULL ' + ref('Attachments', 'id'),
+      'entityId BIGINT NOT NULL ' + ref('EAVEntities', 'entityId', 'EAVEntityVideos', 'entityId'),
+      'attachmentId BIGINT NOT NULL ' + ref('Attachments', 'id', 'EAVEntityVideos', 'attachmentId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
       'PRIMARY KEY (entityId, attachmentId)',

@@ -11,7 +11,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     [
       'id BIGINT ' + idCol + ' ' + pk,
       'name ' + nv('256') + ' NOT NULL',
-      'attributeTypeId INT NOT NULL ' + ref('EAVAttributeTypes', 'id'),
+      'attributeTypeId INT NOT NULL ' + ref('EAVAttributeTypes', 'id', 'EAVAttributes', 'attributeTypeId'),
       'minLength INT NULL',
       'maxLength INT NULL',
       'required ' + bit() + ' NULL',

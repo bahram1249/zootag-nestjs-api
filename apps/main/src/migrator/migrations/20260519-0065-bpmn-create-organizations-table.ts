@@ -14,7 +14,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'id INT ' + idCol + ' ' + pk,
       'name ' + nv('1024') + ' NOT NULL',
       'isDeleted ' + bit() + ' NULL',
-      'parentId INT NULL ' + ref('BPMNOrganizations', 'id'),
+      'parentId INT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNOrganizations', 'parentId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
     ].join(',\n'),

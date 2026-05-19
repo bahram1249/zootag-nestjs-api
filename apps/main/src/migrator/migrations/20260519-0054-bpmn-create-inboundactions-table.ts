@@ -12,8 +12,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'BPMNInboundActions',
     [
       'id INT ' + idCol + ' ' + pk,
-      'activityId INT NOT NULL ' + ref('BPMNActivities', 'id'),
-      'actionId INT NOT NULL ' + ref('BPMNActions', 'id'),
+      'activityId INT NOT NULL ' + ref('BPMNActivities', 'id', 'BPMNInboundActions', 'activityId'),
+      'actionId INT NOT NULL ' + ref('BPMNActions', 'id', 'BPMNInboundActions', 'actionId'),
       'priority INT NULL',
       'isDeleted INT NULL',
       '"createdAt" ' + dt(),

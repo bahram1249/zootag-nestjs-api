@@ -12,9 +12,9 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'BPMNRequests',
     [
       'id BIGINT ' + idCol + ' ' + pk,
-      'userId BIGINT NOT NULL ' + ref('Users', 'id'),
-      'processId INT NOT NULL ' + ref('BPMNProcess', 'id'),
-      'organizationId INT NULL ' + ref('BPMNOrganizations', 'id'),
+      'userId BIGINT NOT NULL ' + ref('Users', 'id', 'BPMNRequests', 'userId'),
+      'processId INT NOT NULL ' + ref('BPMNProcess', 'id', 'BPMNRequests', 'processId'),
+      'organizationId INT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNRequests', 'organizationId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
     ].join(',\n'),

@@ -10,7 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'EAVEntities',
     [
       'entityId BIGINT ' + idCol + ' ' + pk,
-      'entityTypeId INT NOT NULL ' + ref('EAVEntityTypes', 'id'),
+      'entityTypeId INT NOT NULL ' + ref('EAVEntityTypes', 'id', 'EAVEntities', 'entityTypeId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
     ].join(',\n'),

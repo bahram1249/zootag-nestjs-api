@@ -12,8 +12,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'BPMNRequestOccurredEvents',
     [
       'id BIGINT ' + idCol + ' NOT NULL',
-      'requestId BIGINT NOT NULL ' + ref('BPMNRequests', 'id'),
-      'occurredEventId INT NOT NULL ' + ref('BPMNOccurredEvents', 'id'),
+      'requestId BIGINT NOT NULL ' + ref('BPMNRequests', 'id', 'BPMNRequestOccurredEvents', 'requestId'),
+      'occurredEventId INT NOT NULL ' + ref('BPMNOccurredEvents', 'id', 'BPMNRequestOccurredEvents', 'occurredEventId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
       'PRIMARY KEY (requestId, occurredEventId, id)',

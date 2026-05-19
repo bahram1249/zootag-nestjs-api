@@ -10,8 +10,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'RolePermissions',
     [
       'id INT ' + idCol + ' ' + pk,
-      'roleId INT NOT NULL ' + ref('Roles', 'id'),
-      'permissionId INT NOT NULL ' + ref('Permissions', 'id'),
+      'roleId INT NOT NULL ' + ref('Roles', 'id', 'RolePermissions', 'roleId'),
+      'permissionId INT NOT NULL ' + ref('Permissions', 'id', 'RolePermissions', 'permissionId'),
       '[createdAt] ' + dt(),
       '[updatedAt] ' + dt(),
     ].join(',\n'),

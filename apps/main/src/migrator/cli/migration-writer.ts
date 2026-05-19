@@ -46,6 +46,7 @@ function buildCreateColumnExpr(
   col: ColumnMeta,
   fkMap: Map<string, ForeignKeyMeta>,
   helpers: Set<string>,
+  tableName: string,
 ): string {
   const colName = displayColName(col.name);
   const isIdentity = col.autoIncrement && col.primaryKey;
@@ -80,7 +81,7 @@ function buildCreateColumnExpr(
   if (fk) {
     helpers.add('ref');
     const refCol = fk.refColumns[0] || 'id';
-    expr += ` + ' ' + ref('${fk.refTable}', '${refCol}')`;
+    expr += ` + ' ' + ref('${fk.refTable}', '${refCol}', '${tableName}', '${col.name}')`;
   }
 
   return expr;
@@ -106,7 +107,7 @@ function generateCreateTableMigration(
   const helpers = new Set<string>(['createTable']);
   const colExprs: string[] = [];
   for (const col of Object.values(model.columns)) {
-    colExprs.push(buildCreateColumnExpr(col, fkMap, helpers));
+    colExprs.push(buildCreateColumnExpr(col, fkMap, helpers, tableName));
   }
 
   // Append createdAt/updatedAt timestamps if not defined in entity

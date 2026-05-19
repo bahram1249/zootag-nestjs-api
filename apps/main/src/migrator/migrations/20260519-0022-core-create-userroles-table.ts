@@ -10,8 +10,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
     'UserRoles',
     [
       'id BIGINT ' + idCol + ' ' + pk,
-      'userId BIGINT NOT NULL ' + ref('Users', 'id'),
-      'roleId INT NOT NULL ' + ref('Roles', 'id'),
+      'userId BIGINT NOT NULL ' + ref('Users', 'id', 'UserRoles', 'userId'),
+      'roleId INT NOT NULL ' + ref('Roles', 'id', 'UserRoles', 'roleId'),
       '[createdAt] ' + dt(),
       '[updatedAt] ' + dt(),
     ].join(',\n'),
