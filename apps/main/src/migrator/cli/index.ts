@@ -164,7 +164,7 @@ async function main(): Promise<void> {
         }
       } else {
         const existingCount = getExistingMigrationCount(outputDir);
-        const indexFile = path.resolve(outputDir, '..', 'index.ts');
+        const indexFile = path.join(outputDir, 'index.ts');
         const files = writeMigrations(
           outputDir,
           diff,
@@ -177,7 +177,7 @@ async function main(): Promise<void> {
         for (const f of files) {
           console.log(`  - ${f}`);
         }
-        console.log(`\nUpdated: ${indexFile}`);
+        console.log(`\nIndex updated: ${indexFile}`);
         // Update snapshot after generation
         saveSnapshot(snapshotPath, newModels);
         console.log(`\nSnapshot updated: ${snapshotPath}`);

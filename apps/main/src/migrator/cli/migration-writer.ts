@@ -429,6 +429,8 @@ export function writeMigrations(
 
 export function getExistingMigrationCount(migrationsDir: string): number {
   if (!fs.existsSync(migrationsDir)) return 0;
-  const files = fs.readdirSync(migrationsDir).filter((f) => f.endsWith('.ts'));
+  const files = fs
+    .readdirSync(migrationsDir)
+    .filter((f) => f.endsWith('.ts') && f !== 'index.ts');
   return files.length;
 }
