@@ -2,31 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ModuleInitializerServiceInterface } from '../interface';
 import { CoreModule } from '@rahino/core';
-import { ScriptRunnerService } from '../../script-runner';
+import { UmzugMigrationService } from '../../migrator';
+import { migrations } from '../../migrator/migrations';
+import { seeds } from '../../migrator/seeds';
 
 @Injectable()
 export class ZootagInitializerService
   implements ModuleInitializerServiceInterface
 {
-  constructor(private readonly scriptRunnerService: ScriptRunnerService) {}
+  constructor(private readonly umzugMigrationService: UmzugMigrationService) {}
   async init(app: NestExpressApplication) {
     app.get(CoreModule).setApp(app);
   }
 
   async runOnPrimaryClustred(app: NestExpressApplication) {
-    await this.runScripts();
-  }
-
-  private async runScripts() {
-    await this.scriptRunnerService.runFromPath(
-      './apps/main/src/sql/Core/Core-V1.sql',
-    );
-    await this.scriptRunnerService.runFromPath(
-      './apps/main/src/sql/Core/Core-Data.sql',
-    );
-
-    await this.scriptRunnerService.runFromPath(
-      './apps/main/src/sql/Core/Core-Permission.sql',
-    );
+    await this.umzugMigrationService.runMigrations(migrations);
+    await this.umzugMigrationService.runSeeds(seeds);
   }
 }

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { BpmnInitializerService, ZootagInitializerService } from './services';
-import { ScriptRunnerModule } from '../script-runner';
+import { UmzugMigrationModule } from '../migrator';
 
 @Module({
-  imports: [ScriptRunnerModule],
+  imports: [UmzugMigrationModule],
   providers: [
     {
       provide: 'ZootagInitializerService',

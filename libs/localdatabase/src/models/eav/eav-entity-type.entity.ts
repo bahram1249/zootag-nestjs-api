@@ -11,7 +11,6 @@ import {
 import { EAVEntityModel } from './eav-entity-model.entity';
 import { AutoMap } from 'automapper-classes';
 import { Attachment } from '@rahino/database';
-import { ECShippingWay } from '../ecommerce-eav';
 
 @Table({ tableName: 'EAVEntityTypes' })
 export class EAVEntityType extends Model {
@@ -121,18 +120,4 @@ export class EAVEntityType extends Model {
     allowNull: true,
   })
   public showLanding?: boolean;
-
-  @AutoMap()
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: true,
-  })
-  @ForeignKey(() => ECShippingWay)
-  public shippingWayId?: number;
-
-  @BelongsTo(() => ECShippingWay, {
-    as: 'shippingWay',
-    foreignKey: 'shippingWayId',
-  })
-  public shippingWay?: ECShippingWay;
 }

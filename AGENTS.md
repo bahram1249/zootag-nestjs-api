@@ -28,34 +28,24 @@ npm run test -- apps/<app_name>
 
 # Run E2E tests
 npm run test:e2e
-npm run test:e2e:ecommerce
-npm run test:e2e:ecommerce:client-order
+
 
 # Run a specific test file
 npm run test -- path/to/test.spec.ts
 
 # Run specific app in development mode
-npm run start:dev e-commerce
+npm run start:dev
 ```
 
 ## Monorepo Structure
 
-- `apps/` - Applications: core, e-commerce, guarantee, bpmn, pcm, eav, discount-coffe, core-dashboard
-  - `e-commerce/src/admin/` - Administration panel (products, orders, logistics)
-  - `e-commerce/src/client/` - Public-facing features (products, brands)
-  - `e-commerce/src/user/` - Authenticated user features (account, orders)
-  - `e-commerce/src/anonymous/` - Anonymous user features (login, registration)
-  - `e-commerce/src/shared/` - Cross-cutting concerns (discount logic, exceptions)
-  - `e-commerce/src/job/` - Background jobs (BullMQ)
-  - `e-commerce/src/report/` - Report generation (older modules use Knex, newer use Sequelize)
+- `apps/` - Applications: core, BPMN
 - `libs/` - Shared libraries: file, thumbnail, logger, query-filter, redis-client, sms, minio-client, pay, permission-checker, response, commontools, localdatabase
 
 ## Path Aliases
 
 Always use path aliases instead of relative imports:
 
-- `@rahino/ecommerce` or `@rahino/ecommerce/*` for e-commerce app
-- `@rahino/guarantee` or `@rahino/guarantee/*` for guarantee app
 - `@rahino/bpmn` or `@rahino/bpmn/*` for bpmn app
 - `@rahino/localdatabase` or `@rahino/localdatabase/*` for models
 - `@rahino/<lib-name>` for library imports
@@ -152,8 +142,6 @@ Each feature should be a self-contained NestJS module with:
 ### Database Migrations
 
 - **Core Files (`apps/main/src/sql/Core/`)**: `Core-V1.sql`, `Core-Data.sql`, `Core-Permission.sql`
-- **e-commerce Files (`apps/main/src/sql/Ecommerce/`)**: `Ecommerce-Table.sql`, `Ecommerce-Data.sql`, `Ecommerce-EAV-Table.sql`, `EAV-Table.sql`, `EAV-Data.sql`
-- **Guarantee/BPMN Files (`apps/main/src/sql/BPMN/`)**: `Ariakish-Club-Table.sql`, `Ariakish-Club-Data.sql`, `BPMN-Table.sql`, `BPMN-Data.sql`
 - SQL migrations in `apps/main/src/sql/`
 - Append new entries to end of file with two empty lines after
 - Do not hardcode primary keys in data inserts
@@ -197,18 +185,3 @@ Each feature should be a self-contained NestJS module with:
 - Use `@AutoMap()` from `automapper-classes` on model properties for mapping
 - For refactoring, create new modules alongside old ones with distinct API paths
 - Modify existing controller and service files instead of creating new ones for feature updates
-
-## E-commerce Specifics
-
-- **Product API endpoints**: `/api/ecommerce/products` with GET endpoints for listing, nearby, price range, slug, and ID
-- **Discount engine**: Core logic in `apps/e-commerce/src/shared/discount` directory
-- **API documentation**: Access Swagger docs at `/api` endpoint when running
-- **Import operations**: Use `'xlsx'` for parsing, `'persian-date'` for Jalali/Gregorian conversions, `'exceljs'` for generation
-- **Excel 1900 leap year bug**: Must handle in date parsing logic
-- **Reporting**: Located in `apps/e-commerce/src/report/`. Newer modules use Sequelize, even if older modules used Knex
-
-## Guarantee Specifics
-
-- **Shared Services**: Provides a shared `SmsSenderService` (`@rahino/guarantee/shared/sms-sender`)
-- **Import Headers (Persian)**: 'برند', 'محصول', 'مدل', 'شناسه رهگیری', 'تاریخ شروع', 'تاریخ انقضا'
-- **Business Logic**: Cleaning text, parsing Jalali/Excel dates, looking up/creating related entities, preventing duplicates based on serial number
