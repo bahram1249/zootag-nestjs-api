@@ -55,7 +55,7 @@ export async function createCrudPermissions(
   const esc = (s: string) => s.replace(/'/g, "''");
 
   const [existingGroup]: any = await sequelize.query(
-    a.top(1, `SELECT id FROM PermissionGroups WHERE permissionGroupName = '${esc(opts.groupName)}'`),
+    a.top(1, `SELECT id FROM PermissionGroups WHERE permissionGroupName = N'${esc(opts.groupName)}'`),
     { raw: true, type: QueryTypes.SELECT },
   );
   if (existingGroup?.id) return;
@@ -81,7 +81,7 @@ export async function createCrudPermissions(
       sequelize,
       'PermissionGroups',
       `INSERT INTO PermissionGroups (permissionGroupName, visibility, "createdAt", "updatedAt")
-       VALUES ('${esc(opts.groupName)}', 1, ${nowVal}, ${nowVal})`,
+        VALUES (N'${esc(opts.groupName)}', 1, ${nowVal}, ${nowVal})`,
       t,
     );
 
@@ -94,7 +94,7 @@ export async function createCrudPermissions(
         sequelize,
         'Permissions',
         `INSERT INTO Permissions (permissionName, permissionSymbol, permissionGroupId, "createdAt", "updatedAt")
-         VALUES ('${esc(permName)}', '${esc(symbol)}', ${groupId}, ${nowVal}, ${nowVal})`,
+         VALUES (N'${esc(permName)}', N'${esc(symbol)}', ${groupId}, ${nowVal}, ${nowVal})`,
         t,
       );
 
@@ -112,7 +112,7 @@ export async function createCrudPermissions(
 
       if (opts.findParentMenu && opts.parentMenuName) {
         const [parentRow]: any = await sequelize.query(
-          a.top(1, `SELECT id FROM Menus WHERE title = '${esc(opts.parentMenuName)}'`),
+          a.top(1, `SELECT id FROM Menus WHERE title = N'${esc(opts.parentMenuName)}'`),
           { raw: true, type: QueryTypes.SELECT, transaction: t },
         );
         if (parentRow) parentMenuId = parentRow.id;
@@ -121,7 +121,7 @@ export async function createCrudPermissions(
           sequelize,
           'Menus',
           `INSERT INTO Menus (title, url, className, visibility, "createdAt", "updatedAt")
-           VALUES ('${esc(opts.parentMenuName)}', NULL, NULL, NULL, ${nowVal}, ${nowVal})`,
+           VALUES (N'${esc(opts.parentMenuName)}', NULL, NULL, NULL, ${nowVal}, ${nowVal})`,
           t,
         );
       }
@@ -144,7 +144,7 @@ export async function createCrudPermissions(
         sequelize,
         'Menus',
         `INSERT INTO Menus (title, url, parentMenuId, className, visibility, "createdAt", "updatedAt")
-         VALUES ('${esc(opts.menuName)}', '${esc(opts.menuUrl)}', ${parentMenuId || 'NULL'}, NULL, NULL, ${nowVal}, ${nowVal})`,
+         VALUES (N'${esc(opts.menuName)}', N'${esc(opts.menuUrl)}', ${parentMenuId || 'NULL'}, NULL, NULL, ${nowVal}, ${nowVal})`,
         t,
       );
 
