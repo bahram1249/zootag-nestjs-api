@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-19T09:19:56.116Z",
+  "generatedAt": "2026-05-19T09:20:37.666Z",
   "models": {
     "BPMNActionTypes": {
       "className": "BPMNActionType",
@@ -97,20 +97,6 @@
           "defaultValue": null,
           "unique": false,
           "comment": null
-        },
-        "userId": {
-          "name": "userId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "User",
-            "key": "id"
-          }
         }
       },
       "indexes": [],
@@ -120,15 +106,6 @@
             "actionTypeId"
           ],
           "refTable": "BPMNActionTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "userId"
-          ],
-          "refTable": "User",
           "refColumns": [
             "id"
           ]
