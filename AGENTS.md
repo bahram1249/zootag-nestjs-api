@@ -114,11 +114,179 @@ Each feature should be a self-contained NestJS module with:
 
 - Models in `libs/localdatabase/src/models/<domain>/`
 - Each model directory must have an `index.ts` exporting all models
-- Use `QueryOptionsBuilder` from `@rahino/query-filter` for queries
-- Re-initialize builder for separate queries (no clone method)
-- Filter out inactive vendors in product queries: `isnull(ECVendor.isActive, 1) = 1`
+- Use `QueryOptionsBuilder` from `@rahino/query-filter/sequelize-query-builder` for all queries
+- Use `QueryOptionsBuilder` via `import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder'`
 - Complex query logic should be encapsulated in query builder services (e.g., `LogisticSaleQueryBuilderService`)
+- For paginated data, use `count()` then `findAll()` (not `findAndCountAll`)
 - For paginated data, total count with `group` is the length of the resulting array
+
+#### QueryOptionsBuilder Methods
+
+| Method                           | Description                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| `.filter(where)`                 | Adds condition to `where[Op.and]`                                                     |
+| `.filterIf(cond, where)`         | Conditionally adds filter (only when `cond` is truthy)                                |
+| `.include(include)`              | Sets or replaces `include` array                                                      |
+| `.thenInclude(include)`          | Appends a single include to existing array                                            |
+| `.thenIncludeIf(cond, include)`  | Conditionally appends include                                                         |
+| `.attributes(attrs)`             | Select specific columns                                                               |
+| `.order({ orderBy, sortOrder })` | Add ordering (uses `OrderCol` object with `orderBy` string and `sortOrder` direction) |
+| `.limit(count, ignorePaging?)`   | Set LIMIT (skipped if `ignorePaging` is true)                                         |
+| `.offset(count, ignorePaging?)`  | Set OFFSET (skipped if `ignorePaging` is true)                                        |
+| `.transaction(tx)`               | Associate a Sequelize Transaction                                                     |
+| `.lock(lock)`                    | Set row lock (e.g., `LOCK.UPDATE`)                                                    |
+| `.group(group)`                  | Add GROUP BY clause                                                                   |
+| `.subQuery(flag)`                | Toggle subQuery flag                                                                  |
+| `.raw(flag)`                     | Toggle raw query mode                                                                 |
+| `.nest(flag)`                    | Toggle nest flag                                                                      |
+| `.replacements(replacements)`    | Set bind replacements for raw queries                                                 |
+| `.build()`                       | Returns `FindAndCountOptions` to pass to sequelize                                    |
+
+#### Basic Query Patterns
+
+**Simple filter — `findOne` by ID:**
+
+```typescript
+const item = await this.repository.findOne(
+  new QueryOptionsBuilder().filter({ id: someId }).build(),
+);
+```
+
+**Multiple filters chained:**
+
+```typescript
+const userRole = await this.userRoleRepository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ userId: user.id })
+    .filter({ roleId: role.id })
+    .build(),
+);
+```
+
+**Existence / uniqueness check with `[Op.ne]`:**
+
+```typescript
+const existing = await this.repository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ slug: dto.slug })
+    .filter({ id: { [Op.ne]: id } }) // exclude current record
+    .build(),
+);
+```
+
+**`[Op.or]` across columns:**
+
+```typescript
+new QueryOptionsBuilder().filter({
+  [Op.or]: [
+    { title: { [Op.like]: filter.search } },
+    { slug: { [Op.like]: filter.search } },
+  ],
+});
+```
+
+#### Paginated Listing Pattern
+
+Always use `count()` then `findAll()` (not `findAndCountAll`). Reuse the builder variable:
+
+```typescript
+let qb = new QueryOptionsBuilder()
+  .filterIf(!!filter.userId, { userId: filter.userId })
+  .filterIf(!!filter.processId, { processId: filter.processId });
+
+const total = await this.repository.count(qb.build());
+
+qb = qb
+  .attributes(['id', 'name', 'title'])
+  .include([
+    { model: RelatedModel, as: 'relation', attributes: ['id', 'name'] },
+  ])
+  .limit(filter.limit, filter.ignorePaging)
+  .offset(filter.offset, filter.ignorePaging)
+  .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
+const result = await this.repository.findAll(qb.build());
+return { result, total };
+```
+
+Key points:
+
+- Call `.build()` separately for `count` (filters only) and `findAll` (filters + pagination + includes)
+- The builder supports method chaining; reassign the variable to extend it
+- `filterIf` is the idiomatic way for optional parameters (use `!!` coercion)
+
+#### Eager Loading (Includes)
+
+**Single level includes:**
+
+```typescript
+new QueryOptionsBuilder().include([
+  { model: User, as: 'user', attributes: ['id', 'username', 'firstname'] },
+  { model: BPMNPROCESS, as: 'process', attributes: ['id', 'name'] },
+]);
+```
+
+**Nested includes (through related models):**
+
+```typescript
+new QueryOptionsBuilder().include([
+  {
+    model: BPMNNodeCommand,
+    as: 'nodeCommands',
+    required: true,
+    where: { nodeCommandTypeId: someTypeId },
+    include: [
+      {
+        model: BPMNNodeCommandType,
+        as: 'nodeCommandType',
+      },
+    ],
+  },
+]);
+```
+
+**Many-to-many with junction table:**
+
+```typescript
+new QueryOptionsBuilder().include([
+  {
+    model: Attachment,
+    as: 'attachments',
+    required: false,
+    through: { attributes: [] }, // exclude junction table columns
+  },
+]);
+```
+
+- Use `required: false` for LEFT JOIN (optional relations)
+- Use `required: true` (default) for INNER JOIN
+
+#### Transaction Usage
+
+Pass a transaction to queries when inside a managed transaction:
+
+```typescript
+await this.repository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ id: someId })
+    .transaction(transaction)
+    .build(),
+);
+```
+
+#### Soft Delete Helper
+
+Many EAV/BPMN entities use a soft-delete pattern with an `isDeleted` column. Use the `seqHelp.whereIsNullColumnEqualToZero()` helper:
+
+```typescript
+.filter(this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0))
+```
+
+This works for both the main model and included models (use prefixed name like `'attributeValues.isDeleted'`).
+
+#### Re-initialize Builder for Separate Queries
+
+The builder mutates its internal state. Do not reuse the same builder instance for two independent queries — create a new `QueryOptionsBuilder()` instead.
 
 ### Background Jobs (BullMQ)
 
@@ -128,7 +296,7 @@ Each feature should be a self-contained NestJS module with:
 - Delete temporary files after processing
 - Job dispatch: When entity status is updated (e.g., vendor's `isActive` flag), dispatch background job via BullMQ to update related entities (e.g., product inventories)
 - Temporary file paths should be passed directly to job payload; file must be deleted after processing
-- Job structure (guarantee app): New jobs have own directory under `apps/guarantee/src/job/` with `constants` and `processor` subdirectories
+- Job structure (project app): New jobs have own directory under `apps/project_name/src/job/` with `constants` and `processor` subdirectories
 
 ### DTOs
 
@@ -141,16 +309,85 @@ Each feature should be a self-contained NestJS module with:
 
 ### Database Migrations
 
-- **Core Files (`apps/main/src/sql/Core/`)**: `Core-V1.sql`, `Core-Data.sql`, `Core-Permission.sql`
-- SQL migrations in `apps/main/src/sql/`
-- Append new entries to end of file with two empty lines after
-- Do not hardcode primary keys in data inserts
-- **Status tables (e.g., GSIrangsImportStatus)**: Must use static non-identity primary key (`id INT PRIMARY KEY`) with manual default values inserted in migration script
-- Corresponding Enum must be created in the code for status tables
+The project uses a custom code-generation migrator at `apps/main/src/migrator/`. Migrations are model-first: the CLI tool scans `*.entity.ts` files, diffs against a snapshot, and generates TypeScript migration files.
+
+#### CLI Commands
+
+```bash
+# Generate migration files (runs snapshot + generate in one step)
+npm run gen:migration
+
+# Save current model state to models-snapshot.json
+npm run gen:migration:snapshot
+
+# Preview differences between snapshot and current models
+npm run gen:migration:diff
+```
+
+#### Workflow (when adding/changing entities)
+
+1. **Edit or create** `*.entity.ts` files in `libs/localdatabase/src/models/<domain>/`
+2. **Generate migrations**: Run `npm run gen:migration` (combines snapshot + generate)
+   - Or step-by-step: `gen:migration:snapshot` → `gen:migration:diff` (verify) → `npm run gen:migration` (which does snapshot + generate when no snapshot changes)
+
+#### Migration File Conventions
+
+- **Naming**: `{YYYYMMDD}-{NNNN}-{action}-{tablename}[-{detail}].ts`
+  - e.g., `20260519-0001-core-create-settings-table.ts`
+  - e.g., `20260519-0008-core-alter-users-add-birthdate.ts`
+- **Actions**: `create` (CREATE TABLE), `alter` with `add-{col}`, `modify-{col}`, `drop-{col}`
+- **Sequence**: 4-digit zero-padded number incrementing from the highest existing number
+
+#### Migration File Format
+
+Each migration exports `name`, `up()`, and `down()`:
+
+```typescript
+import { Sequelize } from 'sequelize';
+import { createDialectHelpers } from '../migration-helper';
+
+export const up = async (sequelize: Sequelize): Promise<void> => {
+  const { helperFunctions } = createDialectHelpers(sequelize);
+  // ...
+};
+
+export const down = async (sequelize: Sequelize): Promise<void> => {
+  const { helperFunctions } = createDialectHelpers(sequelize);
+  // ...
+};
+```
+
+#### Migration Index Registration
+
+- All migrations must be registered in `apps/main/src/migrator/migrations/index.ts`
+- The generator auto-updates this file with import statements and array entries
+- **Core tables**: Use `m(module)` wrapper
+- **EAV-prefixed tables**: Use `cond(module, 'SITE_NAME', 'ecommerce')` wrapper
+- **BPMN-prefixed tables**: Use `cond(module, 'SITE_NAME', 'bpmn')` wrapper
+
+#### Runtime Migration Execution
+
+- Migrations run on app startup via `UmzugMigrationService` (only on the primary cluster instance)
+- Tracked in database table `UmzugMeta` (schema) and `UmzugSeedMeta` (seeds)
+- Seeds live in `apps/main/src/migrator/seeds/` and `apps/main/src/migrator/permissions/`
+
+#### Migration File Locations
+
+| Directory                                     | Contents                                  |
+| --------------------------------------------- | ----------------------------------------- |
+| `apps/main/src/migrator/migrations/`          | Schema migration `.ts` files + `index.ts` |
+| `apps/main/src/migrator/seeds/`               | Seed data `.ts` files + `index.ts`        |
+| `apps/main/src/migrator/permissions/`         | Permission seeding files                  |
+| `apps/main/src/migrator/models-snapshot.json` | Current model metadata snapshot           |
+
+#### Key Libraries
+
+- **`umzug`** - Runtime migration runner (applies pending migrations on startup)
+- **`sequelize-typescript`** - ORM with decorators (`@Table`, `@Column`, `@ForeignKey`)
+- Dialect adapters in `dialect-adapters.ts` support mssql, postgres, sqlite
 
 ### Testing
 
-- `bpmn`, `e-commerce`, and `guarantee` applications do not currently contain any test files that are executed by the specific app test command
 - Guard mocking: `.overrideGuard()` in test setup
 - Decorator mocking: custom `NestInterceptor` for `@GetUser()`
 - E2E configs in `apps/<app>/test/jest-e2e.json` with relative paths
