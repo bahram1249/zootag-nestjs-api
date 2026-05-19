@@ -40,10 +40,12 @@ import {
 import { ModuleInitializerModule } from '../module-initializer/module-initializer.module';
 import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
 import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
+import { LocalizationModule } from '../common/localization';
 
 @Module({
   imports: [
     ModuleInitializerModule,
+    LocalizationModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.local', '.env'],
       isGlobal: true,
