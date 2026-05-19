@@ -1,12 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/sequelize';
-import { Sequelize } from 'sequelize';
+import { QueryTypes, Sequelize } from 'sequelize';
 import { Umzug, SequelizeStorage } from 'umzug';
+import { createDialectHelpers } from './migration-helper';
+
+interface Condition {
+  key: string;
+  values: string[];
+}
 
 interface MigrationDefinition {
   name: string;
   up: (sequelize: Sequelize) => Promise<void>;
   down?: (sequelize: Sequelize) => Promise<void>;
+  condition?: Condition;
 }
 
 @Injectable()
@@ -24,26 +31,22 @@ export class UmzugMigrationService {
     });
   }
 
-  async runMigrations(definitions: MigrationDefinition[]): Promise<void> {
-    if (definitions.length === 0) {
-      this.logger.log('No migration definitions provided.');
-      return;
-    }
-
-    this.umzug = new Umzug({
+  private async runUmzug(
+    definitions: MigrationDefinition[],
+    storageTableName: string,
+  ): Promise<Umzug> {
+    const umzug = new Umzug({
       migrations: definitions.map((def) => ({
         name: def.name,
         up: async () => {
-          this.logger.log(`Running migration: ${def.name}`);
+          this.logger.log(`Running: ${def.name}`);
           await def.up(this.sequelize);
         },
         down: async () => {
-          if (def.down) {
-            await def.down(this.sequelize);
-          }
+          if (def.down) await def.down(this.sequelize);
         },
       })),
-      storage: this.getStorage('UmzugMeta'),
+      storage: this.getStorage(storageTableName),
       context: this.sequelize,
       logger: {
         info: (msg) => this.logger.log(String(msg)),
@@ -52,8 +55,57 @@ export class UmzugMigrationService {
         debug: (msg) => this.logger.debug(String(msg)),
       },
     });
+    await umzug.up();
+    return umzug;
+  }
 
-    await this.umzug.up();
+  private async getSettingValues(keys: string[]): Promise<Map<string, string>> {
+    const result = new Map<string, string>();
+    const { top, quote } = createDialectHelpers(this.sequelize);
+    for (const key of keys) {
+      try {
+        const row: any = await this.sequelize.query(
+          top(1, `SELECT ${quote('value')} FROM Settings WHERE ${quote('key')} = '${key}'`),
+          { raw: true, type: QueryTypes.SELECT },
+        );
+        if (row?.[0]) result.set(key, row[0].value);
+      } catch {
+        /* table or key might not exist yet */
+      }
+    }
+    return result;
+  }
+
+  private async runConditionalPhase(
+    definitions: MigrationDefinition[],
+    storageTableName: string,
+  ): Promise<Umzug | null> {
+    const core = definitions.filter((d) => !d.condition);
+    const conditional = definitions.filter((d) => d.condition);
+    let last: Umzug | null = null;
+    if (core.length > 0) {
+      last = await this.runUmzug(core, storageTableName);
+    }
+    if (conditional.length > 0) {
+      const uniqueKeys = [...new Set(conditional.map((d) => d.condition!.key))];
+      const settingValues = await this.getSettingValues(uniqueKeys);
+      const matching = conditional.filter((d) => {
+        const currentValue = settingValues.get(d.condition!.key);
+        return currentValue && d.condition!.values.includes(currentValue);
+      });
+      if (matching.length > 0) {
+        last = await this.runUmzug(matching, storageTableName);
+      }
+    }
+    return last;
+  }
+
+  async runMigrations(definitions: MigrationDefinition[]): Promise<void> {
+    if (definitions.length === 0) {
+      this.logger.log('No migration definitions provided.');
+      return;
+    }
+    this.umzug = await this.runConditionalPhase(definitions, 'UmzugMeta');
   }
 
   async runSeeds(definitions: MigrationDefinition[]): Promise<void> {
@@ -61,31 +113,7 @@ export class UmzugMigrationService {
       this.logger.log('No seed definitions provided.');
       return;
     }
-
-    this.seedUmzug = new Umzug({
-      migrations: definitions.map((def) => ({
-        name: def.name,
-        up: async () => {
-          this.logger.log(`Running seed: ${def.name}`);
-          await def.up(this.sequelize);
-        },
-        down: async () => {
-          if (def.down) {
-            await def.down(this.sequelize);
-          }
-        },
-      })),
-      storage: this.getStorage('UmzugSeedMeta'),
-      context: this.sequelize,
-      logger: {
-        info: (msg) => this.logger.log(String(msg)),
-        warn: (msg) => this.logger.warn(String(msg)),
-        error: (msg) => this.logger.error(String(msg)),
-        debug: (msg) => this.logger.debug(String(msg)),
-      },
-    });
-
-    await this.seedUmzug.up();
+    this.seedUmzug = await this.runConditionalPhase(definitions, 'UmzugSeedMeta');
   }
 
   async rollbackLastMigration(): Promise<void> {
