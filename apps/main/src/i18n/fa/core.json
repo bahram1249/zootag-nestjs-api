@@ -13,5 +13,15 @@
   "not_found_role": "نقش کاربری مورد نظر یافت نشد",
   "not_found_slug": "آیتم مورد نظر توسط جداکننده یا لینک مورد نظر یافت نشد",
   "dont_access_to_this_file": "شما دسترسی به این فایل را ندارید",
-  "success": "با موفقیت انجام شد"
+  "success": "با موفقیت انجام شد",
+  "credentials_taken": "این مشخصات قبلا ثبت شده است",
+  "credentials_incorrect": "اطلاعات ورود نادرست است",
+  "username_taken": "این نام کاربری قبلا ثبت شده است",
+  "permission_not_found": "دسترسی با شناسه {id} یافت نشد",
+  "role_not_found": "نقش با شناسه {id} یافت نشد",
+  "username_given_to_another_user": "این نام کاربری به کاربر دیگری تعلق دارد",
+  "role_cannot_be_deleted": "این نقش قابل حذف نمی‌باشد",
+  "role_not_exists": "نقش با شناسه ارسال شده وجود ندارد",
+  "permission_symbol_not_found": "دسترسی با این نماد یافت نشد",
+  "super_admin_role_not_defined": "نقش مدیر ارشد تعریف نشده است"
 }

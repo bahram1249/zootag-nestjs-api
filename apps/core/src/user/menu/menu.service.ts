@@ -9,6 +9,7 @@ import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class MenuService {
@@ -22,6 +23,7 @@ export class MenuService {
     @InjectModel(PermissionMenu)
     private readonly permissionMenuRepository: typeof PermissionMenu,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(user: User, filter: MenuGetDto) {
@@ -130,14 +132,14 @@ export class MenuService {
     const menu = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
-          [Op.and]: [
-            { id },
-            { id: { [Op.in]: menuIds } },
-          ],
+          [Op.and]: [{ id }, { id: { [Op.in]: menuIds } }],
         })
         .build(),
     );
-    if (!menu) throw new NotFoundException();
+    if (!menu)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: menu,
     };

@@ -17,6 +17,7 @@ import { ThumbnailService } from '@rahino/thumbnail';
 import { EditProfileDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class ProfileService {
@@ -30,6 +31,7 @@ export class ProfileService {
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async editProfile(user: User, dto: EditProfileDto) {
@@ -57,19 +59,23 @@ export class ProfileService {
   }
 
   async upload(userId: bigint, file: Express.Multer.File) {
-    // check attachment Type
     const attachmentTypeId = 1;
     const attachmentType = await this.attachmentTypeRepository.findOne(
       new QueryOptionsBuilder().filter({ id: attachmentTypeId }).build(),
     );
-    if (!attachmentType) throw new ForbiddenException();
+    if (!attachmentType)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.dont_access_to_this_file'),
+      );
 
     let user = await this.userRepoisitory.findOne(
       new QueryOptionsBuilder().filter({ id: userId }).build(),
     );
-    if (!user) throw new ForbiddenException();
+    if (!user)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.not_found'),
+      );
     if (user.profilePhotoAttachmentId) {
-      // remove old attachment
       const attachmentOld = await this.repository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: user.profilePhotoAttachmentId })
@@ -90,11 +96,9 @@ export class ProfileService {
         },
       );
     }
-    // save path from config
     const bigPath = this.fileService.generateProfilePathByCwd(userId);
     const thumbPath = this.fileService.generateProfileThumbPathByCwd(userId);
 
-    // create thumbnail and save
     const bigThumb = await this.thumbnailService.resize(file.path, 700, 700);
     const smallThumb = await this.thumbnailService.resize(file.path, 300, 300);
     const realPath = await this.fileService.saveFileByPathAsync(
@@ -141,7 +145,6 @@ export class ProfileService {
         .filter({ id: user.id })
         .build(),
     );
-    //fs.writeFileSync(attachmentSavePath, file.buffer);
     return {
       result: user,
     };
@@ -159,7 +162,10 @@ export class ProfileService {
         })
         .build(),
     );
-    if (!attachment) throw new NotFoundException();
+    if (!attachment)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     res.set({
       'Content-Type': attachment.mimetype,
       'Content-Disposition': `filename="${attachment.fileName}"`,

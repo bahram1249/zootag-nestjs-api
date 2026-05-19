@@ -13,6 +13,7 @@ import { RolePermission } from '@rahino/database';
 import { RoleGetDto, RoleDto } from './dto';
 import { UserRole } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class RoleService {
@@ -25,6 +26,7 @@ export class RoleService {
     private readonly rolePermissionRepository: typeof RolePermission,
     @InjectModel(UserRole)
     private readonly userRoleRepository: typeof UserRole,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: RoleGetDto) {
@@ -63,7 +65,10 @@ export class RoleService {
     let role = await this.roleRepository.findOne(
       new QueryOptionsBuilder().filter({ roleName: dto.roleName }).build(),
     );
-    if (role) throw new ForbiddenException('Credentials taken');
+    if (role)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_taken'),
+      );
 
     if (
       dto.permissions &&
@@ -76,7 +81,9 @@ export class RoleService {
         );
         if (!permission)
           throw new BadRequestException(
-            `the permission id: ${permissionId} is not found!`,
+            this.localizationService.translate('core.permission_not_found', {
+              id: permissionId,
+            }),
           );
       }
     }
@@ -113,7 +120,10 @@ export class RoleService {
     let role = await this.roleRepository.findOne(
       new QueryOptionsBuilder().filter({ id: roleId }).build(),
     );
-    if (!role) throw new NotFoundException('Not Found!');
+    if (!role)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
 
     if (
       dto.permissions &&
@@ -126,7 +136,9 @@ export class RoleService {
         );
         if (!permission)
           throw new BadRequestException(
-            `the permission id: ${permissionId} is not found!`,
+            this.localizationService.translate('core.permission_not_found', {
+              id: permissionId,
+            }),
           );
       }
     }
@@ -172,10 +184,14 @@ export class RoleService {
       new QueryOptionsBuilder().filter({ id: roleId }).build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
     if (item.static_id != null) {
-      throw new BadRequestException('this role cannot be deleted!');
+      throw new BadRequestException(
+        this.localizationService.translate('core.role_cannot_be_deleted'),
+      );
     }
 
     await this.rolePermissionRepository.destroy({

@@ -7,6 +7,7 @@ import { RolePermission } from '@rahino/database';
 import { PermissionGroup } from '@rahino/database';
 import { PermissionGetDto } from './dto';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class PermissionService {
@@ -16,6 +17,7 @@ export class PermissionService {
     @InjectModel(RolePermission)
     private readonly rolePermissionRepository: typeof RolePermission,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: PermissionGetDto) {
@@ -33,9 +35,7 @@ export class PermissionService {
 
     if (filter.roleId) {
       const permissions = await this.rolePermissionRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter({ roleId: filter.roleId })
-          .build(),
+        new QueryOptionsBuilder().filter({ roleId: filter.roleId }).build(),
       );
       const permissionIds = permissions.map((p) => p.id);
       qb = qb.filter(
@@ -98,7 +98,10 @@ export class PermissionService {
         .filter({ id })
         .build(),
     );
-    if (!permission) throw new NotFoundException('Not Found!');
+    if (!permission)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: permission,
     };

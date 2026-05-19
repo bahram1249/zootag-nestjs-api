@@ -33,6 +33,16 @@ export type I18nTranslations = {
         "the_given_slug_is_exists_before": string;
         "dont_access_to_this_file": string;
         "success": string;
+        "credentials_taken": string;
+        "credentials_incorrect": string;
+        "username_taken": string;
+        "permission_not_found": string;
+        "role_not_found": string;
+        "username_given_to_another_user": string;
+        "role_cannot_be_deleted": string;
+        "role_not_exists": string;
+        "permission_symbol_not_found": string;
+        "super_admin_role_not_defined": string;
     };
     "ecommerce": {
         "the_vendor_you_choose_is_not_in_valid_area": string;

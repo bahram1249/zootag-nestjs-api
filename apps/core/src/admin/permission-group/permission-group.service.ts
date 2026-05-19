@@ -6,6 +6,7 @@ import { Op } from 'sequelize';
 import { PermissionGroup } from '@rahino/database';
 import { PermissionGroupGetDto } from './dto';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class PermissionGroupService {
@@ -13,14 +14,13 @@ export class PermissionGroupService {
     @InjectModel(PermissionGroup)
     private readonly repository: typeof PermissionGroup,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: PermissionGroupGetDto) {
     let qb = new QueryOptionsBuilder().filter({
       [Op.and]: [
-        {
-          permissionGroupName: { [Op.like]: filter.search },
-        },
+        { permissionGroupName: { [Op.like]: filter.search } },
         this.seqHelp.whereIsNullColumnEqualToValue(
           'PermissionGroup.visibility',
           1,
@@ -99,7 +99,10 @@ export class PermissionGroupService {
         })
         .build(),
     );
-    if (!permissionGroup) throw new NotFoundException('Not Found!');
+    if (!permissionGroup)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: permissionGroup,
     };

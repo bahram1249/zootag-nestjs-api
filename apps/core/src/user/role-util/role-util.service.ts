@@ -1,9 +1,13 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database';
 import { User } from '@rahino/database';
 import { UserRole } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class RoleUtilService {
@@ -11,6 +15,7 @@ export class RoleUtilService {
   constructor(
     @InjectModel(UserRole) private readonly userRoleRepository: typeof UserRole,
     @InjectModel(Role) private readonly roleRepository: typeof Role,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async isSuperAdmin(user: User) {
@@ -20,7 +25,11 @@ export class RoleUtilService {
         .build(),
     );
     if (!role) {
-      throw new InternalServerErrorException('super admin role is not defined');
+      throw new InternalServerErrorException(
+        this.localizationService.translate(
+          'core.super_admin_role_not_defined',
+        ),
+      );
     }
     const userRole = await this.userRoleRepository.findOne(
       new QueryOptionsBuilder()

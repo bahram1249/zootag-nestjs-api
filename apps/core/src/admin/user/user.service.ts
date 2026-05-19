@@ -13,6 +13,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op } from 'sequelize';
 import { UserDto } from './dto';
 import { UserRole } from '@rahino/database';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     private readonly roleRepository: typeof Role,
     @InjectModel(UserRole)
     private readonly userRoleRepository: typeof UserRole,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: ListFilter) {
@@ -88,12 +90,18 @@ export class UserService {
     let user = await this.userRepository.findOne(
       new QueryOptionsBuilder().filter({ username: dto.username }).build(),
     );
-    if (user) throw new ForbiddenException('Credentials taken');
+    if (user)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_taken'),
+      );
     if (dto.email) {
       user = await this.userRepository.findOne(
         new QueryOptionsBuilder().filter({ email: dto.email }).build(),
       );
-      if (user) throw new ForbiddenException('Credentials taken');
+      if (user)
+        throw new ForbiddenException(
+          this.localizationService.translate('core.credentials_taken'),
+        );
     }
 
     if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
@@ -103,7 +111,11 @@ export class UserService {
           new QueryOptionsBuilder().filter({ id: roleId }).build(),
         );
         if (!role)
-          throw new BadRequestException(`the role id: ${roleId} is not found!`);
+          throw new BadRequestException(
+            this.localizationService.translate('core.role_not_found', {
+              id: roleId,
+            }),
+          );
       }
     }
 
@@ -151,13 +163,18 @@ export class UserService {
     let user = await this.userRepository.findOne(
       new QueryOptionsBuilder().filter({ id: userId }).build(),
     );
-    if (!user) throw new NotFoundException('Not Found!');
+    if (!user)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     user = await this.userRepository.findOne(
       new QueryOptionsBuilder().filter({ username: dto.username }).build(),
     );
     if (user != null && user.id != userId) {
       throw new BadRequestException(
-        'this username was given by another user!',
+        this.localizationService.translate(
+          'core.username_given_to_another_user',
+        ),
       );
     }
 
@@ -168,7 +185,11 @@ export class UserService {
           new QueryOptionsBuilder().filter({ id: roleId }).build(),
         );
         if (!role)
-          throw new BadRequestException(`the role id: ${roleId} is not found!`);
+          throw new BadRequestException(
+            this.localizationService.translate('core.role_not_found', {
+              id: roleId,
+            }),
+          );
       }
     }
 
