@@ -86,6 +86,21 @@ export function createAdapters(rawDialect: Dialect) {
       isMssql
         ? `SELECT TOP ${n} ${selectSql.slice(7)}`
         : `${selectSql} LIMIT ${n}`,
+    fkConstraint: (name: string, table: string, column: string): string =>
+      isMssql
+        ? `CONSTRAINT ${name} FOREIGN KEY REFERENCES ${table}([${column}])`
+        : `FOREIGN KEY REFERENCES ${table}("${column}")`,
+    alterColumnSql: (
+      table: string,
+      column: string,
+      rawType: string,
+      nullable: boolean,
+    ): string => {
+      const mappedType = colType(rawType);
+      const nullStr = nullable ? 'NULL' : 'NOT NULL';
+      const q = (s: string) => (isMssql ? `[${s}]` : `"${s}"`);
+      return `ALTER TABLE ${table} ALTER COLUMN ${q(column)} ${mappedType} ${nullStr}`;
+    },
   };
 }
 

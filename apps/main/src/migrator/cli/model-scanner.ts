@@ -29,7 +29,12 @@ function stripLineComments(code: string): string {
   return code.replace(/\/\/.*$/gm, '');
 }
 
-function findMatchingBracket(text: string, start: number, open: string, close: string): number {
+function findMatchingBracket(
+  text: string,
+  start: number,
+  open: string,
+  close: string,
+): number {
   let depth = 1; // start after the opening bracket
   for (let i = start; i < text.length; i++) {
     if (text[i] === open) depth++;
@@ -85,7 +90,11 @@ function parseColumnContent(content: string): {
 
   if (/primaryKey\s*:\s*true/i.test(content)) res.primaryKey = true;
   if (/autoIncrement\s*:\s*true/i.test(content)) res.autoIncrement = true;
-  if (/allowNull\s*:\s*true/i.test(content) || /allowNull\s*:\s*null/i.test(content)) res.allowNull = true;
+  if (
+    /allowNull\s*:\s*true/i.test(content) ||
+    /allowNull\s*:\s*null/i.test(content)
+  )
+    res.allowNull = true;
   if (/unique\s*:\s*true/i.test(content)) res.unique = true;
 
   const dvMatch = content.match(/defaultValue\s*:\s*([^,\n}]+)/);
@@ -100,7 +109,9 @@ function parseColumnContent(content: string): {
   return res;
 }
 
-function findProperties(code: string): { name: string; type: string; line: number }[] {
+function findProperties(
+  code: string,
+): { name: string; type: string; line: number }[] {
   const props: { name: string; type: string; line: number }[] = [];
   const regex = /^\s*(\w+)\s*(?:\?\s*)?:\s*(\w+(?:\[\])?)\s*;?\s*$/gm;
   let m: RegExpExecArray | null;
@@ -117,7 +128,8 @@ function associateDecoratorsToProperties(
   const props = findProperties(code);
   // Find all decorator blocks with their positions
   const decoratorRegex = /@(\w+)\s*\(/g;
-  const decoratorPositions: { type: string; content: string; pos: number }[] = [];
+  const decoratorPositions: { type: string; content: string; pos: number }[] =
+    [];
   let m: RegExpExecArray | null;
 
   while ((m = decoratorRegex.exec(code)) !== null) {
@@ -149,9 +161,8 @@ function associateDecoratorsToProperties(
     for (const dec of decoratorPositions) {
       if (dec.pos >= propOffset) break; // Past the property
       // Check if this decorator belongs to this property or a previous one
-      const prevDec = result.length > 0
-        ? result[result.length - 1].decorators
-        : [];
+      const prevDec =
+        result.length > 0 ? result[result.length - 1].decorators : [];
       if (result.length > 0) {
         const lastPropInfo = result[result.length - 1];
         const lastPropOffset = findPropertyOffset(code, lastPropInfo.property);
@@ -167,11 +178,20 @@ function associateDecoratorsToProperties(
     // Filter out decorators already assigned to previous property
     if (result.length > 0) {
       const lastProp = result[result.length - 1];
-      const lastPropDecEnd = lastProp.decorators.length > 0
-        ? Math.max(...lastProp.decorators.map((d) => decoratorPositions.find((dp) => dp.type === d.type)?.pos ?? 0))
-        : 0;
+      const lastPropDecEnd =
+        lastProp.decorators.length > 0
+          ? Math.max(
+              ...lastProp.decorators.map(
+                (d) =>
+                  decoratorPositions.find((dp) => dp.type === d.type)?.pos ?? 0,
+              ),
+            )
+          : 0;
       result[result.length - 1].decorators = lastProp.decorators.filter(
-        (d) => decoratorPositions.find((dp) => dp.type === d.type && dp.content === d.content)?.pos ?? 0 <= lastPropDecEnd,
+        (d) =>
+          decoratorPositions.find(
+            (dp) => dp.type === d.type && dp.content === d.content,
+          )?.pos ?? 0 <= lastPropDecEnd,
       );
     }
 
@@ -182,7 +202,10 @@ function associateDecoratorsToProperties(
 }
 
 function findPropertyOffset(code: string, propName: string): number {
-  const regex = new RegExp(`(?:^|\\n)\\s*${propName}\\s*(?:\\?\\s*)?:\\s*\\w+`, 'm');
+  const regex = new RegExp(
+    `(?:^|\\n)\\s*${propName}\\s*(?:\\?\\s*)?:\\s*\\w+`,
+    'm',
+  );
   const m = regex.exec(code);
   return m ? m.index : -1;
 }
@@ -202,7 +225,9 @@ export function scanModelFile(filePath: string): {
   // Remove block comments
   code = code.replace(/\/\*[\s\S]*?\*\//g, '');
 
-  const tableMatch = code.match(/@Table\s*\(\s*\{[^}]*?tableName\s*:\s*'([^']+)'\s*\}/);
+  const tableMatch = code.match(
+    /@Table\s*\(\s*\{[^}]*?tableName\s*:\s*'([^']+)'\s*\}/,
+  );
   if (!tableMatch) return null;
   const tableName = tableMatch[1];
 
@@ -229,7 +254,8 @@ export function scanModelFile(filePath: string): {
   // For each @Column, find the next property name
   for (const cd of columnData) {
     const afterColumn = code.substring(cd.start);
-    const propRegex = /^\s*(?:@\w+\s*(?:\([^)]*\))?\s*\n?)*\s*(\w+)\s*(?:\?\s*)?:\s*(\w+(?:\[\])?)\s*;/m;
+    const propRegex =
+      /^\s*(?:@\w+\s*(?:\([^)]*\))?\s*\n?)*\s*(\w+)\s*(?:\?\s*)?:\s*(\w+(?:\[\])?)\s*;/m;
     const pm = afterColumn.match(propRegex);
     if (!pm) continue;
     const propName = pm[1];
@@ -251,7 +277,8 @@ export function scanModelFile(filePath: string): {
   let fkMatch: RegExpExecArray | null;
   while ((fkMatch = fkRegex.exec(code)) !== null) {
     const afterFk = code.substring(fkMatch.index);
-    const propRegex = /^\s*(?:@\w+(?:\s*\([^)]*\))?\s*\n?)*\s*(\w+)\s*(?:\?\s*)?:\s*\w+/m;
+    const propRegex =
+      /^\s*(?:@\w+(?:\s*\([^)]*\))?\s*\n?)*\s*(\w+)\s*(?:\?\s*)?:\s*\w+/m;
     const pm = afterFk.match(propRegex);
     if (pm) {
       foreignKeys.push({
@@ -271,9 +298,16 @@ export function convertToModelMeta(parsed: {
   columns: ColumnDef[];
   foreignKeys: FKDef[];
 }): ModelMeta {
+  // Build FK lookup by column name
+  const fkByColumn = new Map<string, FKDef>();
+  for (const fk of parsed.foreignKeys) {
+    fkByColumn.set(fk.column, fk);
+  }
+
   const columns: Record<string, ColumnMeta> = {};
   for (const col of parsed.columns) {
-    columns[col.name] = {
+    const refFk = fkByColumn.get(col.name);
+    const meta: ColumnMeta = {
       name: col.name,
       type: col.type,
       primaryKey: col.primaryKey,
@@ -283,13 +317,20 @@ export function convertToModelMeta(parsed: {
       unique: col.unique,
       comment: col.comment,
     };
+    if (refFk) {
+      meta.references = {
+        model: refFk.refModel,
+        key: refFk.refKey,
+      };
+    }
+    columns[col.name] = meta;
   }
 
   const fks: ForeignKeyMeta[] = [];
   for (const fk of parsed.foreignKeys) {
     fks.push({
       columns: [fk.column],
-      refTable: fk.refModel.replace(/^EAV/, 'EAV').replace(/^BPMN/, 'BPMN'),
+      refTable: fk.refModel,
       refColumns: [fk.refKey],
     });
   }
@@ -303,9 +344,22 @@ export function convertToModelMeta(parsed: {
   };
 }
 
-export function scanModelsDirectory(modelsDir: string): Record<string, ModelMeta> {
-  const models: Record<string, ModelMeta> = {};
+function tableNameForClass(className: string, classToTable: Record<string, string>): string {
+  return classToTable[className] || className;
+}
 
+export function scanModelsDirectory(
+  modelsDir: string,
+): Record<string, ModelMeta> {
+  const models: Record<string, ModelMeta> = {};
+  const classToTable: Record<string, string> = {};
+
+  const allParsed: Array<{
+    parsed: ReturnType<typeof scanModelFile>;
+    fullPath: string;
+  }> = [];
+
+  // First pass: collect class-to-table mapping
   function walk(dir: string) {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
@@ -315,13 +369,23 @@ export function scanModelsDirectory(modelsDir: string): Record<string, ModelMeta
       } else if (entry.name.endsWith('.entity.ts')) {
         const parsed = scanModelFile(fullPath);
         if (parsed) {
-          const meta = convertToModelMeta(parsed);
-          models[meta.tableName] = meta;
+          classToTable[parsed.className] = parsed.tableName;
+          allParsed.push({ parsed, fullPath });
         }
       }
     }
   }
 
   walk(modelsDir);
+
+  // Second pass: resolve FK class names to table names
+  for (const { parsed } of allParsed) {
+    for (const fk of parsed.foreignKeys) {
+      fk.refModel = tableNameForClass(fk.refModel, classToTable);
+    }
+    const meta = convertToModelMeta(parsed);
+    models[meta.tableName] = meta;
+  }
+
   return models;
 }

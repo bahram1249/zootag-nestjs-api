@@ -1,5 +1,9 @@
 import * as path from 'path';
-import { scanModelsDirectory, scanModelFile, convertToModelMeta } from './model-scanner';
+import {
+  scanModelsDirectory,
+  scanModelFile,
+  convertToModelMeta,
+} from './model-scanner';
 import { loadSnapshot, saveSnapshot, getSnapshotPath } from './snapshot';
 import { diffModels, diffHasChanges } from './differ';
 import { writeMigrations, getExistingMigrationCount } from './migration-writer';
@@ -64,7 +68,9 @@ async function main(): Promise<void> {
 
   const rootDir = path.resolve(__dirname, '..', '..', '..', '..', '..');
   const modelsDirStr = findArg(args, '--models-dir');
-  const modelsDir = modelsDirStr ? path.resolve(modelsDirStr) : autoDetectModelsDir();
+  const modelsDir = modelsDirStr
+    ? path.resolve(modelsDirStr)
+    : autoDetectModelsDir();
   const snapshotDirStr = findArg(args, '--snapshot-dir');
   const snapshotDir = snapshotDirStr
     ? path.resolve(snapshotDirStr)
@@ -81,7 +87,9 @@ async function main(): Promise<void> {
       const models = scanModelsDirectory(modelsDir);
       console.log(`Found ${Object.keys(models).length} models:`);
       for (const [name, meta] of Object.entries(models)) {
-        console.log(`  ${meta.tableName} (${Object.keys(meta.columns).length} columns)`);
+        console.log(
+          `  ${meta.tableName} (${Object.keys(meta.columns).length} columns)`,
+        );
       }
       const snapshotPath = getSnapshotPath(snapshotDir);
       saveSnapshot(snapshotPath, models);
@@ -98,7 +106,10 @@ async function main(): Promise<void> {
       }
       console.log(`Scanning models in: ${modelsDir}`);
       const newModels = scanModelsDirectory(modelsDir);
-      const diff = diffModels(oldSnapshot.models as Record<string, ModelMeta>, newModels);
+      const diff = diffModels(
+        oldSnapshot.models as Record<string, ModelMeta>,
+        newModels,
+      );
       console.log(`\nChanges detected:`);
       console.log(`  New tables: ${diff.newTables.length}`);
       for (const t of diff.newTables) {
@@ -110,7 +121,9 @@ async function main(): Promise<void> {
       }
       console.log(`  Column changes: ${diff.diffColumns.length}`);
       for (const c of diff.diffColumns) {
-        console.log(`    ${c.action === 'add' ? '+' : c.action === 'remove' ? '-' : '~'} ${c.tableName}.${c.column.name} (${c.action})`);
+        console.log(
+          `    ${c.action === 'add' ? '+' : c.action === 'remove' ? '-' : '~'} ${c.tableName}.${c.column.name} (${c.action})`,
+        );
       }
       break;
     }
@@ -124,7 +137,10 @@ async function main(): Promise<void> {
       }
       console.log(`Scanning models in: ${modelsDir}`);
       const newModels = scanModelsDirectory(modelsDir);
-      const diff = diffModels(oldSnapshot.models as Record<string, ModelMeta>, newModels);
+      const diff = diffModels(
+        oldSnapshot.models as Record<string, ModelMeta>,
+        newModels,
+      );
 
       if (!diffHasChanges(diff)) {
         console.log('No changes detected. Models match snapshot.');
@@ -142,15 +158,26 @@ async function main(): Promise<void> {
           console.log(`  + CREATE TABLE ${t.tableName}`);
         }
         for (const c of diff.diffColumns) {
-          console.log(`  ${c.action === 'add' ? '+' : c.action === 'remove' ? '-' : '~'} ALTER TABLE ${c.tableName} ${c.action} ${c.column.name}`);
+          console.log(
+            `  ${c.action === 'add' ? '+' : c.action === 'remove' ? '-' : '~'} ALTER TABLE ${c.tableName} ${c.action} ${c.column.name}`,
+          );
         }
       } else {
         const existingCount = getExistingMigrationCount(outputDir);
-        const files = writeMigrations(outputDir, diff, existingCount);
-        console.log(`\nGenerated ${files.length} migration file(s) in: ${outputDir}`);
+        const indexFile = path.resolve(outputDir, '..', 'index.ts');
+        const files = writeMigrations(
+          outputDir,
+          diff,
+          existingCount,
+          indexFile,
+        );
+        console.log(
+          `\nGenerated ${files.length} migration file(s) in: ${outputDir}`,
+        );
         for (const f of files) {
           console.log(`  - ${f}`);
         }
+        console.log(`\nUpdated: ${indexFile}`);
         // Update snapshot after generation
         saveSnapshot(snapshotPath, newModels);
         console.log(`\nSnapshot updated: ${snapshotPath}`);

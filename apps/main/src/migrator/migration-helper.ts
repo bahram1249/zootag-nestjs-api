@@ -3,7 +3,9 @@ import { createAdapters, Dialect } from './dialect-adapters';
 
 export function createDialectHelpers(sequelize: Sequelize) {
   const rawDialect = sequelize.getDialect();
-  const d = (typeof rawDialect === 'string' ? rawDialect : String(rawDialect)).trim().toLowerCase() as Dialect;
+  const d = (typeof rawDialect === 'string' ? rawDialect : String(rawDialect))
+    .trim()
+    .toLowerCase() as Dialect;
   const a = createAdapters(d);
 
   return {
@@ -60,6 +62,37 @@ export function createDialectHelpers(sequelize: Sequelize) {
         constraint,
       );
       await sequelize.query(sql, { raw: true, type: QueryTypes.RAW });
+    },
+
+    fkConstraint: (name: string, table: string, column: string): string =>
+      a.fkConstraint(name, table, column),
+
+    alterColumn: async (
+      table: string,
+      column: string,
+      colTypeStr: string,
+      nullable: boolean,
+    ): Promise<void> => {
+      const sql = a.alterColumnSql(table, column, colTypeStr, nullable);
+      await sequelize.query(sql, { raw: true, type: QueryTypes.RAW });
+    },
+
+    dropColumn: async (
+      tableName: string,
+      columnName: string,
+      constraintName?: string,
+    ): Promise<void> => {
+      if (constraintName && d === 'mssql') {
+        await sequelize.query(
+          `ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+          { raw: true, type: QueryTypes.RAW },
+        );
+      }
+      const q = a.quote(columnName);
+      await sequelize.query(`ALTER TABLE ${tableName} DROP COLUMN ${q}`, {
+        raw: true,
+        type: QueryTypes.RAW,
+      });
     },
 
     executeRaw: async (sql: string): Promise<void> => {
