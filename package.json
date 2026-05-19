@@ -21,7 +21,9 @@
     "test:e2e:ecommerce": "jest --config ./apps/e-commerce/test/jest-e2e.json",
     "test:e2e:guarantee": "jest --config ./apps/guarantee/test/jest-e2e.json",
     "test:e2e:ecommerce:watch": "jest --config ./apps/e-commerce/test/jest-e2e.json --watch",
-    "test:e2e:ecommerce:client-order": "jest --config ./apps/e-commerce/test/jest-e2e.json apps/e-commerce/test/client/order/client-order.e2e-spec.ts"
+    "gen:migration": "npx ts-node apps/main/src/migrator/cli/index.ts",
+    "gen:migration:snapshot": "npx ts-node apps/main/src/migrator/cli/index.ts snapshot",
+    "gen:migration:diff": "npx ts-node apps/main/src/migrator/cli/index.ts diff"
   },
   "dependencies": {
     "@bull-board/api": "^6.9.6",
