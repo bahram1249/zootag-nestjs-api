@@ -58,7 +58,9 @@ export async function createE2EApp(options?: {
           logging: (configService.get('DB_LOG') as any) === 'true',
           synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
           timezone:
-            (configService.get<string>('DB_TIMEZONE') as string) || 'fa-IR',
+            configService.get<string>('DB_DIALECT') === 'sqlite'
+              ? '+00:00'
+              : (configService.get<string>('DB_TIMEZONE') as string) || 'fa-IR',
           models: [
             ...coreModels,
             ...eavEntities,

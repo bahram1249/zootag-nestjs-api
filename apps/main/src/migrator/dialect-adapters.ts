@@ -44,13 +44,20 @@ export function createAdapters(rawDialect: Dialect) {
       isMssql ? `REFERENCES ${t}([${c}])` : `REFERENCES ${t}("${c}")`,
     ns: (s: string) => (isMssql ? `N'${s}'` : `'${s}'`),
     bracketSql: (sql: string) =>
-      isMssql ? sql : sql.replace(/\[/g, '"').replace(/\]/g, ''),
+      isMssql ? sql : sql.replace(/\[/g, '"').replace(/\]/g, '"'),
     createTableSql: (
       tableName: string,
       columns: string,
       ifNotExists: boolean,
     ): string => {
-      const sql = `CREATE TABLE ${tableName} (\n${columns}\n)`;
+      let cols = columns;
+      if (!isMssql) {
+        cols = cols.replace(
+          /^(\s*(?:[a-zA-Z_]\w*|\[[^\]]*\]|"[^"]*")\s+)(\w+(?:\s*\([^)]*\))?)/gim,
+          (_, prefix, type) => prefix + colType(type),
+        );
+      }
+      const sql = `CREATE TABLE ${tableName} (\n${cols}\n)`;
       if (isMssql && ifNotExists)
         return `IF OBJECT_ID('${tableName}', 'U') IS NULL\nBEGIN\n${sql}\nEND`;
       if (ifNotExists)
