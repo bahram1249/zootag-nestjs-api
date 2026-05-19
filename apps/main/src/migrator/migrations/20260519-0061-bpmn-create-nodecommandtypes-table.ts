@@ -4,9 +4,7 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0061-bpmn-create-nodecommandtypes-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { dt, nv, createTable} =
-    createDialectHelpers(sequelize);
-
+  const { dt, nv, createTable } = createDialectHelpers(sequelize);
 
   await createTable(
     'BPMNNodeCommandTypes',

@@ -4,7 +4,8 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0018-core-create-menus-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, pk, ref, nv, dt, bit, createTable } = createDialectHelpers(sequelize);
+  const { idCol, pk, ref, nv, dt, bit, createTable } =
+    createDialectHelpers(sequelize);
 
   await createTable(
     'Menus',

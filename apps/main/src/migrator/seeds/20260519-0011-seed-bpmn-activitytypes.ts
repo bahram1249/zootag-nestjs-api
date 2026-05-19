@@ -4,8 +4,7 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0011-seed-bpmn-activitytypes';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { nowVal, ns, top} = createDialectHelpers(sequelize);
-
+  const { nowVal, ns, top } = createDialectHelpers(sequelize);
 
   for (const row of [
     { id: 1, name: 'SIMPLE_STATE' },

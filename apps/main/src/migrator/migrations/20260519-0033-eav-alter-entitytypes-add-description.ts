@@ -4,7 +4,7 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0033-eav-alter-entitytypes-add-description';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { addColumn} = createDialectHelpers(sequelize);
+  const { addColumn } = createDialectHelpers(sequelize);
 
   await addColumn('EAVEntityTypes', 'description', 'NVARCHAR(MAX)', true);
 }

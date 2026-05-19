@@ -12,5 +12,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
 export async function down(sequelize: Sequelize): Promise<void> {
   const { executeRaw, quote } = createDialectHelpers(sequelize);
 
-  await executeRaw(`ALTER TABLE Attachments DROP COLUMN ${quote('bucketName')}`);
+  await executeRaw(
+    `ALTER TABLE Attachments DROP COLUMN ${quote('bucketName')}`,
+  );
 }

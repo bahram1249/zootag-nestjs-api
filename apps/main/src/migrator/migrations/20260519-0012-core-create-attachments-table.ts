@@ -4,7 +4,8 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0012-core-create-attachments-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, pk, ref, nv, dt, bit, createTable } = createDialectHelpers(sequelize);
+  const { idCol, pk, ref, nv, dt, bit, createTable } =
+    createDialectHelpers(sequelize);
 
   await createTable(
     'Attachments',
@@ -16,7 +17,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'mimetype ' + nv('64') + ' NULL',
       '[path] ' + nv('1024') + ' NULL',
       '[thumbnailPath] ' + nv('1024') + ' NULL',
-      'attachmentTypeId INT NULL ' + ref('AttachmentTypes', 'id', 'Attachments', 'attachmentTypeId'),
+      'attachmentTypeId INT NULL ' +
+        ref('AttachmentTypes', 'id', 'Attachments', 'attachmentTypeId'),
       'userId BIGINT NULL ' + ref('Users', 'id', 'Attachments', 'userId'),
       'persianDate ' + nv('32') + ' NULL',
       'persianMonth ' + nv('16') + ' NULL',

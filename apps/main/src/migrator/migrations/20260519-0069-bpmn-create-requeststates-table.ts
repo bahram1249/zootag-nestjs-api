@@ -4,19 +4,20 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0069-bpmn-create-requeststates-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, dt, ref, createTable} =
-    createDialectHelpers(sequelize);
-
+  const { idCol, dt, ref, createTable } = createDialectHelpers(sequelize);
 
   await createTable(
     'BPMNRequestStates',
     [
       'id BIGINT ' + idCol + ' NOT NULL',
-      'requestId BIGINT NOT NULL ' + ref('BPMNRequests', 'id', 'BPMNRequestStates', 'requestId'),
-      'activityId INT NOT NULL ' + ref('BPMNActivities', 'id', 'BPMNRequestStates', 'activityId'),
+      'requestId BIGINT NOT NULL ' +
+        ref('BPMNRequests', 'id', 'BPMNRequestStates', 'requestId'),
+      'activityId INT NOT NULL ' +
+        ref('BPMNActivities', 'id', 'BPMNRequestStates', 'activityId'),
       'userId BIGINT NULL ' + ref('Users', 'id', 'BPMNRequestStates', 'userId'),
       'roleId INT NULL ' + ref('Roles', 'id', 'BPMNRequestStates', 'roleId'),
-      'organizationId INT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNRequestStates', 'organizationId'),
+      'organizationId INT NULL ' +
+        ref('BPMNOrganizations', 'id', 'BPMNRequestStates', 'organizationId'),
       'returnRequestStateId BIGINT NULL',
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),

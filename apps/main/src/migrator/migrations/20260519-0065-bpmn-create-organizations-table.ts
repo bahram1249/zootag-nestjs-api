@@ -4,9 +4,8 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0065-bpmn-create-organizations-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, pk, dt, nv, bit, ref, createTable} =
+  const { idCol, pk, dt, nv, bit, ref, createTable } =
     createDialectHelpers(sequelize);
-
 
   await createTable(
     'BPMNOrganizations',
@@ -14,7 +13,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'id INT ' + idCol + ' ' + pk,
       'name ' + nv('1024') + ' NOT NULL',
       'isDeleted ' + bit() + ' NULL',
-      'parentId INT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNOrganizations', 'parentId'),
+      'parentId INT NULL ' +
+        ref('BPMNOrganizations', 'id', 'BPMNOrganizations', 'parentId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
     ].join(',\n'),

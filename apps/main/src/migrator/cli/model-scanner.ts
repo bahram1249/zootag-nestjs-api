@@ -344,12 +344,68 @@ export function convertToModelMeta(parsed: {
   };
 }
 
-function tableNameForClass(className: string, classToTable: Record<string, string>): string {
+function tableNameForClass(
+  className: string,
+  classToTable: Record<string, string>,
+): string {
   return classToTable[className] || className;
+}
+
+/**
+ * Extract className and tableName from a compiled .entity.js file.
+ * Handles patterns like:
+ *   sequelize_typescript_1.Table              (no explicit tableName)
+ *   (0, sequelize_typescript_1.Table)({})     (no explicit tableName)
+ *   (0, sequelize_typescript_1.Table)({ tableName: 'X' })  (explicit)
+ */
+function extractClassTableFromCompiledJS(
+  code: string,
+): { className: string; tableName: string } | null {
+  const classMatch = code.match(/exports\.(\w+)\s*=\s*\1\s*=\s*__decorate\(/);
+  if (!classMatch) return null;
+  const className = classMatch[1];
+
+  const tableNameMatch = code.match(
+    /Table(?:\))?\s*\(\s*\{[^}]*?\btableName\s*:\s*'([^']+)'/,
+  );
+  if (tableNameMatch) {
+    return { className, tableName: tableNameMatch[1] };
+  }
+
+  return { className, tableName: `${className}s` };
+}
+
+export function scanCompiledModelsForClassTable(
+  modelsDir: string,
+): Record<string, string> {
+  const classToTable: Record<string, string> = {};
+
+  function walk(dir: string) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (
+        entry.name.endsWith('.entity.js') &&
+        !entry.name.endsWith('.d.ts')
+      ) {
+        const code = fs.readFileSync(fullPath, 'utf-8');
+        const mapping = extractClassTableFromCompiledJS(code);
+        if (mapping) {
+          classToTable[mapping.className] = mapping.tableName;
+        }
+      }
+    }
+  }
+
+  walk(modelsDir);
+  return classToTable;
 }
 
 export function scanModelsDirectory(
   modelsDir: string,
+  extraClassToTable?: Record<string, string>,
 ): Record<string, ModelMeta> {
   const models: Record<string, ModelMeta> = {};
   const classToTable: Record<string, string> = {};
@@ -377,6 +433,11 @@ export function scanModelsDirectory(
   }
 
   walk(modelsDir);
+
+  // Merge external class-to-table mappings (e.g., from compiled @rahino/database models)
+  if (extraClassToTable) {
+    Object.assign(classToTable, extraClassToTable);
+  }
 
   // Second pass: resolve FK class names to table names
   for (const { parsed } of allParsed) {

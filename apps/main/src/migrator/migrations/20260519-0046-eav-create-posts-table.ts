@@ -4,14 +4,17 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0046-eav-create-posts-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { nv, ref, bit, text, dt, createTable} = createDialectHelpers(sequelize);
+  const { nv, ref, bit, text, dt, createTable } =
+    createDialectHelpers(sequelize);
 
   await createTable(
     'EAVPosts',
     [
       'id BIGINT PRIMARY KEY',
-      'entityTypeId INT NULL ' + ref('EAVEntityTypes', 'id', 'EAVPosts', 'entityTypeId'),
-      'publishId INT NOT NULL ' + ref('EAVBlogPublishes', 'id', 'EAVPosts', 'publishId'),
+      'entityTypeId INT NULL ' +
+        ref('EAVEntityTypes', 'id', 'EAVPosts', 'entityTypeId'),
+      'publishId INT NOT NULL ' +
+        ref('EAVBlogPublishes', 'id', 'EAVPosts', 'publishId'),
       'slug ' + nv('1024') + ' NOT NULL',
       'title ' + nv('256') + ' NOT NULL',
       'description ' + text() + ' NOT NULL',

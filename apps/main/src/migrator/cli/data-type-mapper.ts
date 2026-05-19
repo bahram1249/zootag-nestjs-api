@@ -9,7 +9,12 @@ export function mapDataType(typeStr: string): string {
   if (t === 'float' || t === 'real') return 'FLOAT';
   if (t === 'double') return 'FLOAT';
   if (t === 'decimal' || t.startsWith('decimal(')) return typeStr.toUpperCase();
-  if (t === 'string' || t === 'varchar' || t.startsWith('string(') || t.startsWith('varchar(')) {
+  if (
+    t === 'string' ||
+    t === 'varchar' ||
+    t.startsWith('string(') ||
+    t.startsWith('varchar(')
+  ) {
     const match = typeStr.match(/\((\d+)\)/);
     const len = match ? match[1] : '255';
     return `NVARCHAR(${len})`;

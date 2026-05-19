@@ -4,7 +4,6 @@ import { createCrudPermissions } from '../permission-helper';
 import { createDialectHelpers } from '../migration-helper';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-
   await createCrudPermissions(sequelize, {
     entityName: 'BlogPublishes',
     groupName: 'eav.admin.blogpublishes',

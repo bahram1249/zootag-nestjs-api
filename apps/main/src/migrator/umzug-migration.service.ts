@@ -65,7 +65,10 @@ export class UmzugMigrationService {
     for (const key of keys) {
       try {
         const row: any = await this.sequelize.query(
-          top(1, `SELECT ${quote('value')} FROM Settings WHERE ${quote('key')} = '${key}'`),
+          top(
+            1,
+            `SELECT ${quote('value')} FROM Settings WHERE ${quote('key')} = '${key}'`,
+          ),
           { raw: true, type: QueryTypes.SELECT },
         );
         if (row?.[0]) result.set(key, row[0].value);
@@ -113,7 +116,10 @@ export class UmzugMigrationService {
       this.logger.log('No seed definitions provided.');
       return;
     }
-    this.seedUmzug = await this.runConditionalPhase(definitions, 'UmzugSeedMeta');
+    this.seedUmzug = await this.runConditionalPhase(
+      definitions,
+      'UmzugSeedMeta',
+    );
   }
 
   async rollbackLastMigration(): Promise<void> {

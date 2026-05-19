@@ -49,13 +49,20 @@ export async function createCrudPermissions(
   },
 ): Promise<void> {
   const rawDialect = sequelize.getDialect();
-  const dialect = (typeof rawDialect === 'string' ? rawDialect : String(rawDialect)).trim().toLowerCase() as 'mssql' | 'postgres' | 'sqlite';
+  const dialect = (
+    typeof rawDialect === 'string' ? rawDialect : String(rawDialect)
+  )
+    .trim()
+    .toLowerCase() as 'mssql' | 'postgres' | 'sqlite';
   const a = createAdapters(dialect);
   const nowVal = a.now();
   const esc = (s: string) => s.replace(/'/g, "''");
 
   const [existingGroup]: any = await sequelize.query(
-    a.top(1, `SELECT id FROM PermissionGroups WHERE permissionGroupName = ${a.ns(esc(opts.groupName))}`),
+    a.top(
+      1,
+      `SELECT id FROM PermissionGroups WHERE permissionGroupName = ${a.ns(esc(opts.groupName))}`,
+    ),
     { raw: true, type: QueryTypes.SELECT },
   );
   if (existingGroup?.id) return;
@@ -112,7 +119,10 @@ export async function createCrudPermissions(
 
       if (opts.findParentMenu && opts.parentMenuName) {
         const [parentRow]: any = await sequelize.query(
-          a.top(1, `SELECT id FROM Menus WHERE title = ${a.ns(esc(opts.parentMenuName))}`),
+          a.top(
+            1,
+            `SELECT id FROM Menus WHERE title = ${a.ns(esc(opts.parentMenuName))}`,
+          ),
           { raw: true, type: QueryTypes.SELECT, transaction: t },
         );
         if (parentRow) parentMenuId = parentRow.id;
@@ -128,7 +138,10 @@ export async function createCrudPermissions(
 
       if (parentMenuId) {
         const [linkExists]: any = await sequelize.query(
-          a.top(1, `SELECT 1 FROM PermissionMenus WHERE permissionId = ${showMenuPermId} AND menuId = ${parentMenuId}`),
+          a.top(
+            1,
+            `SELECT 1 FROM PermissionMenus WHERE permissionId = ${showMenuPermId} AND menuId = ${parentMenuId}`,
+          ),
           { raw: true, type: QueryTypes.SELECT, transaction: t },
         );
         if (!linkExists) {
