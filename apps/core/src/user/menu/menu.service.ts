@@ -25,29 +25,23 @@ export class MenuService {
   ) {}
 
   async findAll(user: User, filter: MenuGetDto) {
-    const userRoles = await this.userRoleRepository.findAll({
-      where: {
-        userId: user.id,
-      },
-    });
+    const userRoles = await this.userRoleRepository.findAll(
+      new QueryOptionsBuilder().filter({ userId: user.id }).build(),
+    );
     const roleIds = userRoles.map((userRole) => userRole.roleId);
-    const rolePermissions = await this.rolePermissionRepository.findAll({
-      where: {
-        roleId: {
-          [Op.in]: roleIds,
-        },
-      },
-    });
+    const rolePermissions = await this.rolePermissionRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ roleId: { [Op.in]: roleIds } })
+        .build(),
+    );
     const permissionIds = rolePermissions.map(
       (rolePermission) => rolePermission.permissionId,
     );
-    const permissionMenus = await this.permissionMenuRepository.findAll({
-      where: {
-        permissionId: {
-          [Op.in]: permissionIds,
-        },
-      },
-    });
+    const permissionMenus = await this.permissionMenuRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ permissionId: { [Op.in]: permissionIds } })
+        .build(),
+    );
     const menuIds = permissionMenus.map((permissionMenu) => {
       return permissionMenu.menuId;
     });
@@ -112,47 +106,37 @@ export class MenuService {
   }
 
   async findById(user: User, id: number) {
-    const userRoles = await this.userRoleRepository.findAll({
-      where: {
-        userId: user.id,
-      },
-    });
+    const userRoles = await this.userRoleRepository.findAll(
+      new QueryOptionsBuilder().filter({ userId: user.id }).build(),
+    );
     const roleIds = userRoles.map((userRole) => userRole.roleId);
-    const rolePermissions = await this.rolePermissionRepository.findAll({
-      where: {
-        roleId: {
-          [Op.in]: roleIds,
-        },
-      },
-    });
+    const rolePermissions = await this.rolePermissionRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ roleId: { [Op.in]: roleIds } })
+        .build(),
+    );
     const permissionIds = rolePermissions.map(
       (rolePermission) => rolePermission.permissionId,
     );
-    const permissionMenus = await this.permissionMenuRepository.findAll({
-      where: {
-        permissionId: {
-          [Op.in]: permissionIds,
-        },
-      },
-    });
+    const permissionMenus = await this.permissionMenuRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ permissionId: { [Op.in]: permissionIds } })
+        .build(),
+    );
     const menuIds = permissionMenus.map((permissionMenu) => {
       return permissionMenu.menuId;
     });
 
-    const menu = await this.repository.findOne({
-      where: {
-        [Op.and]: [
-          {
-            id: id,
-          },
-          {
-            id: {
-              [Op.in]: menuIds,
-            },
-          },
-        ],
-      },
-    });
+    const menu = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          [Op.and]: [
+            { id },
+            { id: { [Op.in]: menuIds } },
+          ],
+        })
+        .build(),
+    );
     if (!menu) throw new NotFoundException();
     return {
       result: menu,

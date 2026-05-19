@@ -7,7 +7,6 @@ import {
 
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { Permission } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
@@ -29,62 +28,41 @@ export class RoleService {
   ) {}
 
   async findAll(filter: RoleGetDto) {
-    let options = QueryFilter.init();
-    // search
-    options.where = {
-      roleName: {
-        [Op.like]: filter.search,
-      },
-    };
+    let qb = new QueryOptionsBuilder().filter({
+      roleName: { [Op.like]: filter.search },
+    });
 
-    const count = await this.roleRepository.count(options);
-    options.attributes = [
-      'id',
-      'roleName',
-      'static_id',
-      'createdAt',
-      'updatedAt',
-    ];
+    const count = await this.roleRepository.count(qb.build());
 
-    // include
-    options.include = [
-      {
-        model: Permission,
-      },
-    ];
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
+    qb = qb
+      .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+      .include([{ model: Permission }])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    options = QueryFilter.order(options, filter);
     return {
-      result: await this.roleRepository.findAll(options),
+      result: await this.roleRepository.findAll(qb.build()),
       total: count,
     };
   }
 
   async findById(id: number) {
     return {
-      result: await this.roleRepository.findOne({
-        include: [
-          {
-            model: Permission,
-          },
-        ],
-        attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-        where: {
-          id,
-        },
-      }),
+      result: await this.roleRepository.findOne(
+        new QueryOptionsBuilder()
+          .include([{ model: Permission }])
+          .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+          .filter({ id })
+          .build(),
+      ),
     };
   }
 
   async create(dto: RoleDto) {
-    let role = await this.roleRepository.findOne({
-      where: {
-        roleName: dto.roleName,
-      },
-    });
+    let role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder().filter({ roleName: dto.roleName }).build(),
+    );
     if (role) throw new ForbiddenException('Credentials taken');
 
     if (
@@ -93,11 +71,9 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const permission = await this.permissionRepository.findOne({
-          where: {
-            id: permissionId,
-          },
-        });
+        const permission = await this.permissionRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: permissionId }).build(),
+        );
         if (!permission)
           throw new BadRequestException(
             `the permission id: ${permissionId} is not found!`,
@@ -114,36 +90,29 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const userRole = await this.rolePermissionRepository.create({
+        await this.rolePermissionRepository.create({
           roleId: role.id,
           permissionId: permissionId,
         });
       }
     }
 
-    role = await this.roleRepository.findOne({
-      include: [
-        {
-          model: Permission,
-        },
-      ],
-      attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-      where: {
-        id: role.id,
-      },
-    });
+    role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Permission }])
+        .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+        .filter({ id: role.id })
+        .build(),
+    );
     return {
       result: role,
     };
   }
 
   async update(roleId: number, dto: RoleDto) {
-    // logic validation
-    let role = await this.roleRepository.findOne({
-      where: {
-        id: roleId,
-      },
-    });
+    let role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: roleId }).build(),
+    );
     if (!role) throw new NotFoundException('Not Found!');
 
     if (
@@ -152,11 +121,9 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const permission = await this.permissionRepository.findOne({
-          where: {
-            id: permissionId,
-          },
-        });
+        const permission = await this.permissionRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: permissionId }).build(),
+        );
         if (!permission)
           throw new BadRequestException(
             `the permission id: ${permissionId} is not found!`,
@@ -171,7 +138,6 @@ export class RoleService {
     });
 
     if (dto.ignorePermission == null || dto.ignorePermission == false) {
-      // remove all roles of this user
       await this.rolePermissionRepository.destroy({
         where: {
           roleId: roleId,
@@ -181,7 +147,7 @@ export class RoleService {
       if (dto.permissions) {
         for (let index = 0; index < dto.permissions.length; index++) {
           const permissionId = dto.permissions[index];
-          const rolePermission = await this.rolePermissionRepository.create({
+          await this.rolePermissionRepository.create({
             roleId: roleId,
             permissionId: permissionId,
           });
@@ -189,17 +155,13 @@ export class RoleService {
       }
     }
 
-    role = await this.roleRepository.findOne({
-      include: [
-        {
-          model: Permission,
-        },
-      ],
-      attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-      where: {
-        id: roleId,
-      },
-    });
+    role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Permission }])
+        .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+        .filter({ id: roleId })
+        .build(),
+    );
     return {
       result: role,
     };

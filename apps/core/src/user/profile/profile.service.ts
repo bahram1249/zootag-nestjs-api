@@ -59,27 +59,22 @@ export class ProfileService {
   async upload(userId: bigint, file: Express.Multer.File) {
     // check attachment Type
     const attachmentTypeId = 1;
-    const attachmentType = await this.attachmentTypeRepository.findOne({
-      where: {
-        id: attachmentTypeId,
-      },
-    });
+    const attachmentType = await this.attachmentTypeRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: attachmentTypeId }).build(),
+    );
     if (!attachmentType) throw new ForbiddenException();
 
-    // find user
-    let user = await this.userRepoisitory.findOne({
-      where: {
-        id: userId,
-      },
-    });
+    let user = await this.userRepoisitory.findOne(
+      new QueryOptionsBuilder().filter({ id: userId }).build(),
+    );
     if (!user) throw new ForbiddenException();
     if (user.profilePhotoAttachmentId) {
       // remove old attachment
-      const attachmentOld = await this.repository.findOne({
-        where: {
-          id: user.profilePhotoAttachmentId,
-        },
-      });
+      const attachmentOld = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: user.profilePhotoAttachmentId })
+          .build(),
+      );
       await this.fileService.removeFilePathByCwd(attachmentOld.path);
       await this.fileService.removeFilePathByCwd(attachmentOld.thumbnailPath);
       await this.repository.update(
@@ -126,26 +121,26 @@ export class ProfileService {
     });
     user.profilePhotoAttachmentId = attachment.id;
     user = await user.save();
-    user = await this.userRepoisitory.findOne({
-      attributes: ['id', 'firstname', 'lastname'],
-      include: [
-        {
-          attributes: [
-            'id',
-            'originalFileName',
-            'fileName',
-            'mimetype',
-            'createdAt',
-            'updatedAt',
-          ],
-          model: Attachment,
-          as: 'profileAttachment',
-        },
-      ],
-      where: {
-        id: user.id,
-      },
-    });
+    user = await this.userRepoisitory.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'firstname', 'lastname'])
+        .include([
+          {
+            attributes: [
+              'id',
+              'originalFileName',
+              'fileName',
+              'mimetype',
+              'createdAt',
+              'updatedAt',
+            ],
+            model: Attachment,
+            as: 'profileAttachment',
+          },
+        ])
+        .filter({ id: user.id })
+        .build(),
+    );
     //fs.writeFileSync(attachmentSavePath, file.buffer);
     return {
       result: user,
@@ -153,19 +148,17 @@ export class ProfileService {
   }
 
   async getPhoto(res: Response, fileName: string): Promise<StreamableFile> {
-    const attachment = await this.repository.findOne({
-      where: {
-        [Op.and]: [
-          {
-            fileName: fileName,
-          },
-          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
-          {
-            attachmentTypeId: 1,
-          },
-        ],
-      },
-    });
+    const attachment = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          [Op.and]: [
+            { fileName: fileName },
+            this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
+            { attachmentTypeId: 1 },
+          ],
+        })
+        .build(),
+    );
     if (!attachment) throw new NotFoundException();
     res.set({
       'Content-Type': attachment.mimetype,

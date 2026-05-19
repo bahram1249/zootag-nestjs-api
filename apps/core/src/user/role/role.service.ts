@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { Role } from '@rahino/database';
 import { RoleGetDto } from './dto';
@@ -17,28 +16,22 @@ export class RoleService {
   ) {}
 
   async findAll(userId: bigint, filter: RoleGetDto) {
-    let options = QueryFilter.init();
-    const userRoles = await this.userRoleRepository.findAll({
-      where: {
-        userId: userId,
-      },
-    });
+    const userRoles = await this.userRoleRepository.findAll(
+      new QueryOptionsBuilder().filter({ userId }).build(),
+    );
     const roleIds = userRoles.map((userRole) => userRole.roleId);
-    // search
-    options.where = {
-      id: {
-        [Op.in]: roleIds,
-      },
-    };
 
-    const count = await this.repository.count(options);
-    options.attributes = ['id', 'roleName', 'createdAt', 'updatedAt'];
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
-    options = QueryFilter.order(options, filter);
+    let qb = new QueryOptionsBuilder().filter({ id: { [Op.in]: roleIds } });
+    const count = await this.repository.count(qb.build());
+
+    qb = qb
+      .attributes(['id', 'roleName', 'createdAt', 'updatedAt'])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
     return {
-      result: await this.repository.findAll(options),
+      result: await this.repository.findAll(qb.build()),
       total: count,
     };
   }
