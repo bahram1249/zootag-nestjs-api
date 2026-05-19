@@ -122,6 +122,7 @@ Keys are organized by domain in `apps/main/src/i18n/{lang}/`:
 | ---------- | -------------------- | ------------------------------ |
 | `core`     | `core.json`          | Core/shared messages           |
 | `bpmn`     | `bpmn.json`          | BPMN workflow messages         |
+| `eav`     | `eav.json`          | EAV (entity-attribute-value) domain messages |
 | `ecommerce`| `ecommerce.json`     | E-commerce domain messages     |
 | `guarantee`| `guarantee.json`     | Guarantee domain messages      |
 | `validation`| `validation.json`   | class-validator error messages |

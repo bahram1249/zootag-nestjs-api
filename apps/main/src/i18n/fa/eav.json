@@ -1,0 +1,14 @@
+{
+  "entity_type_not_founded": "نوع موجودیت مورد نظر یافت نشد",
+  "entity_model_id_not_founded": "مدل موجودیت مورد نظر یافت نشد",
+  "parent_entity_type_id_not_founded": "نوع موجودیت والد یافت نشد",
+  "attribute_type_id_not_founded": "نوع ویژگی یافت نشد",
+  "attribute_id_not_founded": "ویژگی یافت نشد",
+  "shipping_way_id_not_founded": "روش ارسال یافت نشد",
+  "product_photo_not_founded": "عکس محصول با شناسه {id} یافت نشد",
+  "attribute_value_not_valid": "شناسه مقدار ویژگی {value} برای ویژگی {name} معتبر نیست",
+  "attribute_required": "ویژگی {name} اجباری است",
+  "attribute_not_in_entity_type": "شناسه ویژگی {id} در نوع موجودیت انتخاب شده یافت نشد",
+  "entity_type_id_not_founded": "نوع موجودیت ارسال شده یافت نشد",
+  "attribute_id_not_founded_for_name": "ویژگی با شناسه {id} و نام {name} یافت نشد"
+}

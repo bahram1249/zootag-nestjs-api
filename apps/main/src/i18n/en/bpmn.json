@@ -7,5 +7,21 @@
   "cannot_find_any_referral_user": "cannot find any referral user",
   "activity": "activity",
   "organization": "organization",
-  "process": "process"
+  "process": "process",
+  "request_not_found": "request not found",
+  "process_not_found": "process not found",
+  "request_state_not_found": "request state not found",
+  "outbound_action_not_found": "outbound action not found",
+  "inbound_action_not_found": "inbound action not found",
+  "node_not_found": "node not found",
+  "node_condition_not_found": "node condition not found",
+  "node_command_not_found": "node command not found",
+  "condition_not_found": "condition not found",
+  "action_not_found": "action not found",
+  "activity_not_found": "activity not found",
+  "invalid_condition": "invalid condition",
+  "invalid_action": "invalid action",
+  "invalid_sql_action": "invalid sql action",
+  "return_request_state_id_null": "return requestStateId is null",
+  "parent_request_state_not_founded": "parent request state not founded"
 }

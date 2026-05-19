@@ -18,6 +18,7 @@ import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AttributeService {
@@ -32,6 +33,7 @@ export class AttributeService {
     private readonly entityTypeRepository: typeof EAVEntityType,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetAttributeDto) {
@@ -131,7 +133,7 @@ export class AttributeService {
       .build();
     const attribute = await this.repository.findOne(options);
     if (!attribute) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
     return {
       result: attribute,
@@ -145,7 +147,7 @@ export class AttributeService {
       },
     });
     if (!attributeType) {
-      throw new ForbiddenException('the given attributeTypeId not founded!');
+      throw new ForbiddenException(this.localizationService.translate('eav.attribute_type_id_not_founded'));
     }
 
     const entityType = await this.entityTypeRepository.findOne({
@@ -154,7 +156,7 @@ export class AttributeService {
       },
     });
     if (!entityType) {
-      throw new ForbiddenException('the given entityTypeId not founded!');
+      throw new ForbiddenException(this.localizationService.translate('eav.entity_type_not_founded'));
     }
 
     const mappedItem = this.mapper.map(dto, AttributeDto, EAVAttribute);
@@ -209,7 +211,7 @@ export class AttributeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
 
     const attributeType = await this.attributeTypeRepository.findOne({
@@ -218,7 +220,7 @@ export class AttributeService {
       },
     });
     if (!attributeType) {
-      throw new ForbiddenException('the given attributeTypeId not founded!');
+      throw new ForbiddenException(this.localizationService.translate('eav.attribute_type_id_not_founded'));
     }
 
     const mappedItem = this.mapper.map(dto, UpdateAttributeDto, EAVAttribute);
@@ -274,7 +276,7 @@ export class AttributeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
 
     await this.entityAttributeRepository.destroy({

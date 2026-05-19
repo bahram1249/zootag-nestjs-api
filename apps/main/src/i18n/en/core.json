@@ -24,5 +24,6 @@
   "role_cannot_be_deleted": "this role cannot be deleted",
   "role_not_exists": "the role with this given id does not exist",
   "permission_symbol_not_found": "the permission with this symbol was not found",
-  "super_admin_role_not_defined": "super admin role is not defined"
+  "super_admin_role_not_defined": "super admin role is not defined",
+  "item_deleted": "item is deleted"
 }

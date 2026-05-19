@@ -8,6 +8,7 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { CreateActivityDto, GetActivityDto, UpdateActivityDto } from './dto';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class ActivityService {
     @InjectModel(BPMNActivity)
     private readonly repository: typeof BPMNActivity,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetActivityDto) {
@@ -124,7 +126,7 @@ export class ActivityService {
         )
         .build(),
     );
-    if (!item) throw new NotFoundException('bpmn.activity_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.activity_not_found'));
     return { result: item };
   }
 
@@ -136,7 +138,7 @@ export class ActivityService {
   async update(id: number, dto: UpdateActivityDto) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException('bpmn.activity_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.activity_not_found'));
     }
     await item.update({ ...dto });
     return { result: item };
@@ -145,7 +147,7 @@ export class ActivityService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException('bpmn.activity_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.activity_not_found'));
     }
     await item.update({ isDeleted: true });
     return { ok: true };

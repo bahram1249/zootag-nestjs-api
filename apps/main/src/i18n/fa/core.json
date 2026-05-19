@@ -23,5 +23,6 @@
   "role_cannot_be_deleted": "این نقش قابل حذف نمی‌باشد",
   "role_not_exists": "نقش با شناسه ارسال شده وجود ندارد",
   "permission_symbol_not_found": "دسترسی با این نماد یافت نشد",
-  "super_admin_role_not_defined": "نقش مدیر ارشد تعریف نشده است"
+  "super_admin_role_not_defined": "نقش مدیر ارشد تعریف نشده است",
+  "item_deleted": "آیتم حذف شده است"
 }

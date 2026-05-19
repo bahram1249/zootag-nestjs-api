@@ -3,6 +3,7 @@ import { CheckConditionsDto, RunConditionDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { BPMNCondition, BPMNNodeCondition } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { ConditionTypeEnum } from '../condition-type';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ConditionLoaderService } from '../condition-loader/condition-loader.service';
@@ -15,6 +16,7 @@ export class ConditionService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly conditionLoaderService: ConditionLoaderService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async checkConditions(dto: CheckConditionsDto): Promise<boolean> {
@@ -70,7 +72,7 @@ export class ConditionService {
     dto: RunConditionDto,
   ): Promise<boolean> {
     if (!dto.condition.conditionText)
-      throw new BadRequestException('Invalid Condition');
+      throw new BadRequestException(this.localizationService.translate('bpmn.invalid_condition'));
     const text = await this.replaceConventionalParameters(dto);
     const queryResult = await this.sequelize.query(text, {
       type: QueryTypes.RAW,

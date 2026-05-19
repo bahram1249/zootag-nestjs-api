@@ -25,10 +25,9 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import { I18nContext, I18nService } from 'nestjs-i18n';
 import { ReferralTypeEnum } from '../referral-type';
 import { NodeCommandTypeEnum } from '../node-command-type';
-import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { ConditionService } from '../condition';
 import { ActionService } from '../action';
 import { RequestStateService } from '../request-state';
@@ -57,7 +56,7 @@ export class TraverseService {
     private readonly actionService: ActionService,
     private readonly historyService: HistoryService,
     private readonly nodeService: NodeService,
-    private readonly i18n: I18nService<I18nTranslations>,
+    private readonly localizationService: LocalizationService,
     private readonly seqHelp: SequelizeHelpService,
   ) {}
 
@@ -249,9 +248,7 @@ export class TraverseService {
     const strategy = traverseStrategies[dto.node.referralTypeId];
     if (!strategy)
       throw new BadRequestException(
-        this.i18n.translate('bpmn.unknown_referral_type', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('bpmn.unknown_referral_type'),
       );
     await strategy();
   }
@@ -266,9 +263,7 @@ export class TraverseService {
     // if doesn't find any user for traverse
     if (users.length === 0) {
       throw new BadRequestException(
-        this.i18n.translate('bpmn.cannot_find_any_referral_user', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
       );
     }
 
@@ -340,9 +335,7 @@ export class TraverseService {
       // cannot find any users
       if (userRoles.length === 0) {
         throw new BadRequestException(
-          this.i18n.translate('bpmn.cannot_find_any_referral_user', {
-            lang: I18nContext.current().lang,
-          }),
+          this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
         );
       }
 
@@ -424,9 +417,7 @@ export class TraverseService {
       // cannot find any users
       if (bpmnOrganizationUsers.length === 0) {
         throw new BadRequestException(
-          this.i18n.translate('bpmn.cannot_find_any_referral_user', {
-            lang: I18nContext.current().lang,
-          }),
+          this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
         );
       }
 
@@ -487,9 +478,7 @@ export class TraverseService {
   private validateRoleBasedNode(node: BPMNNode) {
     if (node.roleId == null) {
       throw new BadRequestException(
-        this.i18n.translate('bpmn.node_has_not_assigned_any_roles', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('bpmn.node_has_not_assigned_any_roles'),
       );
     }
   }
@@ -564,9 +553,7 @@ export class TraverseService {
 
     if (node.toActivity.insideProcessRunnerId == null) {
       throw new BadRequestException(
-        await this.i18n.translate('bpmn.undefined_inside_process_runner_id', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('bpmn.undefined_inside_process_runner_id'),
       );
     }
 
@@ -597,7 +584,7 @@ export class TraverseService {
 
     const returnRequestStateId = newRequestState.returnRequestStateId;
     if (returnRequestStateId == null) {
-      throw new BadRequestException('return requestStateId is null');
+      throw new BadRequestException(this.localizationService.translate('bpmn.return_request_state_id_null'));
     }
 
     const parentRequestState = await this.requestStateRepository.findOne(
@@ -609,7 +596,7 @@ export class TraverseService {
     );
 
     if (!parentRequestState) {
-      throw new BadRequestException('parent request state not founded !!!');
+      throw new BadRequestException(this.localizationService.translate('bpmn.parent_request_state_not_founded'));
     }
 
     // Remove last activity of sub process activity

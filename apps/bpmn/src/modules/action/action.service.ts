@@ -16,8 +16,7 @@ import {
   RunSQLActionDto,
 } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { I18nService } from 'nestjs-i18n';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ActionTypeEnum } from '../action-type';
@@ -32,7 +31,7 @@ export class ActionService {
     private readonly inboundActionRepository: typeof BPMNInboundAction,
     @InjectModel(BPMNOutboundAction)
     private readonly outboundActionRepository: typeof BPMNOutboundAction,
-    private readonly i18n: I18nService<I18nTranslations>,
+    private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly actionLoaderService: ActionLoaderService,
@@ -83,7 +82,7 @@ export class ActionService {
 
     if (!action) {
       throw new NotFoundException(
-        [this.i18n.t('bpmn.action'), this.i18n.t('core.not_found')].join(' '),
+        [this.localizationService.translate('bpmn.action'), this.localizationService.translate('core.not_found')].join(' '),
       );
     }
 
@@ -108,13 +107,13 @@ export class ActionService {
         }),
     };
     const executeAction = actionStrategies[action.actionTypeId];
-    if (!executeAction) throw new BadRequestException('Invalid Action');
+    if (!executeAction) throw new BadRequestException(this.localizationService.translate('bpmn.invalid_action'));
     return await executeAction();
   }
 
   private async runSQLAction(dto: RunSQLActionDto) {
     if (!dto.action.actionText)
-      throw new BadRequestException('Invalid Sql Action');
+      throw new BadRequestException(this.localizationService.translate('bpmn.invalid_sql_action'));
     const query = await this.replaceConventionalParameters(dto);
     await this.sequelize.query(query, {
       type: QueryTypes.RAW,

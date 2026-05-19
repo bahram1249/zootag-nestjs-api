@@ -7,5 +7,21 @@
   "cannot_find_any_referral_user": "کاربری برای ارجاع یافت نشد",
   "activity": "وضعیت",
   "organization": "مجموعه",
-  "process": "فرآیند"
+  "process": "فرآیند",
+  "request_not_found": "درخواست یافت نشد",
+  "process_not_found": "فرآیند یافت نشد",
+  "request_state_not_found": "وضعیت درخواست یافت نشد",
+  "outbound_action_not_found": "عملیات خروجی یافت نشد",
+  "inbound_action_not_found": "عملیات ورودی یافت نشد",
+  "node_not_found": "گره یافت نشد",
+  "node_condition_not_found": "شرط گره یافت نشد",
+  "node_command_not_found": "فرمان گره یافت نشد",
+  "condition_not_found": "شرط یافت نشد",
+  "action_not_found": "عملیات یافت نشد",
+  "activity_not_found": "وضعیت یافت نشد",
+  "invalid_condition": "شرط نامعتبر است",
+  "invalid_action": "عملیات نامعتبر است",
+  "invalid_sql_action": "عملیات SQL نامعتبر است",
+  "return_request_state_id_null": "شناسه وضعیت بازگشتی خالی است",
+  "parent_request_state_not_founded": "وضعیت درخواست والد یافت نشد"
 }

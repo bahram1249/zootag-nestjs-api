@@ -19,8 +19,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { EntityService } from '../entity/entity.service';
 import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
@@ -44,7 +43,7 @@ export class PostService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     @InjectMapper() private readonly mapper: Mapper,
-    private readonly i18n: I18nService<I18nTranslations>,
+    private readonly localizationService: LocalizationService,
     private readonly entityService: EntityService,
     private readonly minioClientService: MinioClientService,
     private readonly thumbnailService: ThumbnailService,
@@ -158,9 +157,7 @@ export class PostService {
     const blog = await this.repository.findOne(builder.build());
     if (!blog) {
       throw new NotFoundException(
-        this.i18n.t('core.not_found_id', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('core.not_found_id'),
       );
     }
 
@@ -180,9 +177,7 @@ export class PostService {
     );
     if (slugSearch) {
       throw new ForbiddenException(
-        this.i18n.t('core.the_given_slug_is_exists_before', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('core.the_given_slug_is_exists_before'),
       );
     }
 
@@ -204,7 +199,7 @@ export class PostService {
     );
     if (!entityType) {
       throw new BadRequestException(
-        `the given entityType->${dto.entityTypeId} isn't exists`,
+        this.localizationService.translate('eav.entity_type_not_founded'),
       );
     }
 
@@ -260,9 +255,7 @@ export class PostService {
     );
     if (!item) {
       throw new NotFoundException(
-        this.i18n.t('core.not_found_id', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('core.not_found_id'),
       );
     }
 
@@ -281,9 +274,7 @@ export class PostService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        this.i18n.t('core.the_given_slug_is_exists_before', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('core.the_given_slug_is_exists_before'),
       );
     }
 
@@ -305,7 +296,7 @@ export class PostService {
     );
     if (!entityType) {
       throw new BadRequestException(
-        `the given entityType->${dto.entityTypeId} isn't exists`,
+        this.localizationService.translate('eav.entity_type_not_founded'),
       );
     }
 
@@ -358,9 +349,7 @@ export class PostService {
     );
     if (!item) {
       throw new NotFoundException(
-        this.i18n.t('core.not_found_id', {
-          lang: I18nContext.current().lang,
-        }),
+        this.localizationService.translate('core.not_found_id'),
       );
     }
 
@@ -430,7 +419,7 @@ export class PostService {
       );
       if (!findAttachment) {
         throw new BadRequestException(
-          `the given product photo->${photo.id} isn't exists !`,
+          this.localizationService.translate('eav.product_photo_not_founded', { id: photo.id }),
         );
       }
     }

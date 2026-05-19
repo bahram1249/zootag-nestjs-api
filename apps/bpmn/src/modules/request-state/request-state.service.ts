@@ -6,8 +6,7 @@ import {
   BPMNRequestState,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { Transaction } from 'sequelize';
 import { InitRequestDto } from './dto';
 
@@ -18,7 +17,7 @@ export class RequestStateService {
     private readonly requestStateRepository: typeof BPMNRequestState,
     @InjectModel(BPMNActivity)
     private readonly activityRepository: typeof BPMNActivity,
-    private readonly i18n: I18nService<I18nTranslations>,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   public async initRequestState(dto: InitRequestDto) {
@@ -32,12 +31,8 @@ export class RequestStateService {
     if (!startActivity) {
       throw new BadRequestException(
         [
-          this.i18n.t('bpmn.activity', {
-            lang: I18nContext.current().lang,
-          }),
-          this.i18n.t('core.not_found', {
-            lang: I18nContext.current().lang,
-          }),
+          this.localizationService.translate('bpmn.activity'),
+          this.localizationService.translate('core.not_found'),
         ].join(' '),
       );
     }

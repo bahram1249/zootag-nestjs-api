@@ -4,12 +4,14 @@ import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { GetAttributeTypeDto } from './dto';
 import { EAVAttributeType } from '@rahino/localdatabase/models';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AttributeTypeService {
   constructor(
     @InjectModel(EAVAttributeType)
     private readonly repository: typeof EAVAttributeType,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetAttributeTypeDto) {
@@ -42,7 +44,7 @@ export class AttributeTypeService {
         id,
       },
     });
-    if (!attributeType) throw new NotFoundException();
+    if (!attributeType) throw new NotFoundException(this.localizationService.translate('core.not_found'));
     return {
       result: attributeType,
     };

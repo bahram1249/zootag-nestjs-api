@@ -6,6 +6,7 @@ import { GetActionDto } from './dto/get-action.dto';
 import { Op, Sequelize } from 'sequelize';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class ActionService {
     @InjectModel(BPMNAction)
     private readonly repository: typeof BPMNAction,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetActionDto) {
@@ -107,7 +109,7 @@ export class ActionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException('bpmn.action_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.action_not_found'));
     return { result: item };
   }
 
@@ -119,7 +121,7 @@ export class ActionService {
   async update(id: number, dto: UpdateActionDto) {
     const item = await this.repository.findByPk(id);
     if (!item || (item as any).isDeleted === true) {
-      throw new NotFoundException('bpmn.action_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.action_not_found'));
     }
     await item.update({ ...dto });
     return { result: item };
@@ -128,7 +130,7 @@ export class ActionService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || (item as any).isDeleted === true) {
-      throw new NotFoundException('bpmn.action_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.action_not_found'));
     }
     await item.update({ isDeleted: true });
     return { ok: true };

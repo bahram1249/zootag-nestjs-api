@@ -15,6 +15,22 @@ export type I18nTranslations = {
         "activity": string;
         "organization": string;
         "process": string;
+        "request_not_found": string;
+        "process_not_found": string;
+        "request_state_not_found": string;
+        "outbound_action_not_found": string;
+        "inbound_action_not_found": string;
+        "node_not_found": string;
+        "node_condition_not_found": string;
+        "node_command_not_found": string;
+        "condition_not_found": string;
+        "action_not_found": string;
+        "activity_not_found": string;
+        "invalid_condition": string;
+        "invalid_action": string;
+        "invalid_sql_action": string;
+        "return_request_state_id_null": string;
+        "parent_request_state_not_founded": string;
     };
     "core": {
         "duplicate_request": string;
@@ -43,6 +59,7 @@ export type I18nTranslations = {
         "role_not_exists": string;
         "permission_symbol_not_found": string;
         "super_admin_role_not_defined": string;
+        "item_deleted": string;
     };
     "ecommerce": {
         "the_vendor_you_choose_is_not_in_valid_area": string;
@@ -134,6 +151,20 @@ export type I18nTranslations = {
         "total_usage_limit_reached": string;
         "discount_code_not_applicable": string;
         "discount_payment_gateway_not_found": string;
+    };
+    "eav": {
+        "entity_type_not_founded": string;
+        "entity_model_id_not_founded": string;
+        "parent_entity_type_id_not_founded": string;
+        "attribute_type_id_not_founded": string;
+        "attribute_id_not_founded": string;
+        "shipping_way_id_not_founded": string;
+        "product_photo_not_founded": string;
+        "attribute_value_not_valid": string;
+        "attribute_required": string;
+        "attribute_not_in_entity_type": string;
+        "entity_type_id_not_founded": string;
+        "attribute_id_not_founded_for_name": string;
     };
     "validation": {
         "NOT_EMPTY": string;

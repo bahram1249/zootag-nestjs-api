@@ -8,6 +8,7 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GetOutboundActionDto } from './dto/get-outbound-action.dto';
 import { Op, Sequelize } from 'sequelize';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class OutboundActionService {
     @InjectModel(BPMNOutboundAction)
     private readonly repository: typeof BPMNOutboundAction,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetOutboundActionDto) {
@@ -117,7 +119,7 @@ export class OutboundActionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException('bpmn.outbound_action_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.outbound_action_not_found'));
     return { result: item };
   }
 
@@ -132,7 +134,7 @@ export class OutboundActionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException('bpmn.outbound_action_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.outbound_action_not_found'));
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
@@ -141,7 +143,7 @@ export class OutboundActionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException('bpmn.outbound_action_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.outbound_action_not_found'));
     await item.update({ isDeleted: 1 } as any);
     return { ok: true };
   }
