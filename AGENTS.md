@@ -110,6 +110,53 @@ Each feature should be a self-contained NestJS module with:
 - Apply `@UseInterceptors(JsonResponseTransformInterceptor)` at method level
 - Return objects with `{ result: data, total?: number }` structure for paginated responses
 
+### Localization / i18n
+
+The project uses `nestjs-i18n` for internationalization with Persian (`fa`) and English (`en`) support.
+
+#### Translation JSON Files
+
+Keys are organized by domain in `apps/main/src/i18n/{lang}/`:
+
+| Domain     | File                 | Usage                          |
+| ---------- | -------------------- | ------------------------------ |
+| `core`     | `core.json`          | Core/shared messages           |
+| `bpmn`     | `bpmn.json`          | BPMN workflow messages         |
+| `ecommerce`| `ecommerce.json`     | E-commerce domain messages     |
+| `guarantee`| `guarantee.json`     | Guarantee domain messages      |
+| `validation`| `validation.json`   | class-validator error messages |
+
+Both `en/` and `fa/` directories must have matching keys with translated values.
+
+#### I18nTranslations Type (`i18n.generated.ts`)
+
+- Located at `apps/main/src/generated/i18n.generated.ts`
+- **Auto-generated at app startup** by `nestjs-i18n` — do NOT create this file from scratch
+- Provides type-safe translation key paths via `PathImpl2<I18nTranslations>`
+- **AI workflow when adding translations:**
+  1. Add translation key+value to JSON files (e.g., both `en/core.json` and `fa/core.json`)
+  2. Add the corresponding type definition to `i18n.generated.ts` (it already exists and the startup regenerates it, so adding the type entry is safe and enables the build to pass with type-checking during development)
+  3. Example: add `"my_new_key": string;` under the appropriate domain in `I18nTranslations`
+
+#### LocalizationService
+
+A global service (no need to import the module in feature modules):
+
+```typescript
+import { LocalizationService } from 'apps/main/src/common/localization';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+
+// In constructor:
+constructor(private readonly localizationService: LocalizationService) {}
+
+// Usage:
+this.localizationService.translate('core.not_found');
+this.localizationService.translate('core.user');
+this.localizationService.translate('bpmn.action');
+```
+
+The `translate()` method takes a `PathImpl2<I18nTranslations>` key path and optional args (e.g., `{ name: 'foo' }`). It resolves to the current request language or falls back to `fa`.
+
 ### ORM (Sequelize)
 
 - Models in `libs/localdatabase/src/models/<domain>/`
