@@ -5,6 +5,7 @@ import { Op, Sequelize } from 'sequelize';
 import { GetMenuDto, MenuDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class MenuService {
@@ -12,6 +13,7 @@ export class MenuService {
     @InjectModel(Menu)
     private readonly menuRepository: typeof Menu,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetMenuDto) {
@@ -115,7 +117,6 @@ export class MenuService {
   }
 
   async update(menuId: number, dto: MenuDto) {
-    // logic validation
     let builder = new QueryOptionsBuilder();
     let options = builder
       .include([
@@ -133,7 +134,10 @@ export class MenuService {
       })
       .build();
     let menu = await this.menuRepository.findOne(options);
-    if (!menu) throw new NotFoundException('Not Found!');
+    if (!menu)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
 
     await this.menuRepository.update(JSON.parse(JSON.stringify(dto)), {
       where: {

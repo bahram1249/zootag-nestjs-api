@@ -1,0 +1,14 @@
+{
+  "entity_type_not_founded": "the given entityTypeId not founded",
+  "entity_model_id_not_founded": "the given entityModelId not founded",
+  "parent_entity_type_id_not_founded": "the given parentEntityTypeId not founded",
+  "attribute_type_id_not_founded": "the given attributeTypeId not founded",
+  "attribute_id_not_founded": "the given attributeId not founded",
+  "shipping_way_id_not_founded": "the given shippingWayId not founded",
+  "product_photo_not_founded": "the given product photo {id} isn't exists",
+  "attribute_value_not_valid": "the given attributeValueId {value} for attribute {name} is not valid",
+  "attribute_required": "the attribute {name} is required",
+  "attribute_not_in_entity_type": "the attributeId {id} you send it is not founded in selected type",
+  "entity_type_id_not_founded": "the given entityTypeId is not founded",
+  "attribute_id_not_founded_for_name": "the given attributeId {id} {name} is not founded"
+}

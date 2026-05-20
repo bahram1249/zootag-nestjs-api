@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { TryExecuteActionDto } from './dto';
 import { ModuleRef } from '@nestjs/core';
 import { ActionServiceImp } from '../action/interface';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class ActionLoaderService {
-  constructor(private readonly moduleRef: ModuleRef) {}
+  constructor(
+    private readonly moduleRef: ModuleRef,
+    private readonly localizationService: LocalizationService,
+  ) {}
 
   async tryExecuteAction(dto: TryExecuteActionDto): Promise<boolean> {
     const serviceInstance: ActionServiceImp =
@@ -14,7 +18,7 @@ export class ActionLoaderService {
       });
 
     if (!serviceInstance) {
-      throw new Error(`Service with token ${dto.source} not found`);
+      throw new Error(this.localizationService.translate('bpmn.action_not_found') as string);
     }
 
     // Execute the action

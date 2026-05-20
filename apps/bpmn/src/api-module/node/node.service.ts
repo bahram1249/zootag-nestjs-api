@@ -10,6 +10,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { CreateNodeDto, GetNodeDto, UpdateNodeDto } from './dto';
 import { Role, User } from '@rahino/database';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class NodeService {
     @InjectModel(BPMNNode)
     private readonly repository: typeof BPMNNode,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetNodeDto) {
@@ -141,7 +143,7 @@ export class NodeService {
         .build(),
     );
 
-    if (!item) throw new NotFoundException('bpmn.node_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
     return { result: item };
   }
 
@@ -153,7 +155,7 @@ export class NodeService {
   async update(id: number, dto: UpdateNodeDto) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException('bpmn.node_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
     }
     await item.update({ ...dto });
     return { result: item };
@@ -162,7 +164,7 @@ export class NodeService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException('bpmn.node_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
     }
     await item.update({ isDeleted: true });
     return { ok: true };

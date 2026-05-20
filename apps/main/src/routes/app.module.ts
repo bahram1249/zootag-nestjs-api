@@ -40,10 +40,12 @@ import {
 import { ModuleInitializerModule } from '../module-initializer/module-initializer.module';
 import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
 import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
+import { LocalizationModule } from '../common/localization';
 
 @Module({
   imports: [
     ModuleInitializerModule,
+    LocalizationModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.local', '.env'],
       isGlobal: true,
@@ -86,9 +88,10 @@ import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
         autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
         logging: configService.get('DB_LOG') === 'true',
         synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
-        timezone: configService.get('DB_DIALECT') === 'sqlite'
-          ? '+00:00'
-          : configService.get('DB_TIMEZONE') || 'fa-IR',
+        timezone:
+          configService.get('DB_DIALECT') === 'sqlite'
+            ? '+00:00'
+            : configService.get('DB_TIMEZONE') || 'fa-IR',
         models: [...coreModels, ...eavEntities, ...bpmnModels],
       }),
     }),

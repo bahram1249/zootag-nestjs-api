@@ -9,6 +9,7 @@ import { EAVAttribute } from '@rahino/localdatabase/models';
 import { EAVAttributeValue } from '@rahino/localdatabase/models';
 import { EAVEntityAttributeValue } from '@rahino/localdatabase/models';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class EntityAttributeValueService {
@@ -24,6 +25,7 @@ export class EntityAttributeValueService {
     @InjectModel(EAVAttribute)
     private attributeRepository: typeof EAVAttribute,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async validation(
@@ -92,7 +94,7 @@ export class EntityAttributeValueService {
       );
       if (!attributeValue) {
         throw new BadRequestException(
-          `the given attributeValueId-> ${findItem.val} for attribute ${valueBasedAttribute.attribute.name} is not valid !`,
+          this.localizationService.translate('eav.attribute_value_not_valid', { value: findItem.val, name: valueBasedAttribute.attribute.name }),
         );
       }
     }
@@ -113,7 +115,7 @@ export class EntityAttributeValueService {
       );
       if (!findItem) {
         throw new BadRequestException(
-          `the attribute: ${requiredAttribute.attributeId}:${requiredAttribute.attribute.name} is required!`,
+          this.localizationService.translate('eav.attribute_required', { name: requiredAttribute.attribute.name }),
         );
       }
     });
@@ -129,7 +131,7 @@ export class EntityAttributeValueService {
       );
       if (!findItem)
         throw new BadRequestException(
-          `the attributeId:${entityAttribute.id} you send it is not founded in selected type`,
+          this.localizationService.translate('eav.attribute_not_in_entity_type', { id: entityAttribute.id }),
         );
     });
   }
@@ -142,7 +144,7 @@ export class EntityAttributeValueService {
         .build(),
     );
     if (!entityType) {
-      throw new BadRequestException('the given entityTypeId is not founded !');
+      throw new BadRequestException(this.localizationService.translate('eav.entity_type_id_not_founded'));
     }
   }
 
@@ -161,7 +163,7 @@ export class EntityAttributeValueService {
       );
       if (!findAttribute) {
         throw new BadRequestException(
-          `the given attributeId->${findAttribute.id}:${findAttribute.name} is not founded !`,
+          this.localizationService.translate('eav.attribute_id_not_founded_for_name', { id: findAttribute.id, name: findAttribute.name }),
         );
       }
       if (

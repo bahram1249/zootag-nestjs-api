@@ -4,7 +4,7 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0013-seed-core-roles';
 export async function up(sequelize: Sequelize): Promise<void> {
   const { nowVal, ns, top, checkSetting } = createDialectHelpers(sequelize);
-  if (!await checkSetting('key', ['SITE_NAME'])) return;
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
 
   const roles = [
     { static_id: 2, roleName: 'فروشنده' },

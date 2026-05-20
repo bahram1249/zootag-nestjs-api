@@ -7,6 +7,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GetNodeConditionDto } from './dto/get-node-condition.dto';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class NodeConditionService {
   constructor(
     @InjectModel(BPMNNodeCondition)
     private readonly repository: typeof BPMNNodeCondition,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetNodeConditionDto) {
@@ -91,7 +93,7 @@ export class NodeConditionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException('bpmn.node_condition_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
     return { result: item };
   }
 
@@ -110,7 +112,7 @@ export class NodeConditionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ nodeId, conditionId }).build(),
     );
-    if (!item) throw new NotFoundException('bpmn.node_condition_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
@@ -119,7 +121,7 @@ export class NodeConditionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ nodeId, conditionId }).build(),
     );
-    if (!item) throw new NotFoundException('bpmn.node_condition_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
     await item.destroy();
     return { ok: true };
   }

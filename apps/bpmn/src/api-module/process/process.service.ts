@@ -19,6 +19,7 @@ import {
 import { GetProcessDto, CreateProcessDto, UpdateProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -43,6 +44,7 @@ export class ProcessService {
     @InjectModel(BPMNCondition)
     private readonly conditionRepo: typeof BPMNCondition,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetProcessDto) {
@@ -104,7 +106,7 @@ export class ProcessService {
         )
         .build(),
     );
-    if (!item) throw new NotFoundException('bpmn.process_not_found');
+    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.process_not_found'));
     return { result: item };
   }
 
@@ -124,7 +126,7 @@ export class ProcessService {
   async update(id: number, dto: UpdateProcessDto) {
     const item = await this.repository.findByPk(id);
     if (!item || (item as any).isDeleted === true) {
-      throw new NotFoundException('bpmn.process_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.process_not_found'));
     }
     await item.update({ ...dto });
     return { result: item };
@@ -133,7 +135,7 @@ export class ProcessService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException('bpmn.process_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.process_not_found'));
     }
     await item.update({ isDeleted: true });
     return { ok: true };
@@ -151,7 +153,7 @@ export class ProcessService {
     // verify process exists
     const proc = await this.repository.findByPk(processId);
     if (!proc || (proc as any).isDeleted === true) {
-      throw new NotFoundException('bpmn.process_not_found');
+      throw new NotFoundException(this.localizationService.translate('bpmn.process_not_found'));
     }
 
     // fetch activities in process

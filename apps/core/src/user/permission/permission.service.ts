@@ -6,6 +6,7 @@ import { User } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Permission } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class PermissionService {
@@ -16,6 +17,7 @@ export class PermissionService {
     private readonly permissionRepository: typeof Permission,
     @InjectModel(RolePermission)
     private readonly rolePermissionRepository: typeof RolePermission,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async isAccess(user: User, permissionSymbol: string) {
@@ -26,7 +28,9 @@ export class PermissionService {
     );
     if (!permission) {
       throw new NotFoundException(
-        "the permission with this symbol isn't found",
+        this.localizationService.translate(
+          'core.permission_symbol_not_found',
+        ),
       );
     }
     const userRoles = await this.userRoleRepository.findAll(

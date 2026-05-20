@@ -4,8 +4,7 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0007-seed-eav-attributetypes';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { nowVal, ns, top} = createDialectHelpers(sequelize);
-
+  const { nowVal, ns, top } = createDialectHelpers(sequelize);
 
   for (const row of [
     { id: 1, name: 'متنی' },
@@ -26,8 +25,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
 }
 
 export async function down(sequelize: Sequelize): Promise<void> {
-  await sequelize.query(
-    `DELETE FROM EAVAttributeTypes WHERE id IN (1, 2, 3)`,
-    { raw: true, type: QueryTypes.RAW },
-  );
+  await sequelize.query(`DELETE FROM EAVAttributeTypes WHERE id IN (1, 2, 3)`, {
+    raw: true,
+    type: QueryTypes.RAW,
+  });
 }

@@ -5,7 +5,7 @@ import { createDialectHelpers } from '../migration-helper';
 
 export async function up(sequelize: Sequelize): Promise<void> {
   const { checkSetting } = createDialectHelpers(sequelize);
-  if (!await checkSetting('key', ['SITE_NAME'])) return;
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
   await createCrudPermissions(sequelize, {
     entityName: 'AdminPermissionGroups',
     groupName: 'core.admin.permissiongroups',

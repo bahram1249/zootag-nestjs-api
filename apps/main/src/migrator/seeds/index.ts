@@ -136,9 +136,15 @@ interface SeedDefinition {
   condition?: Condition;
 }
 
-const m = (s: any): SeedDefinition => ({ name: s.name, up: s.up, down: s.down });
+const m = (s: any): SeedDefinition => ({
+  name: s.name,
+  up: s.up,
+  down: s.down,
+});
 const cond = (s: any, key: string, ...values: string[]): SeedDefinition => ({
-  name: s.name, up: s.up, down: s.down,
+  name: s.name,
+  up: s.up,
+  down: s.down,
   condition: { key, values },
 });
 

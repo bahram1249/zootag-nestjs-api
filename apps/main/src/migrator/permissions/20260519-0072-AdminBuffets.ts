@@ -9,7 +9,15 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'کافه و رستوران',
     menuName: 'لیست کافه و رستوران',
     menuUrl: '/discountcoffe/admin/buffets',
-    includePermissions: ['showmenu', 'getall', 'getone', 'create', 'update', 'delete', 'menu'],
+    includePermissions: [
+      'showmenu',
+      'getall',
+      'getone',
+      'create',
+      'update',
+      'delete',
+      'menu',
+    ],
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

@@ -4,7 +4,8 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0017-core-create-permissions-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, pk, ref, nv, dt, bit, createTable } = createDialectHelpers(sequelize);
+  const { idCol, pk, ref, nv, dt, bit, createTable } =
+    createDialectHelpers(sequelize);
 
   await createTable(
     'Permissions',
@@ -14,7 +15,8 @@ export async function up(sequelize: Sequelize): Promise<void> {
       'permissionName ' + nv('256') + ' NULL',
       'permissionUrl ' + nv('1024') + ' NULL',
       'permissionMethod ' + nv('10') + ' NULL',
-      'permissionGroupId INT NULL ' + ref('PermissionGroups', 'id', 'Permissions', 'permissionGroupId'),
+      'permissionGroupId INT NULL ' +
+        ref('PermissionGroups', 'id', 'Permissions', 'permissionGroupId'),
       '[visibility] ' + bit() + ' NULL',
       '[createdAt] ' + dt(),
       '[updatedAt] ' + dt(),

@@ -4,9 +4,8 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0066-bpmn-create-occurredevents-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { idCol, pk, dt, nv, bit, createTable} =
+  const { idCol, pk, dt, nv, bit, createTable } =
     createDialectHelpers(sequelize);
-
 
   await createTable(
     'BPMNOccurredEvents',

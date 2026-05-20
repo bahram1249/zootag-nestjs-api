@@ -7,13 +7,13 @@ import {
 
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { Permission } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { RoleGetDto, RoleDto } from './dto';
 import { UserRole } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class RoleService {
@@ -26,66 +26,49 @@ export class RoleService {
     private readonly rolePermissionRepository: typeof RolePermission,
     @InjectModel(UserRole)
     private readonly userRoleRepository: typeof UserRole,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: RoleGetDto) {
-    let options = QueryFilter.init();
-    // search
-    options.where = {
-      roleName: {
-        [Op.like]: filter.search,
-      },
-    };
+    let qb = new QueryOptionsBuilder().filter({
+      roleName: { [Op.like]: filter.search },
+    });
 
-    const count = await this.roleRepository.count(options);
-    options.attributes = [
-      'id',
-      'roleName',
-      'static_id',
-      'createdAt',
-      'updatedAt',
-    ];
+    const count = await this.roleRepository.count(qb.build());
 
-    // include
-    options.include = [
-      {
-        model: Permission,
-      },
-    ];
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
+    qb = qb
+      .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+      .include([{ model: Permission }])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    options = QueryFilter.order(options, filter);
     return {
-      result: await this.roleRepository.findAll(options),
+      result: await this.roleRepository.findAll(qb.build()),
       total: count,
     };
   }
 
   async findById(id: number) {
     return {
-      result: await this.roleRepository.findOne({
-        include: [
-          {
-            model: Permission,
-          },
-        ],
-        attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-        where: {
-          id,
-        },
-      }),
+      result: await this.roleRepository.findOne(
+        new QueryOptionsBuilder()
+          .include([{ model: Permission }])
+          .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+          .filter({ id })
+          .build(),
+      ),
     };
   }
 
   async create(dto: RoleDto) {
-    let role = await this.roleRepository.findOne({
-      where: {
-        roleName: dto.roleName,
-      },
-    });
-    if (role) throw new ForbiddenException('Credentials taken');
+    let role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder().filter({ roleName: dto.roleName }).build(),
+    );
+    if (role)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_taken'),
+      );
 
     if (
       dto.permissions &&
@@ -93,14 +76,14 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const permission = await this.permissionRepository.findOne({
-          where: {
-            id: permissionId,
-          },
-        });
+        const permission = await this.permissionRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: permissionId }).build(),
+        );
         if (!permission)
           throw new BadRequestException(
-            `the permission id: ${permissionId} is not found!`,
+            this.localizationService.translate('core.permission_not_found', {
+              id: permissionId,
+            }),
           );
       }
     }
@@ -114,37 +97,33 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const userRole = await this.rolePermissionRepository.create({
+        await this.rolePermissionRepository.create({
           roleId: role.id,
           permissionId: permissionId,
         });
       }
     }
 
-    role = await this.roleRepository.findOne({
-      include: [
-        {
-          model: Permission,
-        },
-      ],
-      attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-      where: {
-        id: role.id,
-      },
-    });
+    role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Permission }])
+        .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+        .filter({ id: role.id })
+        .build(),
+    );
     return {
       result: role,
     };
   }
 
   async update(roleId: number, dto: RoleDto) {
-    // logic validation
-    let role = await this.roleRepository.findOne({
-      where: {
-        id: roleId,
-      },
-    });
-    if (!role) throw new NotFoundException('Not Found!');
+    let role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: roleId }).build(),
+    );
+    if (!role)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
 
     if (
       dto.permissions &&
@@ -152,14 +131,14 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        const permission = await this.permissionRepository.findOne({
-          where: {
-            id: permissionId,
-          },
-        });
+        const permission = await this.permissionRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: permissionId }).build(),
+        );
         if (!permission)
           throw new BadRequestException(
-            `the permission id: ${permissionId} is not found!`,
+            this.localizationService.translate('core.permission_not_found', {
+              id: permissionId,
+            }),
           );
       }
     }
@@ -171,7 +150,6 @@ export class RoleService {
     });
 
     if (dto.ignorePermission == null || dto.ignorePermission == false) {
-      // remove all roles of this user
       await this.rolePermissionRepository.destroy({
         where: {
           roleId: roleId,
@@ -181,7 +159,7 @@ export class RoleService {
       if (dto.permissions) {
         for (let index = 0; index < dto.permissions.length; index++) {
           const permissionId = dto.permissions[index];
-          const rolePermission = await this.rolePermissionRepository.create({
+          await this.rolePermissionRepository.create({
             roleId: roleId,
             permissionId: permissionId,
           });
@@ -189,17 +167,13 @@ export class RoleService {
       }
     }
 
-    role = await this.roleRepository.findOne({
-      include: [
-        {
-          model: Permission,
-        },
-      ],
-      attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-      where: {
-        id: roleId,
-      },
-    });
+    role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Permission }])
+        .attributes(['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'])
+        .filter({ id: roleId })
+        .build(),
+    );
     return {
       result: role,
     };
@@ -210,10 +184,14 @@ export class RoleService {
       new QueryOptionsBuilder().filter({ id: roleId }).build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
     if (item.static_id != null) {
-      throw new BadRequestException('this role cannot be deleted!');
+      throw new BadRequestException(
+        this.localizationService.translate('core.role_cannot_be_deleted'),
+      );
     }
 
     await this.rolePermissionRepository.destroy({

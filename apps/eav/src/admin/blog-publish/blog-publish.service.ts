@@ -4,12 +4,14 @@ import { Op } from 'sequelize';
 import { GetBlogPublishDto } from './dto';
 import { EAVBlogPublish } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class BlogPublishService {
   constructor(
     @InjectModel(EAVBlogPublish)
     private readonly repository: typeof EAVBlogPublish,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetBlogPublishDto) {
@@ -39,7 +41,7 @@ export class BlogPublishService {
         })
         .build(),
     );
-    if (!blogPublish) throw new NotFoundException();
+    if (!blogPublish) throw new NotFoundException(this.localizationService.translate('core.not_found'));
     return {
       result: blogPublish,
     };

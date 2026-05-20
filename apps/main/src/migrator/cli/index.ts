@@ -1,6 +1,7 @@
 import * as path from 'path';
 import {
   scanModelsDirectory,
+  scanCompiledModelsForClassTable,
   scanModelFile,
   convertToModelMeta,
 } from './model-scanner';
@@ -57,6 +58,19 @@ function autoDetectModelsDir(): string {
   return path.resolve('libs/localdatabase/src/models');
 }
 
+function autoDetectCoreModelsDir(): string | null {
+  const candidates = [
+    'node_modules/@rahino/database/dist/models/core',
+    'node_modules/@rahino/database/dist/models',
+  ];
+  const fs = require('fs');
+  for (const c of candidates) {
+    const fullPath = path.resolve(c);
+    if (fs.existsSync(fullPath)) return fullPath;
+  }
+  return null;
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const command = args[0];
@@ -81,10 +95,20 @@ async function main(): Promise<void> {
     : path.resolve(rootDir, 'apps/main/src/migrator/migrations');
   const dryRun = args.includes('--dry-run');
 
+  // Scan external/core models for class-to-table mapping (e.g., @rahino/database)
+  const coreModelsDir = autoDetectCoreModelsDir();
+  let extraClassToTable: Record<string, string> | undefined;
+  if (coreModelsDir) {
+    extraClassToTable = scanCompiledModelsForClassTable(coreModelsDir);
+    console.log(
+      `Loaded ${Object.keys(extraClassToTable).length} external class-to-table mappings from: ${coreModelsDir}`,
+    );
+  }
+
   switch (command) {
     case 'snapshot': {
       console.log(`Scanning models in: ${modelsDir}`);
-      const models = scanModelsDirectory(modelsDir);
+      const models = scanModelsDirectory(modelsDir, extraClassToTable);
       console.log(`Found ${Object.keys(models).length} models:`);
       for (const [name, meta] of Object.entries(models)) {
         console.log(
@@ -105,7 +129,7 @@ async function main(): Promise<void> {
         process.exit(1);
       }
       console.log(`Scanning models in: ${modelsDir}`);
-      const newModels = scanModelsDirectory(modelsDir);
+      const newModels = scanModelsDirectory(modelsDir, extraClassToTable);
       const diff = diffModels(
         oldSnapshot.models as Record<string, ModelMeta>,
         newModels,
@@ -136,7 +160,7 @@ async function main(): Promise<void> {
         process.exit(1);
       }
       console.log(`Scanning models in: ${modelsDir}`);
-      const newModels = scanModelsDirectory(modelsDir);
+      const newModels = scanModelsDirectory(modelsDir, extraClassToTable);
       const diff = diffModels(
         oldSnapshot.models as Record<string, ModelMeta>,
         newModels,

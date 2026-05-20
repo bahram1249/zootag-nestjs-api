@@ -9,8 +9,7 @@ import {
 import { User } from '@rahino/database';
 import { InitRequestDto } from '@rahino/bpmn/modules/request/dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { I18nContext, I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from '../../../../main/src/generated/i18n.generated';
+import { LocalizationService } from 'apps/main/src/common/localization';
 import { Sequelize, Transaction } from 'sequelize';
 import { RequestStateService } from '../request-state';
 import { TraverseService } from '../traverse/traverse.service';
@@ -30,7 +29,7 @@ export class BPMNRequestService {
     @InjectModel(BPMNRequestState)
     private readonly requestStateRepository: typeof BPMNRequestState,
     private readonly traverseService: TraverseService,
-    private readonly i18n: I18nService<I18nTranslations>,
+    private readonly localizationService: LocalizationService,
     private readonly requestStateService: RequestStateService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -52,12 +51,8 @@ export class BPMNRequestService {
     if (!process) {
       throw new BadRequestException(
         [
-          this.i18n.t('bpmn.process', {
-            lang: I18nContext.current().lang,
-          }),
-          this.i18n.t('core.not_found', {
-            lang: I18nContext.current().lang,
-          }),
+          this.localizationService.translate('bpmn.process'),
+          this.localizationService.translate('core.not_found'),
         ].join(' '),
       );
     }
@@ -68,12 +63,8 @@ export class BPMNRequestService {
     if (!user) {
       throw new BadRequestException(
         [
-          this.i18n.t('core.user', {
-            lang: I18nContext.current().lang,
-          }),
-          this.i18n.t('core.not_found', {
-            lang: I18nContext.current().lang,
-          }),
+          this.localizationService.translate('core.user'),
+          this.localizationService.translate('core.not_found'),
         ].join(' '),
       );
     }
@@ -87,12 +78,8 @@ export class BPMNRequestService {
       if (!organization) {
         throw new BadRequestException(
           [
-            this.i18n.t('bpmn.organization', {
-              lang: I18nContext.current().lang,
-            }),
-            this.i18n.t('core.not_found', {
-              lang: I18nContext.current().lang,
-            }),
+          this.localizationService.translate('bpmn.organization'),
+          this.localizationService.translate('core.not_found'),
           ].join(''),
         );
       }

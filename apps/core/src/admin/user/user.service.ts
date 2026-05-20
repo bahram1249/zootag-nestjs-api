@@ -8,13 +8,12 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database';
 import { User } from '@rahino/database';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { ListFilter } from '@rahino/query-filter/types';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { UserDto } from './dto';
-// import { InjectMapper } from '@automapper/nestjs';
-// import { Mapper } from '@automapper/core';
 import { UserRole } from '@rahino/database';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class UserService {
@@ -24,129 +23,19 @@ export class UserService {
     @InjectModel(Role)
     private readonly roleRepository: typeof Role,
     @InjectModel(UserRole)
-    private readonly userRoleRepository: typeof UserRole, //@InjectMapper() private readonly classMapper: Mapper,
+    private readonly userRoleRepository: typeof UserRole,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: ListFilter) {
-    let options = QueryFilter.init();
+    let qb = new QueryOptionsBuilder()
+      .include([{ model: Role }])
+      .filter({ username: { [Op.like]: filter.search } });
 
-    // include
-    options.include = [
-      {
-        model: Role,
-      },
-    ];
+    const count = await this.userRepository.count(qb.build());
 
-    // search
-    options.where = {
-      username: {
-        [Op.like]: filter.search,
-      },
-    };
-
-    const count = await this.userRepository.count(options);
-    options.attributes = [
-      'id',
-      'firstname',
-      'lastname',
-      'username',
-      'email',
-      'phoneNumber',
-      'mustChangePassword',
-      'lastPasswordChangeDate',
-      'profilePhotoAttachmentId',
-      'static_id',
-      'birthDate',
-      'createdAt',
-      'updatedAt',
-    ];
-    options = QueryFilter.toFindAndCountOptions(options, filter);
-    return {
-      result: await this.userRepository.findAll(options),
-      total: count,
-    };
-  }
-
-  async findById(id: bigint) {
-    return {
-      result: await this.userRepository.findOne({
-        include: [
-          {
-            model: Role,
-          },
-        ],
-        attributes: [
-          'id',
-          'firstname',
-          'lastname',
-          'username',
-          'email',
-          'phoneNumber',
-          'mustChangePassword',
-          'lastPasswordChangeDate',
-          'profilePhotoAttachmentId',
-          'static_id',
-          'birthDate',
-          'createdAt',
-          'updatedAt',
-        ],
-        where: {
-          id,
-        },
-      }),
-    };
-  }
-
-  async create(dto: UserDto) {
-    let user = await this.userRepository.findOne({
-      where: {
-        username: dto.username,
-      },
-    });
-    if (user) throw new ForbiddenException('Credentials taken');
-    if (dto.email) {
-      user = await this.userRepository.findOne({
-        where: {
-          email: dto.email,
-        },
-      });
-      if (user) throw new ForbiddenException('Credentials taken');
-    }
-
-    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
-      for (let index = 0; index < dto.roles.length; index++) {
-        const roleId = dto.roles[index];
-        const role = await this.roleRepository.findOne({
-          where: {
-            id: roleId,
-          },
-        });
-        if (!role)
-          throw new BadRequestException(`the role id: ${roleId} is not found!`);
-      }
-    }
-
-    const userObj = JSON.parse(JSON.stringify(dto));
-    userObj.password = dto.username;
-    user = await this.userRepository.create(userObj);
-
-    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
-      for (let index = 0; index < dto.roles.length; index++) {
-        const roleId = dto.roles[index];
-        const userRole = await this.userRoleRepository.create({
-          userId: user.id,
-          roleId: roleId,
-        });
-      }
-    }
-
-    user = await this.userRepository.findOne({
-      include: [
-        {
-          model: Role,
-        },
-      ],
-      attributes: [
+    qb = qb
+      .attributes([
         'id',
         'firstname',
         'lastname',
@@ -160,43 +49,147 @@ export class UserService {
         'birthDate',
         'createdAt',
         'updatedAt',
-      ],
-      where: {
-        id: user.id,
-      },
-    });
+      ])
+      .limit(filter.limit)
+      .offset(filter.offset)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
+    return {
+      result: await this.userRepository.findAll(qb.build()),
+      total: count,
+    };
+  }
+
+  async findById(id: bigint) {
+    return {
+      result: await this.userRepository.findOne(
+        new QueryOptionsBuilder()
+          .include([{ model: Role }])
+          .attributes([
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'email',
+            'phoneNumber',
+            'mustChangePassword',
+            'lastPasswordChangeDate',
+            'profilePhotoAttachmentId',
+            'static_id',
+            'birthDate',
+            'createdAt',
+            'updatedAt',
+          ])
+          .filter({ id })
+          .build(),
+      ),
+    };
+  }
+
+  async create(dto: UserDto) {
+    let user = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ username: dto.username }).build(),
+    );
+    if (user)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_taken'),
+      );
+    if (dto.email) {
+      user = await this.userRepository.findOne(
+        new QueryOptionsBuilder().filter({ email: dto.email }).build(),
+      );
+      if (user)
+        throw new ForbiddenException(
+          this.localizationService.translate('core.credentials_taken'),
+        );
+    }
+
+    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
+      for (let index = 0; index < dto.roles.length; index++) {
+        const roleId = dto.roles[index];
+        const role = await this.roleRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: roleId }).build(),
+        );
+        if (!role)
+          throw new BadRequestException(
+            this.localizationService.translate('core.role_not_found', {
+              id: roleId,
+            }),
+          );
+      }
+    }
+
+    const userObj = JSON.parse(JSON.stringify(dto));
+    userObj.password = dto.username;
+    user = await this.userRepository.create(userObj);
+
+    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
+      for (let index = 0; index < dto.roles.length; index++) {
+        const roleId = dto.roles[index];
+        await this.userRoleRepository.create({
+          userId: user.id,
+          roleId: roleId,
+        });
+      }
+    }
+
+    user = await this.userRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Role }])
+        .attributes([
+          'id',
+          'firstname',
+          'lastname',
+          'username',
+          'email',
+          'phoneNumber',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'profilePhotoAttachmentId',
+          'static_id',
+          'birthDate',
+          'createdAt',
+          'updatedAt',
+        ])
+        .filter({ id: user.id })
+        .build(),
+    );
     return {
       result: user,
     };
   }
 
   async update(userId: bigint, dto: UserDto) {
-    // logic validation
-    let user = await this.userRepository.findOne({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new NotFoundException('Not Found!');
-    user = await this.userRepository.findOne({
-      where: {
-        username: dto.username,
-      },
-    });
+    let user = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: userId }).build(),
+    );
+    if (!user)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
+    user = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ username: dto.username }).build(),
+    );
     if (user != null && user.id != userId) {
-      throw new BadRequestException('this username was given by another user!');
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'core.username_given_to_another_user',
+        ),
+      );
     }
 
     if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
       for (let index = 0; index < dto.roles.length; index++) {
         const roleId = dto.roles[index];
-        const role = await this.roleRepository.findOne({
-          where: {
-            id: roleId,
-          },
-        });
+        const role = await this.roleRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: roleId }).build(),
+        );
         if (!role)
-          throw new BadRequestException(`the role id: ${roleId} is not found!`);
+          throw new BadRequestException(
+            this.localizationService.translate('core.role_not_found', {
+              id: roleId,
+            }),
+          );
       }
     }
 
@@ -207,7 +200,6 @@ export class UserService {
     });
 
     if (dto.ignoreRole == null || dto.ignoreRole == false) {
-      // remove all roles of this user
       await this.userRoleRepository.destroy({
         where: {
           userId: userId,
@@ -217,7 +209,7 @@ export class UserService {
       if (dto.roles) {
         for (let index = 0; index < dto.roles.length; index++) {
           const roleId = dto.roles[index];
-          const userRole = await this.userRoleRepository.create({
+          await this.userRoleRepository.create({
             userId: user.id,
             roleId: roleId,
           });
@@ -225,30 +217,27 @@ export class UserService {
       }
     }
 
-    user = await this.userRepository.findOne({
-      include: [
-        {
-          model: Role,
-        },
-      ],
-      attributes: [
-        'id',
-        'firstname',
-        'lastname',
-        'username',
-        'email',
-        'phoneNumber',
-        'mustChangePassword',
-        'lastPasswordChangeDate',
-        'profilePhotoAttachmentId',
-        'static_id',
-        'createdAt',
-        'updatedAt',
-      ],
-      where: {
-        id: userId,
-      },
-    });
+    user = await this.userRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([{ model: Role }])
+        .attributes([
+          'id',
+          'firstname',
+          'lastname',
+          'username',
+          'email',
+          'phoneNumber',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'profilePhotoAttachmentId',
+          'static_id',
+          'birthDate',
+          'createdAt',
+          'updatedAt',
+        ])
+        .filter({ id: userId })
+        .build(),
+    );
     return {
       result: user,
     };

@@ -5,12 +5,14 @@ import { User } from '@rahino/database';
 import { UserRole } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Transaction } from 'sequelize';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class UserRoleService {
   constructor(
     @InjectModel(UserRole) private readonly userRoleRepository: typeof UserRole,
     @InjectModel(Role) private readonly roleRepository: typeof Role,
+    private readonly localizationService: LocalizationService,
   ) {}
   async insertRoleToUser(role: Role, user: User, transaction?: Transaction) {
     const findRole = await this.roleRepository.findOne(
@@ -21,7 +23,7 @@ export class UserRoleService {
     );
     if (!findRole) {
       throw new BadRequestException(
-        'the role with this given id is not exists',
+        this.localizationService.translate('core.role_not_exists'),
       );
     }
     const findUserRole = await this.userRoleRepository.findOne(
@@ -32,7 +34,7 @@ export class UserRoleService {
         .build(),
     );
     if (!findUserRole) {
-      const userRole = await this.userRoleRepository.create(
+      await this.userRoleRepository.create(
         {
           userId: user.id,
           roleId: role.id,

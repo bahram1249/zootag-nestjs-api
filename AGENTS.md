@@ -96,7 +96,417 @@ Each feature should be a self-contained NestJS module with:
 - `*.service.ts` - Main service
 - `*.module.ts` - Module file
 - `dto/` subdirectory - Data Transfer Objects
+- `mapper/` subdirectory - AutoMapper profiles
+- `file-options/` subdirectory - Multer file upload config
 - `processor/` subdirectory - BullMQ processors (if needed)
+
+#### Module File (`*.module.ts`)
+
+Import models via `SequelizeModule.forFeature()`, register controllers and providers:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { SomeModel } from '@rahino/localdatabase/models';
+import { SomeController } from './some.controller';
+import { SomeService } from './some.service';
+
+@Module({
+  imports: [SequelizeModule.forFeature([User, Permission, SomeModel])],
+  controllers: [SomeController],
+  providers: [SomeService],
+})
+export class SomeModule {}
+```
+
+#### Controller (`*.controller.ts`)
+
+Use class-level guards and interceptor, method-level permissions:
+
+```typescript
+import {
+  Body, Controller, Delete, Get, HttpCode, HttpStatus,
+  Param, Post, Put, Query, UseGuards, UseInterceptors,
+} from '@nestjs/common';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
+import { SomeService } from './some.service';
+import { SomeDto, SomeFilterDto } from './dto';
+
+@ApiTags('Some-Feature')
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/some/feature', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {
+  constructor(private readonly service: SomeService) {}
+
+  @ApiOperation({ description: 'show all items' })
+  @CheckPermission({ permissionSymbol: 'some.feature.getall' })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() filter: SomeFilterDto) {
+    return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'show item by given id' })
+  @CheckPermission({ permissionSymbol: 'some.feature.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findById(@Param('id') id: number) {
+    return await this.service.findById(id);
+  }
+
+  @ApiOperation({ description: 'create item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: SomeDto) {
+    return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: number, @Body() dto: SomeDto) {
+    return await this.service.update(id, dto);
+  }
+
+  @ApiOperation({ description: 'delete item' })
+  @CheckPermission({ permissionSymbol: 'some.feature.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') id: number) {
+    return await this.service.deleteById(id);
+  }
+}
+```
+
+#### Service (`*.service.ts`)
+
+Inject models via `@InjectModel()`, connection via `@InjectConnection()`, use `QueryOptionsBuilder`, return `{ result, total }`:
+
+```typescript
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
+import { SomeModel } from '@rahino/localdatabase/models';
+import { SomeFilterDto, SomeDto } from './dto';
+
+@Injectable()
+export class SomeService {
+  constructor(
+    @InjectModel(SomeModel)
+    private readonly repository: typeof SomeModel,
+    private readonly localizationService: LocalizationService,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+  ) {}
+
+  async findAll(filter: SomeFilterDto) {
+    let qb = new QueryOptionsBuilder()
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        name: { [Op.like]: filter.search },
+      });
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .attributes(['id', 'name'])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = await this.repository.findAll(qb.build());
+    return { result, total };
+  }
+
+  async findById(id: number) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    return { result: item };
+  }
+
+  async create(dto: SomeDto) {
+    const item = await this.repository.create({ ...dto });
+    return { result: item };
+  }
+
+  async update(id: number, dto: SomeDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    await item.update({ ...dto });
+    return { result: item };
+  }
+
+  async deleteById(id: number) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    await item.destroy();
+    return { result: item };
+  }
+}
+```
+
+#### DTOs (`dto/`)
+
+Use `class-validator` decorators for validation, `@ApiProperty()` for Swagger docs, `@AutoMap()` for mapping:
+
+```typescript
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { AutoMap } from 'automapper-classes';
+
+export class SomeDto {
+  @AutoMap()
+  @MinLength(3)
+  @MaxLength(256)
+  @IsNotEmpty()
+  @ApiProperty({ required: true, type: String, description: 'name' })
+  name: string;
+
+  @AutoMap()
+  @IsOptional()
+  @ApiProperty({ required: false, type: String, description: 'description' })
+  description?: string;
+}
+```
+
+**Filter DTO** — combine `ListFilter` with domain-specific filters via `IntersectionType`:
+
+```typescript
+import { IntersectionType } from '@nestjs/swagger';
+import { ListFilter, IgnorePagingFilter } from '@rahino/query-filter/types';
+
+export class SomeFilterDto extends IntersectionType(
+  ListFilter,
+  IgnorePagingFilter,
+) {}
+```
+
+#### Response Interceptor (`JsonResponseTransformInterceptor`)
+
+Located at `@rahino/response/interceptor`. Wraps all controller responses into a standard envelope:
+
+```typescript
+{
+  statusCode: number,
+  reqId: string,
+  message: string,       // from data.message or 'Success'
+  result: any,           // from data.result or falls back to data
+  timestamp: string,
+  path: string,
+  total: number,         // from data.total or 0
+}
+```
+
+Apply at **class level** (applies to all methods) or **method level** (single endpoint):
+
+```typescript
+// Class level (applies to all methods in controller):
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {}
+
+// Method level (single endpoint):
+@UseInterceptors(JsonResponseTransformInterceptor)
+@Post('/')
+async create() {}
+```
+
+Services must return objects with `{ result, total? }` structure for paginated responses.
+
+#### Permission Guard
+
+Apply `JwtGuard` and `PermissionGuard` at the class level, then `@CheckPermission` on each method:
+
+```typescript
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/some/feature', version: ['1'] })
+export class SomeController {
+  @CheckPermission({ permissionSymbol: 'some.feature.getall' })
+  @Get('/')
+  async findAll() { }
+}
+```
+
+Permission symbols follow the pattern: `{domain}.{group}.{action}` (e.g., `eav.admin.attributetypes.getall`, `core.admin.users.create`).
+
+#### Permission Migration Files
+
+For each new module, create a permission seeding file in `apps/main/src/migrator/permissions/`:
+
+```typescript
+import { Sequelize } from 'sequelize';
+import { createCrudPermissions } from '../permission-helper';
+import { createDialectHelpers } from '../migration-helper';
+
+export const name = 'YYYYMMDD-NNNN-SomeFeature';
+
+export async function up(sequelize: Sequelize): Promise<void> {
+  const { checkSetting } = createDialectHelpers(sequelize);
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
+  await createCrudPermissions(sequelize, {
+    entityName: 'SomeFeature',       // CamelCase entity name
+    groupName: 'some.feature',        // Dot-notation group (used in permissionSymbol)
+    parentMenuName: 'Parent Menu',    // Parent menu in sidebar
+    menuName: 'Feature Name',         // Menu item name
+    menuUrl: '/some/feature',         // Frontend route
+  });
+}
+
+export async function down(_sequelize: Sequelize): Promise<void> {}
+```
+
+Then register it in `apps/main/src/migrator/permissions/index.ts`.
+
+The `createCrudPermissions` helper (from `../permission-helper`) automatically creates:
+- A `PermissionGroup` with the group name
+- CRUD permissions: `showmenu`, `getall`, `getone`, `create`, `update`, `delete`
+- A parent menu item (or links to existing via `findParentMenu: true`)
+- A sub-menu item
+- `PermissionMenu` links
+- `RolePermission` assignments for the super admin role
+
+Override the default permission set with `includePermissions`:
+
+```typescript
+await createCrudPermissions(sequelize, {
+  entityName: 'SomeFeature',
+  groupName: 'some.feature',
+  findParentMenu: true,
+  parentMenuName: 'Parent',
+  menuName: 'Feature',
+  menuUrl: '/some/feature',
+  includePermissions: ['showmenu', 'getall', 'getone', 'create', 'update'],
+  // excludes 'delete'
+});
+```
+
+#### Mapper (`automapper-classes`)
+
+Use `@AutoMap()` on entity model fields and DTO fields for automatic mapping:
+
+```typescript
+// Entity model
+@Table({ tableName: 'SomeModels' })
+export class SomeModel extends Model {
+  @AutoMap()
+  @Column({ type: DataType.STRING })
+  name: string;
+}
+
+// DTO
+export class SomeDto {
+  @AutoMap()
+  @IsString()
+  name: string;
+}
+
+// In service — inject Mapper and use it:
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
+
+@Injectable()
+export class SomeService {
+  constructor(
+    @InjectMapper() private readonly mapper: Mapper,
+    @InjectModel(SomeModel) private readonly repository: typeof SomeModel,
+  ) {}
+
+  async create(dto: SomeDto) {
+    const mapped = this.mapper.map(dto, SomeDto, SomeModel);
+    const item = await this.repository.create({ ...mapped });
+    return { result: item };
+  }
+}
+```
+
+Create mapper profiles in a `mapper/` subdirectory when complex mapping logic is needed (though `@AutoMap()` decorators handle most cases automatically).
+
+#### File Upload with Multer
+
+Create a `file-options/` directory with an options file:
+
+```typescript
+// file-options/image.options.ts
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
+import { v4 as uuidv4 } from 'uuid';
+import * as multer from 'multer';
+import * as fs from 'fs';
+import * as path from 'path';
+
+export function imageOptions(): MulterOptions {
+  return {
+    storage: multer.diskStorage({
+      destination: function (req, file, cb) {
+        fs.mkdirSync(path.join(process.cwd(), '/tmp/attachmentFile'), {
+          recursive: true,
+        });
+        cb(null, path.join(process.cwd(), '/tmp/attachmentFile'));
+      },
+      filename: function (req, file, cb) {
+        cb(null, uuidv4() + path.extname(file.originalname));
+      },
+    }),
+  };
+}
+```
+
+In the controller, apply `FileInterceptor` with `ParseFilePipe` or `ParseFilePipeBuilder`:
+
+```typescript
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options/image.options';
+
+@UseInterceptors(FileInterceptor('file', imageOptions()))
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: { file: { type: 'string', format: 'binary' } },
+  },
+})
+@Post('/image')
+@HttpCode(HttpStatus.OK)
+async uploadImage(
+  @GetUser() user: User,
+  @UploadedFile(
+    new ParseFilePipeBuilder()
+      .addFileTypeValidator({ fileType: /(jpg|jpeg|png)/ })
+      .addMaxSizeValidator({ maxSize: 2097152 })
+      .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+  )
+  file: Express.Multer.File,
+) {
+  return await this.service.uploadImage(user, file);
+}
+```
+
+Or use `ParseFilePipe` directly for more control:
+
+```typescript
+@UploadedFile(
+  new ParseFilePipe({
+    validators: [new MaxFileSizeValidator({ maxSize: 2097152 })],
+    fileIsRequired: false,
+    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  }),
+)
+file?: Express.Multer.File,
+```
 
 ### Authentication & Authorization
 
@@ -110,15 +520,231 @@ Each feature should be a self-contained NestJS module with:
 - Apply `@UseInterceptors(JsonResponseTransformInterceptor)` at method level
 - Return objects with `{ result: data, total?: number }` structure for paginated responses
 
+### Localization / i18n
+
+The project uses `nestjs-i18n` for internationalization with Persian (`fa`) and English (`en`) support.
+
+#### Translation JSON Files
+
+Keys are organized by domain in `apps/main/src/i18n/{lang}/`:
+
+| Domain     | File                 | Usage                          |
+| ---------- | -------------------- | ------------------------------ |
+| `core`     | `core.json`          | Core/shared messages           |
+| `bpmn`     | `bpmn.json`          | BPMN workflow messages         |
+| `eav`     | `eav.json`          | EAV (entity-attribute-value) domain messages |
+| `ecommerce`| `ecommerce.json`     | E-commerce domain messages     |
+| `guarantee`| `guarantee.json`     | Guarantee domain messages      |
+| `validation`| `validation.json`   | class-validator error messages |
+
+Both `en/` and `fa/` directories must have matching keys with translated values.
+
+#### I18nTranslations Type (`i18n.generated.ts`)
+
+- Located at `apps/main/src/generated/i18n.generated.ts`
+- **Auto-generated at app startup** by `nestjs-i18n` — do NOT create this file from scratch
+- Provides type-safe translation key paths via `PathImpl2<I18nTranslations>`
+- **AI workflow when adding translations:**
+  1. Add translation key+value to JSON files (e.g., both `en/core.json` and `fa/core.json`)
+  2. Add the corresponding type definition to `i18n.generated.ts` (it already exists and the startup regenerates it, so adding the type entry is safe and enables the build to pass with type-checking during development)
+  3. Example: add `"my_new_key": string;` under the appropriate domain in `I18nTranslations`
+
+#### LocalizationService
+
+A global service (no need to import the module in feature modules):
+
+```typescript
+import { LocalizationService } from 'apps/main/src/common/localization';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+
+// In constructor:
+constructor(private readonly localizationService: LocalizationService) {}
+
+// Usage:
+this.localizationService.translate('core.not_found');
+this.localizationService.translate('core.user');
+this.localizationService.translate('bpmn.action');
+```
+
+The `translate()` method takes a `PathImpl2<I18nTranslations>` key path and optional args (e.g., `{ name: 'foo' }`). It resolves to the current request language or falls back to `fa`.
+
 ### ORM (Sequelize)
 
 - Models in `libs/localdatabase/src/models/<domain>/`
 - Each model directory must have an `index.ts` exporting all models
-- Use `QueryOptionsBuilder` from `@rahino/query-filter` for queries
-- Re-initialize builder for separate queries (no clone method)
-- Filter out inactive vendors in product queries: `isnull(ECVendor.isActive, 1) = 1`
+- Use `QueryOptionsBuilder` from `@rahino/query-filter/sequelize-query-builder` for all queries
+- Use `QueryOptionsBuilder` via `import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder'`
 - Complex query logic should be encapsulated in query builder services (e.g., `LogisticSaleQueryBuilderService`)
+- For paginated data, use `count()` then `findAll()` (not `findAndCountAll`)
 - For paginated data, total count with `group` is the length of the resulting array
+
+#### QueryOptionsBuilder Methods
+
+| Method                           | Description                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| `.filter(where)`                 | Adds condition to `where[Op.and]`                                                     |
+| `.filterIf(cond, where)`         | Conditionally adds filter (only when `cond` is truthy)                                |
+| `.include(include)`              | Sets or replaces `include` array                                                      |
+| `.thenInclude(include)`          | Appends a single include to existing array                                            |
+| `.thenIncludeIf(cond, include)`  | Conditionally appends include                                                         |
+| `.attributes(attrs)`             | Select specific columns                                                               |
+| `.order({ orderBy, sortOrder })` | Add ordering (uses `OrderCol` object with `orderBy` string and `sortOrder` direction) |
+| `.limit(count, ignorePaging?)`   | Set LIMIT (skipped if `ignorePaging` is true)                                         |
+| `.offset(count, ignorePaging?)`  | Set OFFSET (skipped if `ignorePaging` is true)                                        |
+| `.transaction(tx)`               | Associate a Sequelize Transaction                                                     |
+| `.lock(lock)`                    | Set row lock (e.g., `LOCK.UPDATE`)                                                    |
+| `.group(group)`                  | Add GROUP BY clause                                                                   |
+| `.subQuery(flag)`                | Toggle subQuery flag                                                                  |
+| `.raw(flag)`                     | Toggle raw query mode                                                                 |
+| `.nest(flag)`                    | Toggle nest flag                                                                      |
+| `.replacements(replacements)`    | Set bind replacements for raw queries                                                 |
+| `.build()`                       | Returns `FindAndCountOptions` to pass to sequelize                                    |
+
+#### Basic Query Patterns
+
+**Simple filter — `findOne` by ID:**
+
+```typescript
+const item = await this.repository.findOne(
+  new QueryOptionsBuilder().filter({ id: someId }).build(),
+);
+```
+
+**Multiple filters chained:**
+
+```typescript
+const userRole = await this.userRoleRepository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ userId: user.id })
+    .filter({ roleId: role.id })
+    .build(),
+);
+```
+
+**Existence / uniqueness check with `[Op.ne]`:**
+
+```typescript
+const existing = await this.repository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ slug: dto.slug })
+    .filter({ id: { [Op.ne]: id } }) // exclude current record
+    .build(),
+);
+```
+
+**`[Op.or]` across columns:**
+
+```typescript
+new QueryOptionsBuilder().filter({
+  [Op.or]: [
+    { title: { [Op.like]: filter.search } },
+    { slug: { [Op.like]: filter.search } },
+  ],
+});
+```
+
+#### Paginated Listing Pattern
+
+Always use `count()` then `findAll()` (not `findAndCountAll`). Reuse the builder variable:
+
+```typescript
+let qb = new QueryOptionsBuilder()
+  .filterIf(!!filter.userId, { userId: filter.userId })
+  .filterIf(!!filter.processId, { processId: filter.processId });
+
+const total = await this.repository.count(qb.build());
+
+qb = qb
+  .attributes(['id', 'name', 'title'])
+  .include([
+    { model: RelatedModel, as: 'relation', attributes: ['id', 'name'] },
+  ])
+  .limit(filter.limit, filter.ignorePaging)
+  .offset(filter.offset, filter.ignorePaging)
+  .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
+const result = await this.repository.findAll(qb.build());
+return { result, total };
+```
+
+Key points:
+
+- Call `.build()` separately for `count` (filters only) and `findAll` (filters + pagination + includes)
+- The builder supports method chaining; reassign the variable to extend it
+- `filterIf` is the idiomatic way for optional parameters (use `!!` coercion)
+
+#### Eager Loading (Includes)
+
+**Single level includes:**
+
+```typescript
+new QueryOptionsBuilder().include([
+  { model: User, as: 'user', attributes: ['id', 'username', 'firstname'] },
+  { model: BPMNPROCESS, as: 'process', attributes: ['id', 'name'] },
+]);
+```
+
+**Nested includes (through related models):**
+
+```typescript
+new QueryOptionsBuilder().include([
+  {
+    model: BPMNNodeCommand,
+    as: 'nodeCommands',
+    required: true,
+    where: { nodeCommandTypeId: someTypeId },
+    include: [
+      {
+        model: BPMNNodeCommandType,
+        as: 'nodeCommandType',
+      },
+    ],
+  },
+]);
+```
+
+**Many-to-many with junction table:**
+
+```typescript
+new QueryOptionsBuilder().include([
+  {
+    model: Attachment,
+    as: 'attachments',
+    required: false,
+    through: { attributes: [] }, // exclude junction table columns
+  },
+]);
+```
+
+- Use `required: false` for LEFT JOIN (optional relations)
+- Use `required: true` (default) for INNER JOIN
+
+#### Transaction Usage
+
+Pass a transaction to queries when inside a managed transaction:
+
+```typescript
+await this.repository.findOne(
+  new QueryOptionsBuilder()
+    .filter({ id: someId })
+    .transaction(transaction)
+    .build(),
+);
+```
+
+#### Soft Delete Helper
+
+Many EAV/BPMN entities use a soft-delete pattern with an `isDeleted` column. Use the `seqHelp.whereIsNullColumnEqualToZero()` helper:
+
+```typescript
+.filter(this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0))
+```
+
+This works for both the main model and included models (use prefixed name like `'attributeValues.isDeleted'`).
+
+#### Re-initialize Builder for Separate Queries
+
+The builder mutates its internal state. Do not reuse the same builder instance for two independent queries — create a new `QueryOptionsBuilder()` instead.
 
 ### Background Jobs (BullMQ)
 
@@ -128,7 +754,7 @@ Each feature should be a self-contained NestJS module with:
 - Delete temporary files after processing
 - Job dispatch: When entity status is updated (e.g., vendor's `isActive` flag), dispatch background job via BullMQ to update related entities (e.g., product inventories)
 - Temporary file paths should be passed directly to job payload; file must be deleted after processing
-- Job structure (guarantee app): New jobs have own directory under `apps/guarantee/src/job/` with `constants` and `processor` subdirectories
+- Job structure (project app): New jobs have own directory under `apps/project_name/src/job/` with `constants` and `processor` subdirectories
 
 ### DTOs
 
@@ -141,16 +767,85 @@ Each feature should be a self-contained NestJS module with:
 
 ### Database Migrations
 
-- **Core Files (`apps/main/src/sql/Core/`)**: `Core-V1.sql`, `Core-Data.sql`, `Core-Permission.sql`
-- SQL migrations in `apps/main/src/sql/`
-- Append new entries to end of file with two empty lines after
-- Do not hardcode primary keys in data inserts
-- **Status tables (e.g., GSIrangsImportStatus)**: Must use static non-identity primary key (`id INT PRIMARY KEY`) with manual default values inserted in migration script
-- Corresponding Enum must be created in the code for status tables
+The project uses a custom code-generation migrator at `apps/main/src/migrator/`. Migrations are model-first: the CLI tool scans `*.entity.ts` files, diffs against a snapshot, and generates TypeScript migration files.
+
+#### CLI Commands
+
+```bash
+# Generate migration files (runs snapshot + generate in one step)
+npm run gen:migration
+
+# Save current model state to models-snapshot.json
+npm run gen:migration:snapshot
+
+# Preview differences between snapshot and current models
+npm run gen:migration:diff
+```
+
+#### Workflow (when adding/changing entities)
+
+1. **Edit or create** `*.entity.ts` files in `libs/localdatabase/src/models/<domain>/`
+2. **Generate migrations**: Run `npm run gen:migration` (combines snapshot + generate)
+   - Or step-by-step: `gen:migration:snapshot` → `gen:migration:diff` (verify) → `npm run gen:migration` (which does snapshot + generate when no snapshot changes)
+
+#### Migration File Conventions
+
+- **Naming**: `{YYYYMMDD}-{NNNN}-{action}-{tablename}[-{detail}].ts`
+  - e.g., `20260519-0001-core-create-settings-table.ts`
+  - e.g., `20260519-0008-core-alter-users-add-birthdate.ts`
+- **Actions**: `create` (CREATE TABLE), `alter` with `add-{col}`, `modify-{col}`, `drop-{col}`
+- **Sequence**: 4-digit zero-padded number incrementing from the highest existing number
+
+#### Migration File Format
+
+Each migration exports `name`, `up()`, and `down()`:
+
+```typescript
+import { Sequelize } from 'sequelize';
+import { createDialectHelpers } from '../migration-helper';
+
+export const up = async (sequelize: Sequelize): Promise<void> => {
+  const { helperFunctions } = createDialectHelpers(sequelize);
+  // ...
+};
+
+export const down = async (sequelize: Sequelize): Promise<void> => {
+  const { helperFunctions } = createDialectHelpers(sequelize);
+  // ...
+};
+```
+
+#### Migration Index Registration
+
+- All migrations must be registered in `apps/main/src/migrator/migrations/index.ts`
+- The generator auto-updates this file with import statements and array entries
+- **Core tables**: Use `m(module)` wrapper
+- **EAV-prefixed tables**: Use `cond(module, 'SITE_NAME', 'ecommerce')` wrapper
+- **BPMN-prefixed tables**: Use `cond(module, 'SITE_NAME', 'bpmn')` wrapper
+
+#### Runtime Migration Execution
+
+- Migrations run on app startup via `UmzugMigrationService` (only on the primary cluster instance)
+- Tracked in database table `UmzugMeta` (schema) and `UmzugSeedMeta` (seeds)
+- Seeds live in `apps/main/src/migrator/seeds/` and `apps/main/src/migrator/permissions/`
+
+#### Migration File Locations
+
+| Directory                                     | Contents                                  |
+| --------------------------------------------- | ----------------------------------------- |
+| `apps/main/src/migrator/migrations/`          | Schema migration `.ts` files + `index.ts` |
+| `apps/main/src/migrator/seeds/`               | Seed data `.ts` files + `index.ts`        |
+| `apps/main/src/migrator/permissions/`         | Permission seeding files                  |
+| `apps/main/src/migrator/models-snapshot.json` | Current model metadata snapshot           |
+
+#### Key Libraries
+
+- **`umzug`** - Runtime migration runner (applies pending migrations on startup)
+- **`sequelize-typescript`** - ORM with decorators (`@Table`, `@Column`, `@ForeignKey`)
+- Dialect adapters in `dialect-adapters.ts` support mssql, postgres, sqlite
 
 ### Testing
 
-- `bpmn`, `e-commerce`, and `guarantee` applications do not currently contain any test files that are executed by the specific app test command
 - Guard mocking: `.overrideGuard()` in test setup
 - Decorator mocking: custom `NestInterceptor` for `@GetUser()`
 - E2E configs in `apps/<app>/test/jest-e2e.json` with relative paths

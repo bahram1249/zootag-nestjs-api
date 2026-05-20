@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ExecuteConditionDto } from './dto';
 import { ModuleRef } from '@nestjs/core';
 import { ConditionServiceImp } from '../condition/interface';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class ConditionLoaderService {
-  constructor(private readonly moduleRef: ModuleRef) {}
+  constructor(
+    private readonly moduleRef: ModuleRef,
+    private readonly localizationService: LocalizationService,
+  ) {}
 
   async executeCondition(dto: ExecuteConditionDto): Promise<boolean> {
     const serviceInstance: ConditionServiceImp =
@@ -14,7 +18,7 @@ export class ConditionLoaderService {
       });
 
     if (!serviceInstance) {
-      throw new Error(`Service with token ${dto.source} not found`);
+      throw new Error(this.localizationService.translate('bpmn.condition_not_found') as string);
     }
 
     // Execute the action

@@ -4,16 +4,16 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AuthService {
   constructor(
-    //@Inject('USER_REPOSITORY')
-
     private jwt: JwtService,
     private config: ConfigService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async signup(dto: AuthDto) {
@@ -23,13 +23,10 @@ export class AuthService {
       },
     });
     if (findUser) {
-      throw new ForbiddenException('Credentials taken');
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_taken'),
+      );
     }
-
-    // generate the password hash
-    // const salt = bcrypt.genSaltSync(10);
-    // const hashedPassword = bcrypt.hashSync(dto.password, salt);
-    // save the new user in the db
 
     const user = await this.userRepository.create({
       username: dto.username,
@@ -40,32 +37,34 @@ export class AuthService {
   }
 
   async signin(dto: AuthDto) {
-    // find the user by email
     const user = await this.userRepository.findOne({
       where: {
         username: dto.username,
       },
     });
-    // if user does not exist throw exception
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    if (!user)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_incorrect'),
+      );
 
-    // compare password
     const pwMatches = await user.validPasswordAsync(dto.password);
-    //await bcrypt.compare(dto.password, user.password);
-    // if password incorrect throw exception
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    if (!pwMatches)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.credentials_incorrect'),
+      );
     return this.signToken(user);
   }
 
   async findUser(dto: UsernameDto) {
-    // find the user by username
     const user = await this.userRepository.findOne({
       where: {
         username: dto.username,
       },
     });
-    // if user exist throw exception
-    if (user) throw new ForbiddenException('username is taken!');
+    if (user)
+      throw new ForbiddenException(
+        this.localizationService.translate('core.username_taken'),
+      );
     return {
       result: 'can be reserved',
     };

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
-import { Op, Sequelize } from 'sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { Op } from 'sequelize';
 import { PermissionGroup } from '@rahino/database';
 import { PermissionGroupGetDto } from './dto';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class PermissionGroupService {
@@ -13,80 +14,34 @@ export class PermissionGroupService {
     @InjectModel(PermissionGroup)
     private readonly repository: typeof PermissionGroup,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: PermissionGroupGetDto) {
-    let options = QueryFilter.init();
-
-    // search
-    const ws = {
+    let qb = new QueryOptionsBuilder().filter({
       [Op.and]: [
-        {
-          permissionGroupName: {
-            [Op.like]: filter.search,
-          },
-        },
-
+        { permissionGroupName: { [Op.like]: filter.search } },
         this.seqHelp.whereIsNullColumnEqualToValue(
           'PermissionGroup.visibility',
           1,
           1,
         ),
       ],
-    };
+    });
 
-    options.where = ws;
-    const count = await this.repository.count(options);
-    options.attributes = [
-      'id',
-      'permissionGroupName',
-      'order',
-      'createdAt',
-      'updatedAt',
-    ];
-    options.include = [
-      {
-        model: Permission,
-        as: 'permissions',
-        where: this.seqHelp.whereIsNullColumnEqualToValue(
-          'permissions.visibility',
-          1,
-          1,
-        ),
-        attributes: [
-          'id',
-          'permissionSymbol',
-          'permissionName',
-          'permissionUrl',
-          'permissionMethod',
-          'createdAt',
-          'updatedAt',
-        ],
-      },
-    ];
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
-    options = QueryFilter.order(options, filter);
-    return {
-      result: await this.repository.findAll(options),
-      total: count,
-    };
-  }
+    const count = await this.repository.count(qb.build());
 
-  async findById(id: number) {
-    const permissionGroup = await this.repository.findOne({
-      attributes: [
-        'id',
-        'permissionGroupName',
-        'order',
-        'createdAt',
-        'updatedAt',
-      ],
-      include: [
+    qb = qb
+      .attributes(['id', 'permissionGroupName', 'order', 'createdAt', 'updatedAt'])
+      .include([
         {
           model: Permission,
           as: 'permissions',
+          where: this.seqHelp.whereIsNullColumnEqualToValue(
+            'permissions.visibility',
+            1,
+            1,
+          ),
           attributes: [
             'id',
             'permissionSymbol',
@@ -96,27 +51,58 @@ export class PermissionGroupService {
             'createdAt',
             'updatedAt',
           ],
-          where: this.seqHelp.whereIsNullColumnEqualToValue(
-            'permissions.visibility',
-            1,
-            1,
-          ),
         },
-      ],
-      where: {
-        [Op.and]: [
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
+    return {
+      result: await this.repository.findAll(qb.build()),
+      total: count,
+    };
+  }
+
+  async findById(id: number) {
+    const permissionGroup = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'permissionGroupName', 'order', 'createdAt', 'updatedAt'])
+        .include([
           {
-            id: id,
+            model: Permission,
+            as: 'permissions',
+            attributes: [
+              'id',
+              'permissionSymbol',
+              'permissionName',
+              'permissionUrl',
+              'permissionMethod',
+              'createdAt',
+              'updatedAt',
+            ],
+            where: this.seqHelp.whereIsNullColumnEqualToValue(
+              'permissions.visibility',
+              1,
+              1,
+            ),
           },
-          this.seqHelp.whereIsNullColumnEqualToValue(
-            'PermissionGroup.visibility',
-            1,
-            1,
-          ),
-        ],
-      },
-    });
-    if (!permissionGroup) throw new NotFoundException('Not Found!');
+        ])
+        .filter({
+          [Op.and]: [
+            { id },
+            this.seqHelp.whereIsNullColumnEqualToValue(
+              'PermissionGroup.visibility',
+              1,
+              1,
+            ),
+          ],
+        })
+        .build(),
+    );
+    if (!permissionGroup)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: permissionGroup,
     };

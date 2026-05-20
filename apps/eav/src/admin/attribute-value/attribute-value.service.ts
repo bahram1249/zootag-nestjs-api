@@ -13,6 +13,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { EAVAttributeValue } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AttributeValueService {
@@ -24,6 +25,7 @@ export class AttributeValueService {
     private readonly attributeRepository: typeof EAVAttribute,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly seqHelp: SequelizeHelpService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetAttributeValueDto) {
@@ -84,7 +86,7 @@ export class AttributeValueService {
       .build();
     const attributeValue = await this.repository.findOne(options);
     if (!attributeValue) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
 
     return {
@@ -105,7 +107,7 @@ export class AttributeValueService {
         .build(),
     );
     if (!attribute) {
-      throw new ForbiddenException('the given attributeId not founded!');
+      throw new ForbiddenException(this.localizationService.translate('eav.attribute_id_not_founded'));
     }
 
     const mappedItem = this.mapper.map(
@@ -135,7 +137,7 @@ export class AttributeValueService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
 
     const attribute = await this.attributeRepository.findOne(
@@ -150,7 +152,7 @@ export class AttributeValueService {
         .build(),
     );
     if (!attribute) {
-      throw new ForbiddenException('the given attributeId not founded!');
+      throw new ForbiddenException(this.localizationService.translate('eav.attribute_id_not_founded'));
     }
 
     const mappedItem = this.mapper.map(
@@ -184,7 +186,7 @@ export class AttributeValueService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
     }
 
     item.isDeleted = true;

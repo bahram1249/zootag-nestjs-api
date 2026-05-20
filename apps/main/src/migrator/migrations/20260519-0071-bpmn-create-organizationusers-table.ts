@@ -4,15 +4,20 @@ import { createDialectHelpers } from '../migration-helper';
 export const name = '20260519-0071-bpmn-create-organizationusers-table';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { dt, ref, createTable} =
-    createDialectHelpers(sequelize);
-
+  const { dt, ref, createTable } = createDialectHelpers(sequelize);
 
   await createTable(
     'BPMNOrganizationUsers',
     [
-      'organizationId INT NOT NULL ' + ref('BPMNOrganizations', 'id', 'BPMNOrganizationUsers', 'organizationId'),
-      'userId BIGINT NOT NULL ' + ref('Users', 'id', 'BPMNOrganizationUsers', 'userId'),
+      'organizationId INT NOT NULL ' +
+        ref(
+          'BPMNOrganizations',
+          'id',
+          'BPMNOrganizationUsers',
+          'organizationId',
+        ),
+      'userId BIGINT NOT NULL ' +
+        ref('Users', 'id', 'BPMNOrganizationUsers', 'userId'),
       '"createdAt" ' + dt(),
       '"updatedAt" ' + dt(),
       'PRIMARY KEY (organizationId, userId)',
