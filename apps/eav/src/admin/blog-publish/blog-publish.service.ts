@@ -41,7 +41,10 @@ export class BlogPublishService {
         })
         .build(),
     );
-    if (!blogPublish) throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    if (!blogPublish)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: blogPublish,
     };

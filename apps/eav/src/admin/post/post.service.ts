@@ -177,7 +177,9 @@ export class PostService {
     );
     if (slugSearch) {
       throw new ForbiddenException(
-        this.localizationService.translate('core.the_given_slug_is_exists_before'),
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
@@ -274,7 +276,9 @@ export class PostService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        this.localizationService.translate('core.the_given_slug_is_exists_before'),
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
@@ -419,7 +423,9 @@ export class PostService {
       );
       if (!findAttachment) {
         throw new BadRequestException(
-          this.localizationService.translate('eav.product_photo_not_founded', { id: photo.id }),
+          this.localizationService.translate('eav.product_photo_not_founded', {
+            id: photo.id,
+          }),
         );
       }
     }

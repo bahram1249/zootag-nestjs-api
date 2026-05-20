@@ -4,7 +4,7 @@ import { EntityTypeService } from './entity-type.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 @Module({
-  imports: [SequelizeModule.forFeature([EAVEntityType]),],
+  imports: [SequelizeModule.forFeature([EAVEntityType])],
   controllers: [EntityTypeController],
   providers: [EntityTypeService],
   exports: [EntityTypeService],

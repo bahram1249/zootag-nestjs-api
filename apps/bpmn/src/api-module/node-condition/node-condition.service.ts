@@ -93,7 +93,10 @@ export class NodeConditionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_condition_not_found'),
+      );
     return { result: item };
   }
 
@@ -112,7 +115,10 @@ export class NodeConditionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ nodeId, conditionId }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_condition_not_found'),
+      );
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
@@ -121,7 +127,10 @@ export class NodeConditionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ nodeId, conditionId }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_condition_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_condition_not_found'),
+      );
     await item.destroy();
     return { ok: true };
   }

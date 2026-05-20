@@ -78,8 +78,8 @@ export class BPMNRequestService {
       if (!organization) {
         throw new BadRequestException(
           [
-          this.localizationService.translate('bpmn.organization'),
-          this.localizationService.translate('core.not_found'),
+            this.localizationService.translate('bpmn.organization'),
+            this.localizationService.translate('core.not_found'),
           ].join(''),
         );
       }

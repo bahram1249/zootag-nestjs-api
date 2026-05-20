@@ -72,7 +72,9 @@ export class ConditionService {
     dto: RunConditionDto,
   ): Promise<boolean> {
     if (!dto.condition.conditionText)
-      throw new BadRequestException(this.localizationService.translate('bpmn.invalid_condition'));
+      throw new BadRequestException(
+        this.localizationService.translate('bpmn.invalid_condition'),
+      );
     const text = await this.replaceConventionalParameters(dto);
     const queryResult = await this.sequelize.query(text, {
       type: QueryTypes.RAW,

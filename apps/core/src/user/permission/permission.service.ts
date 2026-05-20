@@ -28,9 +28,7 @@ export class PermissionService {
     );
     if (!permission) {
       throw new NotFoundException(
-        this.localizationService.translate(
-          'core.permission_symbol_not_found',
-        ),
+        this.localizationService.translate('core.permission_symbol_not_found'),
       );
     }
     const userRoles = await this.userRoleRepository.findAll(

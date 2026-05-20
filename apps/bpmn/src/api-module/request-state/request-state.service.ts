@@ -150,7 +150,10 @@ export class RequestStateCrudService {
         .build(),
     );
 
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_state_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_state_not_found'),
+      );
     return { result: item };
   }
 
@@ -165,7 +168,10 @@ export class RequestStateCrudService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id: id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_state_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_state_not_found'),
+      );
     await item.update(JSON.parse(JSON.stringify(data)), {
       where: {
         id: id,
@@ -178,7 +184,10 @@ export class RequestStateCrudService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id: id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_state_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_state_not_found'),
+      );
     await item.destroy();
     return { ok: true };
   }

@@ -119,7 +119,10 @@ export class InboundActionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.inbound_action_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.inbound_action_not_found'),
+      );
     return { result: item };
   }
 
@@ -134,7 +137,10 @@ export class InboundActionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.inbound_action_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.inbound_action_not_found'),
+      );
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
@@ -143,7 +149,10 @@ export class InboundActionService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.inbound_action_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.inbound_action_not_found'),
+      );
     await item.update({ isDeleted: 1 } as any);
     return { ok: true };
   }

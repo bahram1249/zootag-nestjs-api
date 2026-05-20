@@ -44,7 +44,10 @@ export class AttributeTypeService {
         id,
       },
     });
-    if (!attributeType) throw new NotFoundException(this.localizationService.translate('core.not_found'));
+    if (!attributeType)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
     return {
       result: attributeType,
     };

@@ -143,7 +143,10 @@ export class NodeService {
         .build(),
     );
 
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_not_found'),
+      );
     return { result: item };
   }
 
@@ -155,7 +158,9 @@ export class NodeService {
   async update(id: number, dto: UpdateNodeDto) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_not_found'),
+      );
     }
     await item.update({ ...dto });
     return { result: item };
@@ -164,7 +169,9 @@ export class NodeService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || item.isDeleted === true) {
-      throw new NotFoundException(this.localizationService.translate('bpmn.node_not_found'));
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_not_found'),
+      );
     }
     await item.update({ isDeleted: true });
     return { ok: true };

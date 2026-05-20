@@ -79,7 +79,10 @@ export class RequestCrudService {
         .build(),
     );
 
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_not_found'),
+      );
     return { result: item };
   }
 
@@ -138,7 +141,10 @@ export class RequestCrudService {
     }>,
   ) {
     const item = await this.repository.findByPk(id);
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_not_found'),
+      );
     await item.update(JSON.parse(JSON.stringify(dto)), {
       where: {
         id: id,
@@ -150,7 +156,10 @@ export class RequestCrudService {
 
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.request_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.request_not_found'),
+      );
     await item.destroy();
     return { ok: true };
   }

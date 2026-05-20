@@ -192,7 +192,9 @@ export class EntityTypeService {
     }
 
     if (!result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {
@@ -263,7 +265,9 @@ export class EntityTypeService {
     }
 
     if (result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {

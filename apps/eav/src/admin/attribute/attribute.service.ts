@@ -133,7 +133,9 @@ export class AttributeService {
       .build();
     const attribute = await this.repository.findOne(options);
     if (!attribute) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
     return {
       result: attribute,
@@ -147,7 +149,9 @@ export class AttributeService {
       },
     });
     if (!attributeType) {
-      throw new ForbiddenException(this.localizationService.translate('eav.attribute_type_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.attribute_type_id_not_founded'),
+      );
     }
 
     const entityType = await this.entityTypeRepository.findOne({
@@ -156,7 +160,9 @@ export class AttributeService {
       },
     });
     if (!entityType) {
-      throw new ForbiddenException(this.localizationService.translate('eav.entity_type_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.entity_type_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(dto, AttributeDto, EAVAttribute);
@@ -211,7 +217,9 @@ export class AttributeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     const attributeType = await this.attributeTypeRepository.findOne({
@@ -220,7 +228,9 @@ export class AttributeService {
       },
     });
     if (!attributeType) {
-      throw new ForbiddenException(this.localizationService.translate('eav.attribute_type_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.attribute_type_id_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(dto, UpdateAttributeDto, EAVAttribute);
@@ -276,7 +286,9 @@ export class AttributeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     await this.entityAttributeRepository.destroy({

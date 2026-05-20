@@ -94,7 +94,10 @@ export class EntityAttributeValueService {
       );
       if (!attributeValue) {
         throw new BadRequestException(
-          this.localizationService.translate('eav.attribute_value_not_valid', { value: findItem.val, name: valueBasedAttribute.attribute.name }),
+          this.localizationService.translate('eav.attribute_value_not_valid', {
+            value: findItem.val,
+            name: valueBasedAttribute.attribute.name,
+          }),
         );
       }
     }
@@ -115,7 +118,9 @@ export class EntityAttributeValueService {
       );
       if (!findItem) {
         throw new BadRequestException(
-          this.localizationService.translate('eav.attribute_required', { name: requiredAttribute.attribute.name }),
+          this.localizationService.translate('eav.attribute_required', {
+            name: requiredAttribute.attribute.name,
+          }),
         );
       }
     });
@@ -131,7 +136,10 @@ export class EntityAttributeValueService {
       );
       if (!findItem)
         throw new BadRequestException(
-          this.localizationService.translate('eav.attribute_not_in_entity_type', { id: entityAttribute.id }),
+          this.localizationService.translate(
+            'eav.attribute_not_in_entity_type',
+            { id: entityAttribute.id },
+          ),
         );
     });
   }
@@ -144,7 +152,9 @@ export class EntityAttributeValueService {
         .build(),
     );
     if (!entityType) {
-      throw new BadRequestException(this.localizationService.translate('eav.entity_type_id_not_founded'));
+      throw new BadRequestException(
+        this.localizationService.translate('eav.entity_type_id_not_founded'),
+      );
     }
   }
 
@@ -163,7 +173,10 @@ export class EntityAttributeValueService {
       );
       if (!findAttribute) {
         throw new BadRequestException(
-          this.localizationService.translate('eav.attribute_id_not_founded_for_name', { id: findAttribute.id, name: findAttribute.name }),
+          this.localizationService.translate(
+            'eav.attribute_id_not_founded_for_name',
+            { id: findAttribute.id, name: findAttribute.name },
+          ),
         );
       }
       if (

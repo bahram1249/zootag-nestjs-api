@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database';
 import { User } from '@rahino/database';
@@ -26,9 +23,7 @@ export class RoleUtilService {
     );
     if (!role) {
       throw new InternalServerErrorException(
-        this.localizationService.translate(
-          'core.super_admin_role_not_defined',
-        ),
+        this.localizationService.translate('core.super_admin_role_not_defined'),
       );
     }
     const userRole = await this.userRoleRepository.findOne(

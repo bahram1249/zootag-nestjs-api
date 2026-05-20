@@ -32,7 +32,13 @@ export class PermissionGroupService {
     const count = await this.repository.count(qb.build());
 
     qb = qb
-      .attributes(['id', 'permissionGroupName', 'order', 'createdAt', 'updatedAt'])
+      .attributes([
+        'id',
+        'permissionGroupName',
+        'order',
+        'createdAt',
+        'updatedAt',
+      ])
       .include([
         {
           model: Permission,
@@ -66,7 +72,13 @@ export class PermissionGroupService {
   async findById(id: number) {
     const permissionGroup = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'permissionGroupName', 'order', 'createdAt', 'updatedAt'])
+        .attributes([
+          'id',
+          'permissionGroupName',
+          'order',
+          'createdAt',
+          'updatedAt',
+        ])
         .include([
           {
             model: Permission,

@@ -138,7 +138,10 @@ export class NodeCommandService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_command_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_command_not_found'),
+      );
     return { result: item };
   }
 
@@ -153,7 +156,10 @@ export class NodeCommandService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_command_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_command_not_found'),
+      );
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
@@ -162,7 +168,10 @@ export class NodeCommandService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.node_command_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.node_command_not_found'),
+      );
     await item.update({ isDeleted: true } as any);
     return { ok: true };
   }

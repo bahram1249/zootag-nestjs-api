@@ -18,7 +18,11 @@ export class ConditionLoaderService {
       });
 
     if (!serviceInstance) {
-      throw new Error(this.localizationService.translate('bpmn.condition_not_found') as string);
+      throw new Error(
+        this.localizationService.translate(
+          'bpmn.condition_not_found',
+        ) as string,
+      );
     }
 
     // Execute the action

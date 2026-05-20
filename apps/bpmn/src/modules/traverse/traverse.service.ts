@@ -263,7 +263,9 @@ export class TraverseService {
     // if doesn't find any user for traverse
     if (users.length === 0) {
       throw new BadRequestException(
-        this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
+        this.localizationService.translate(
+          'bpmn.cannot_find_any_referral_user',
+        ),
       );
     }
 
@@ -335,7 +337,9 @@ export class TraverseService {
       // cannot find any users
       if (userRoles.length === 0) {
         throw new BadRequestException(
-          this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
+          this.localizationService.translate(
+            'bpmn.cannot_find_any_referral_user',
+          ),
         );
       }
 
@@ -417,7 +421,9 @@ export class TraverseService {
       // cannot find any users
       if (bpmnOrganizationUsers.length === 0) {
         throw new BadRequestException(
-          this.localizationService.translate('bpmn.cannot_find_any_referral_user'),
+          this.localizationService.translate(
+            'bpmn.cannot_find_any_referral_user',
+          ),
         );
       }
 
@@ -478,7 +484,9 @@ export class TraverseService {
   private validateRoleBasedNode(node: BPMNNode) {
     if (node.roleId == null) {
       throw new BadRequestException(
-        this.localizationService.translate('bpmn.node_has_not_assigned_any_roles'),
+        this.localizationService.translate(
+          'bpmn.node_has_not_assigned_any_roles',
+        ),
       );
     }
   }
@@ -553,7 +561,9 @@ export class TraverseService {
 
     if (node.toActivity.insideProcessRunnerId == null) {
       throw new BadRequestException(
-        this.localizationService.translate('bpmn.undefined_inside_process_runner_id'),
+        this.localizationService.translate(
+          'bpmn.undefined_inside_process_runner_id',
+        ),
       );
     }
 
@@ -584,7 +594,9 @@ export class TraverseService {
 
     const returnRequestStateId = newRequestState.returnRequestStateId;
     if (returnRequestStateId == null) {
-      throw new BadRequestException(this.localizationService.translate('bpmn.return_request_state_id_null'));
+      throw new BadRequestException(
+        this.localizationService.translate('bpmn.return_request_state_id_null'),
+      );
     }
 
     const parentRequestState = await this.requestStateRepository.findOne(
@@ -596,7 +608,11 @@ export class TraverseService {
     );
 
     if (!parentRequestState) {
-      throw new BadRequestException(this.localizationService.translate('bpmn.parent_request_state_not_founded'));
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'bpmn.parent_request_state_not_founded',
+        ),
+      );
     }
 
     // Remove last activity of sub process activity

@@ -18,7 +18,9 @@ export class ActionLoaderService {
       });
 
     if (!serviceInstance) {
-      throw new Error(this.localizationService.translate('bpmn.action_not_found') as string);
+      throw new Error(
+        this.localizationService.translate('bpmn.action_not_found') as string,
+      );
     }
 
     // Execute the action

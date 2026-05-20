@@ -86,7 +86,9 @@ export class AttributeValueService {
       .build();
     const attributeValue = await this.repository.findOne(options);
     if (!attributeValue) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     return {
@@ -107,7 +109,9 @@ export class AttributeValueService {
         .build(),
     );
     if (!attribute) {
-      throw new ForbiddenException(this.localizationService.translate('eav.attribute_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.attribute_id_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(
@@ -137,7 +141,9 @@ export class AttributeValueService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     const attribute = await this.attributeRepository.findOne(
@@ -152,7 +158,9 @@ export class AttributeValueService {
         .build(),
     );
     if (!attribute) {
-      throw new ForbiddenException(this.localizationService.translate('eav.attribute_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.attribute_id_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(
@@ -186,7 +194,9 @@ export class AttributeValueService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException(this.localizationService.translate('core.not_found_id'));
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     item.isDeleted = true;

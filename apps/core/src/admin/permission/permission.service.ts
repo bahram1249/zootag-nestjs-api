@@ -29,7 +29,11 @@ export class PermissionService {
             { permissionUrl: { [Op.like]: filter.search } },
           ],
         },
-        this.seqHelp.whereIsNullColumnEqualToValue('permission.visibility', 1, 1),
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'permission.visibility',
+          1,
+          1,
+        ),
       ],
     });
 

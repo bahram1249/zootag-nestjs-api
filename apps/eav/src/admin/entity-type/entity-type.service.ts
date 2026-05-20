@@ -339,7 +339,9 @@ export class EntityTypeService {
     }
 
     if (result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {
@@ -417,7 +419,9 @@ export class EntityTypeService {
     }
 
     if (result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {
@@ -548,7 +552,9 @@ export class EntityTypeService {
     }
 
     if (result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {
@@ -626,7 +632,9 @@ export class EntityTypeService {
     }
 
     if (result.isDeleted) {
-      throw new GoneException(this.localizationService.translate('core.item_deleted'));
+      throw new GoneException(
+        this.localizationService.translate('core.item_deleted'),
+      );
     }
 
     return {
@@ -641,7 +649,9 @@ export class EntityTypeService {
       },
     });
     if (!entityModel) {
-      throw new ForbiddenException(this.localizationService.translate('eav.entity_model_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.entity_model_id_not_founded'),
+      );
     }
 
     if (dto.parentEntityTypeId) {
@@ -653,7 +663,9 @@ export class EntityTypeService {
       });
       if (!entityTypeParent) {
         throw new ForbiddenException(
-          this.localizationService.translate('eav.parent_entity_type_id_not_founded'),
+          this.localizationService.translate(
+            'eav.parent_entity_type_id_not_founded',
+          ),
         );
       }
     }
@@ -732,7 +744,9 @@ export class EntityTypeService {
       },
     });
     if (!entityModel) {
-      throw new ForbiddenException(this.localizationService.translate('eav.entity_model_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.entity_model_id_not_founded'),
+      );
     }
 
     if (dto.parentEntityTypeId) {
@@ -744,7 +758,9 @@ export class EntityTypeService {
       });
       if (!entityTypeParent) {
         throw new ForbiddenException(
-          this.localizationService.translate('eav.parent_entity_type_id_not_founded'),
+          this.localizationService.translate(
+            'eav.parent_entity_type_id_not_founded',
+          ),
         );
       }
     }
@@ -772,7 +788,9 @@ export class EntityTypeService {
     );
 
     if (!shippingWay) {
-      throw new BadRequestException(this.localizationService.translate('eav.shipping_way_id_not_founded'));
+      throw new BadRequestException(
+        this.localizationService.translate('eav.shipping_way_id_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
@@ -856,7 +874,9 @@ export class EntityTypeService {
       },
     });
     if (!entityModel) {
-      throw new ForbiddenException(this.localizationService.translate('eav.entity_model_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.entity_model_id_not_founded'),
+      );
     }
 
     if (dto.parentEntityTypeId) {
@@ -868,7 +888,9 @@ export class EntityTypeService {
       });
       if (!entityTypeParent) {
         throw new ForbiddenException(
-          this.localizationService.translate('eav.parent_entity_type_id_not_founded'),
+          this.localizationService.translate(
+            'eav.parent_entity_type_id_not_founded',
+          ),
         );
       }
     }
@@ -965,7 +987,9 @@ export class EntityTypeService {
       },
     });
     if (!entityModel) {
-      throw new ForbiddenException(this.localizationService.translate('eav.entity_model_id_not_founded'));
+      throw new ForbiddenException(
+        this.localizationService.translate('eav.entity_model_id_not_founded'),
+      );
     }
 
     if (dto.parentEntityTypeId) {
@@ -977,7 +1001,9 @@ export class EntityTypeService {
       });
       if (!entityTypeParent) {
         throw new ForbiddenException(
-          this.localizationService.translate('eav.parent_entity_type_id_not_founded'),
+          this.localizationService.translate(
+            'eav.parent_entity_type_id_not_founded',
+          ),
         );
       }
     }
@@ -1011,7 +1037,9 @@ export class EntityTypeService {
     );
 
     if (!shippingWay) {
-      throw new BadRequestException(this.localizationService.translate('eav.shipping_way_id_not_founded'));
+      throw new BadRequestException(
+        this.localizationService.translate('eav.shipping_way_id_not_founded'),
+      );
     }
 
     const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
@@ -1174,7 +1202,9 @@ export class EntityTypeService {
         .build(),
     );
     if (!attachment) {
-      throw new ForbiddenException(this.localizationService.translate('core.dont_access_to_this_file'));
+      throw new ForbiddenException(
+        this.localizationService.translate('core.dont_access_to_this_file'),
+      );
     }
     const accessUrl = await this.minioClientService.generateDownloadUrl(
       attachment.bucketName,

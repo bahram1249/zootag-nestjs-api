@@ -124,7 +124,10 @@ export class ConditionService {
         ])
         .build(),
     );
-    if (!item) throw new NotFoundException(this.localizationService.translate('bpmn.condition_not_found'));
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.condition_not_found'),
+      );
     return { result: item };
   }
 
@@ -136,7 +139,9 @@ export class ConditionService {
   async update(id: number, dto: UpdateConditionDto) {
     const item = await this.repository.findByPk(id);
     if (!item || (item as any).isDeleted === true) {
-      throw new NotFoundException(this.localizationService.translate('bpmn.condition_not_found'));
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.condition_not_found'),
+      );
     }
     await item.update({ ...dto });
     return { result: item };
@@ -145,7 +150,9 @@ export class ConditionService {
   async deleteById(id: number) {
     const item = await this.repository.findByPk(id);
     if (!item || (item as any).isDeleted === true) {
-      throw new NotFoundException(this.localizationService.translate('bpmn.condition_not_found'));
+      throw new NotFoundException(
+        this.localizationService.translate('bpmn.condition_not_found'),
+      );
     }
     await item.update({ isDeleted: true });
     return { ok: true };

@@ -82,7 +82,10 @@ export class ActionService {
 
     if (!action) {
       throw new NotFoundException(
-        [this.localizationService.translate('bpmn.action'), this.localizationService.translate('core.not_found')].join(' '),
+        [
+          this.localizationService.translate('bpmn.action'),
+          this.localizationService.translate('core.not_found'),
+        ].join(' '),
       );
     }
 
@@ -107,13 +110,18 @@ export class ActionService {
         }),
     };
     const executeAction = actionStrategies[action.actionTypeId];
-    if (!executeAction) throw new BadRequestException(this.localizationService.translate('bpmn.invalid_action'));
+    if (!executeAction)
+      throw new BadRequestException(
+        this.localizationService.translate('bpmn.invalid_action'),
+      );
     return await executeAction();
   }
 
   private async runSQLAction(dto: RunSQLActionDto) {
     if (!dto.action.actionText)
-      throw new BadRequestException(this.localizationService.translate('bpmn.invalid_sql_action'));
+      throw new BadRequestException(
+        this.localizationService.translate('bpmn.invalid_sql_action'),
+      );
     const query = await this.replaceConventionalParameters(dto);
     await this.sequelize.query(query, {
       type: QueryTypes.RAW,
