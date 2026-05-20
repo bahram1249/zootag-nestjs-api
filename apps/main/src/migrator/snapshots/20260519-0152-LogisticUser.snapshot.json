@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T10:32:36.253Z",
+  "generatedAt": "2026-05-20T10:43:31.544Z",
   "models": {
     "Setting": {
       "className": "Setting",
@@ -57,6 +57,46 @@
         "id": {
           "name": "id",
           "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "version": {
+          "name": "version",
+          "type": "NVARCHAR(200)",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "description": {
+          "name": "description",
+          "type": "NVARCHAR(500)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -555,7 +595,47 @@
       "columns": {
         "id": {
           "name": "id",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionGroupName": {
+          "name": "permissionGroupName",
+          "type": "NVARCHAR(256)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "order": {
+          "name": "order",
           "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,

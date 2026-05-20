@@ -78,6 +78,39 @@ function findModelByTableName(
  *   '[version] ' + nv('200') + ' PRIMARY KEY'
  *   '[createdAt] ' + dt()
  */
+function splitArrayElements(text: string): string[] {
+  const parts: string[] = [];
+  let current = '';
+  let parenDepth = 0;
+  let inString = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+
+    if (ch === "'") {
+      inString = !inString;
+      current += ch;
+    } else if (ch === '(' && !inString) {
+      parenDepth++;
+      current += ch;
+    } else if (ch === ')' && !inString) {
+      parenDepth--;
+      current += ch;
+    } else if (ch === ',' && !inString && parenDepth === 0) {
+      const trimmed = current.trim();
+      if (trimmed) parts.push(trimmed);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+
+  const trimmed = current.trim();
+  if (trimmed) parts.push(trimmed);
+
+  return parts;
+}
+
 function parseCreateTableFromMigrationFile(
   filePath: string,
 ): Record<string, ColumnMeta> {
@@ -85,47 +118,20 @@ function parseCreateTableFromMigrationFile(
   try {
     const code = fs.readFileSync(filePath, 'utf-8');
 
-    // Find the createTable call array content (between [ and ])
-    const arrayMatch = code.match(/createTable\s*\([^,]+,\s*\[([\s\S]*?)\]\s*\)/);
+    // Match createTable with array, possibly followed by .join(...) and optional trailing comma
+    const arrayMatch = code.match(
+      /createTable\s*\([^,]+,\s*\[([\s\S]*?)\](?:\.\s*join\s*\([^)]*\))?,?\s*\)/,
+    );
     if (!arrayMatch) return columns;
 
     const arrayContent = arrayMatch[1];
-    // Extract each column expression: text between single-quote pairs
-    // A column definition is one string expression ending with ' (possibly with + continuation)
-    const colLines: string[] = [];
-    let current = '';
-    let inQuote = false;
-    for (let i = 0; i < arrayContent.length; i++) {
-      const ch = arrayContent[i];
-      if (ch === "'") {
-        if (inQuote && i + 1 < arrayContent.length && arrayContent[i + 1] === ' ') {
-          // End of quoted string - if next is +, continue collecting
-          current += ch;
-          inQuote = false;
-        } else if (!inQuote) {
-          current += ch;
-          inQuote = true;
-        } else {
-          current += ch;
-          inQuote = false;
-          // End of a string expression that closes the column definition
-          if (current.trim().length > 1) {
-            colLines.push(current);
-          }
-          current = '';
-        }
-      } else {
-        current += ch;
-      }
-    }
+    const colExprs = splitArrayElements(arrayContent);
 
-    for (const line of colLines) {
-      // Reconstruct the full expression by joining string parts
-      // 'id BIGINT ' + idCol + ' NOT NULL' -> "id BIGINT BIGINT NOT NULL"
-      const reconstructed = line
-        .replace(/nv\(['"]?(\d*)['"]?\)/gi, 'NVARCHAR($1)')
-        .replace(/dt\(\)/gi, 'DATETIME')
-        .replace(/idCol\b/gi, 'BIGINT')
+    for (const expr of colExprs) {
+      const reconstructed = expr
+        .replace(/nv\s*\(\s*['"]?(\d*)['"]?\s*\)/gi, 'NVARCHAR($1)')
+        .replace(/dt\s*\(\s*\)/gi, 'DATETIME')
+        .replace(/\bidCol\b/gi, 'BIGINT')
         .replace(/'/g, '')
         .replace(/\s*\+\s*/g, ' ')
         .replace(/\s+/g, ' ')
