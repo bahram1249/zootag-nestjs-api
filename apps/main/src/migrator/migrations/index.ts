@@ -197,9 +197,9 @@ export const migrations: MigrationDefinition[] = [
   m(m0199),
   m(m0200),
 
-  cond(m0201, 'SITE_NAME', 'zootag'),
+  cond(m0201, 'SITE_NAME', 'Zootag'),
 
-  cond(m0204, 'SITE_NAME', 'zootag'),
+  cond(m0204, 'SITE_NAME', 'Zootag'),
 
-  cond(m0206, 'SITE_NAME', 'zootag'),
+  cond(m0206, 'SITE_NAME', 'Zootag'),
 ];

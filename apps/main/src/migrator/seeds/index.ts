@@ -290,11 +290,11 @@ export const seeds: SeedDefinition[] = [
   cond(s0195, 'SITE_NAME', 'guarantee'),
   cond(s0196, 'SITE_NAME', 'guarantee'),
 
-  cond(s0202, 'SITE_NAME', 'zootag'),
+  cond(s0202, 'SITE_NAME', 'Zootag'),
 
-  cond(s0203, 'SITE_NAME', 'zootag'),
+  cond(s0203, 'SITE_NAME', 'Zootag'),
 
-  cond(s0205, 'SITE_NAME', 'zootag'),
+  cond(s0205, 'SITE_NAME', 'Zootag'),
 
-  cond(s0207, 'SITE_NAME', 'zootag'),
+  cond(s0207, 'SITE_NAME', 'Zootag'),
 ];
