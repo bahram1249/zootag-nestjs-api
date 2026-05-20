@@ -67,15 +67,12 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshDto) {
-    const session = await this.sessionRepository.findOne({
-      where: {
-        isRevoked: false,
-        expiresAt: {
-          [Op.gt]: new Date(),
-        },
-      },
-    });
-    if (!session) {
+    const session = await this.sessionRepository.findByPk(dto.sessionId);
+    if (
+      !session ||
+      session.isRevoked ||
+      session.expiresAt <= new Date()
+    ) {
       throw new UnauthorizedException(
         this.localizationService.translate('core.credentials_incorrect'),
       );
@@ -98,9 +95,14 @@ export class AuthService {
       );
     }
 
-    await session.update({ lastActivityAt: new Date() });
+    const rawRefreshToken = this.generateRefreshToken();
+    const hashedRefreshToken = await bcrypt.hash(rawRefreshToken, 10);
+    await session.update({
+      refreshToken: hashedRefreshToken,
+      lastActivityAt: new Date(),
+    });
 
-    return this.buildTokenResponse(user, session);
+    return this.buildTokenResponse(user, session, rawRefreshToken);
   }
 
   async logout(req: Request) {
@@ -199,6 +201,7 @@ export class AuthService {
       result: {
         ...token,
         refresh_token: rawRefreshToken || session.refreshToken,
+        refresh_token_expires_at: session.expiresAt,
         session_id: String(session.id),
       },
     };

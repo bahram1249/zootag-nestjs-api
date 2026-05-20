@@ -26,6 +26,12 @@ export class AuthResponseDto {
   refresh_token: string;
 
   @ApiProperty({
+    example: '2026-05-27T12:00:00.000Z',
+    description: 'Refresh token expiration timestamp',
+  })
+  refresh_token_expires_at: Date;
+
+  @ApiProperty({
     example: '1',
     description: 'Session ID',
   })

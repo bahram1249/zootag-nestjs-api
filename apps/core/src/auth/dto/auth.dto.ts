@@ -7,13 +7,15 @@ export class AuthDto {
   @Matches(new RegExp('^([A-Za-z0-9_.]|-){3,20}$'))
   @ApiProperty({
     required: true,
-    type: IsString,
-    default: 'string',
     description: 'username',
   })
   username: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    required: true,
+    description: 'password',
+  })
   password: string;
 }
