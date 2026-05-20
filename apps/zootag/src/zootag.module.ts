@@ -9,6 +9,7 @@ import { CurrencyModule } from './admin/currency/currency.module';
 import { CurrencyCalculationModule } from './shared/currency-calculation/currency-calculation.module';
 import { CompanyModule } from './admin/company/company.module';
 import { DeviceTypeModule } from './admin/device-type/device-type.module';
+import { DeviceStatusModule } from './admin/device-status/device-status.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DeviceTypeModule } from './admin/device-type/device-type.module';
     CurrencyModule,
     CompanyModule,
     DeviceTypeModule,
+    DeviceStatusModule,
   ],
 })
 export class ZootagModule implements NestModule {

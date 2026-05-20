@@ -81,6 +81,7 @@ import * as m0201 from './20260520-0201-create-zt_currencies';
 import * as m0204 from './20260520-0204-create-zt_companies';
 
 import * as m0206 from './20260520-0206-create-zt_devicetypes';
+import * as m0208 from './20260520-0208-create-zt_devicestatuses';
 interface Condition {
   key: string;
   values: string[];
@@ -202,4 +203,6 @@ export const migrations: MigrationDefinition[] = [
   cond(m0204, 'SITE_NAME', 'Zootag'),
 
   cond(m0206, 'SITE_NAME', 'Zootag'),
+
+  cond(m0208, 'SITE_NAME', 'Zootag'),
 ];

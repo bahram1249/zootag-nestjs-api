@@ -1,3 +1,3 @@
-import { ZTCurrency, ZTCompany, ZTDeviceType } from '@rahino/localdatabase/models';
+import { ZTCurrency, ZTCompany, ZTDeviceType, ZTDeviceStatus } from '@rahino/localdatabase/models';
 
-export const zootagModels = [ZTCurrency, ZTCompany, ZTDeviceType];
+export const zootagModels = [ZTCurrency, ZTCompany, ZTDeviceType, ZTDeviceStatus];

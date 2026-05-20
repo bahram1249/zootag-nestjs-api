@@ -2,5 +2,6 @@
   "not_found": "آیتم مورد نظر یافت نشد",
   "currency_not_found": "ارز مورد نظر یافت نشد",
   "company_not_found": "شرکت مورد نظر یافت نشد",
-  "device_type_not_found": "نوع دستگاه مورد نظر یافت نشد"
+  "device_type_not_found": "نوع دستگاه مورد نظر یافت نشد",
+  "device_status_not_found": "وضعیت دستگاه مورد نظر یافت نشد"
 }

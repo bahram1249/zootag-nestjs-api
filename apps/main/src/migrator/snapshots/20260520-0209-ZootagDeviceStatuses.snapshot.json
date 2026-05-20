@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T20:05:06.607Z",
+  "generatedAt": "2026-05-20T19:59:23.088Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -4038,6 +4038,84 @@
           "autoIncrement": false,
           "allowNull": false,
           "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "ZT_DeviceStatuses": {
+      "className": "ZTDeviceStatus",
+      "tableName": "ZT_DeviceStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "title": {
+          "name": "title",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "slug": {
+          "name": "slug",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": true,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
           "unique": false,
           "comment": null
         },
