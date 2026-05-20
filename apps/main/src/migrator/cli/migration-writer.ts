@@ -343,16 +343,26 @@ function updateIndexFile(
   }
 
   // Append entries to the migrations array
-  // Find the closing bracket of the array
-  const arrayEndMatch = content.match(/];\s*$/m);
-  if (arrayEndMatch) {
-    const insertPos = arrayEndMatch.index!;
+  // Find the closing bracket of `export const migrations: MigrationDefinition[] = [...]`
+  const arrayStartMatch = content.match(
+    /export const migrations: MigrationDefinition\[\] = \[/,
+  );
+  if (arrayStartMatch) {
+    const startIdx = arrayStartMatch.index! + arrayStartMatch[0].length;
+    let depth = 1;
+    let idx = startIdx;
+    while (depth > 0 && idx < content.length) {
+      if (content[idx] === '[') depth++;
+      else if (content[idx] === ']') depth--;
+      idx++;
+    }
+    const insertPos = idx - 1; // position of the closing ]
     const indent = '  ';
     const entriesWithComma = entries.map((e) => `${indent}${e},`);
     content =
       content.slice(0, insertPos) +
-      entriesWithComma.join('\n') +
       '\n' +
+      entriesWithComma.join('\n') +
       content.slice(insertPos);
   }
 

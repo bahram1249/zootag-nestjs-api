@@ -147,7 +147,11 @@ function parseCreateTableFromMigrationFile(
       let sqlType = '';
       for (let i = 1; i < parts.length; i++) {
         const p = parts[i].toUpperCase();
-        if (/^(NVARCHAR\(\d+\)|VARCHAR\(\d+\)|BIGINT|INT(?:EGER)?|SMALLINT|TINYINT|BIT|BOOLEAN|DATE|DATETIME|FLOAT|DECIMAL|TEXT|NTEXT|UNIQUEIDENTIFIER|VARBINARY(?:\(MAX\))?)$/.test(p)) {
+        if (
+          /^(NVARCHAR\(\d+\)|VARCHAR\(\d+\)|BIGINT|INT(?:EGER)?|SMALLINT|TINYINT|BIT|BOOLEAN|DATE|DATETIME|FLOAT|DECIMAL|TEXT|NTEXT|UNIQUEIDENTIFIER|VARBINARY(?:\(MAX\))?)$/.test(
+            p,
+          )
+        ) {
           sqlType = parts[i];
         }
       }
@@ -311,14 +315,9 @@ async function main(): Promise<void> {
         if (change.type !== 'none') {
           switch (change.type) {
             case 'create': {
-              const model = findModelByTableName(
-                allModels,
-                change.tableName,
-              );
+              const model = findModelByTableName(allModels, change.tableName);
               if (model) {
-                state[model.className] = JSON.parse(
-                  JSON.stringify(model),
-                );
+                state[model.className] = JSON.parse(JSON.stringify(model));
               } else {
                 // Try to parse columns from the migration file itself
                 const migrationFile = path.resolve(
@@ -326,16 +325,13 @@ async function main(): Promise<void> {
                   'apps/main/src/migrator/migrations',
                   `${def.name}.ts`,
                 );
-                const fileColumns = parseCreateTableFromMigrationFile(
-                  migrationFile,
-                );
+                const fileColumns =
+                  parseCreateTableFromMigrationFile(migrationFile);
                 state[change.tableName] = {
                   className: change.tableName,
                   tableName: change.tableName,
                   columns:
-                    Object.keys(fileColumns).length > 0
-                      ? fileColumns
-                      : {},
+                    Object.keys(fileColumns).length > 0 ? fileColumns : {},
                   indexes: [],
                   foreignKeys: [],
                 };
@@ -345,7 +341,9 @@ async function main(): Promise<void> {
             case 'addCol':
             case 'modifyCol': {
               const entry = Object.entries(state).find(([_, m]) =>
-                m.tableName.toLowerCase().includes(change.tableName.toLowerCase()),
+                m.tableName
+                  .toLowerCase()
+                  .includes(change.tableName.toLowerCase()),
               );
               if (entry) {
                 const [, model] = entry;
@@ -381,7 +379,9 @@ async function main(): Promise<void> {
             }
             case 'dropCol': {
               const entry = Object.entries(state).find(([_, m]) =>
-                m.tableName.toLowerCase().includes(change.tableName.toLowerCase()),
+                m.tableName
+                  .toLowerCase()
+                  .includes(change.tableName.toLowerCase()),
               );
               if (entry) {
                 const [, model] = entry;
@@ -499,12 +499,7 @@ async function main(): Promise<void> {
         const migratorRoot = path.resolve(outputDir, '..');
         const maxSeq = getMaxSequenceNumber(migratorRoot);
         const indexFile = path.join(outputDir, 'index.ts');
-        const files = writeMigrations(
-          outputDir,
-          diff,
-          maxSeq,
-          indexFile,
-        );
+        const files = writeMigrations(outputDir, diff, maxSeq, indexFile);
         console.log(
           `\nGenerated ${files.length} migration file(s) in: ${outputDir}`,
         );
@@ -514,7 +509,10 @@ async function main(): Promise<void> {
         console.log(`\nIndex updated: ${indexFile}`);
 
         // Build incremental per-migration snapshots
-        const snapshotsDir = path.resolve(rootDir, 'apps/main/src/migrator/snapshots');
+        const snapshotsDir = path.resolve(
+          rootDir,
+          'apps/main/src/migrator/snapshots',
+        );
         if (!fs.existsSync(snapshotsDir)) {
           fs.mkdirSync(snapshotsDir, { recursive: true });
         }
@@ -523,19 +521,31 @@ async function main(): Promise<void> {
           : {};
         const orderedChanges: Array<
           | { type: 'newTable'; model: ModelMeta }
-          | { type: 'columnChange'; tableName: string; column: ColumnMeta; action: string }
+          | {
+              type: 'columnChange';
+              tableName: string;
+              column: ColumnMeta;
+              action: string;
+            }
         > = [];
         for (const model of diff.newTables) {
           orderedChanges.push({ type: 'newTable', model });
         }
         for (const dc of diff.diffColumns) {
-          orderedChanges.push({ type: 'columnChange', tableName: dc.tableName, column: dc.column, action: dc.action });
+          orderedChanges.push({
+            type: 'columnChange',
+            tableName: dc.tableName,
+            column: dc.column,
+            action: dc.action,
+          });
         }
         for (let i = 0; i < files.length; i++) {
           const change = orderedChanges[i];
           if (change) {
             if (change.type === 'newTable') {
-              incrementalModels[change.model.className] = JSON.parse(JSON.stringify(change.model));
+              incrementalModels[change.model.className] = JSON.parse(
+                JSON.stringify(change.model),
+              );
             } else if (change.type === 'columnChange') {
               const entry = Object.entries(incrementalModels).find(
                 ([_, m]) => m.tableName === change.tableName,
@@ -543,7 +553,9 @@ async function main(): Promise<void> {
               if (entry) {
                 const [, model] = entry;
                 if (change.action === 'add' || change.action === 'alter') {
-                  model.columns[change.column.name] = JSON.parse(JSON.stringify(change.column));
+                  model.columns[change.column.name] = JSON.parse(
+                    JSON.stringify(change.column),
+                  );
                 } else if (change.action === 'remove') {
                   delete model.columns[change.column.name];
                 }
@@ -551,7 +563,10 @@ async function main(): Promise<void> {
             }
           }
           const migrationName = files[i].replace(/\.ts$/, '');
-          const migrationSnapshotPath = path.join(snapshotsDir, `${migrationName}.snapshot.json`);
+          const migrationSnapshotPath = path.join(
+            snapshotsDir,
+            `${migrationName}.snapshot.json`,
+          );
           saveSnapshot(migrationSnapshotPath, incrementalModels);
           console.log(`  Snapshot: ${migrationName}.snapshot.json`);
         }

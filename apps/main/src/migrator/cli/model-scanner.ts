@@ -431,9 +431,7 @@ function findMatchingBracketReverse(
  * Parse Column() options from __decorate block content.
  * Handles nested braces (e.g., `set(value) { ... }` inside Column options).
  */
-function extractColumnOptionsFromBlock(
-  blockContent: string,
-): string {
+function extractColumnOptionsFromBlock(blockContent: string): string {
   // Find Column or sequelize_typescript_1.Column followed by )( { ... } or ( { ... }
   const colIdx = blockContent.search(/Column\s*\)?\s*\(\s*\{/);
   if (colIdx === -1) return '';
@@ -468,12 +466,7 @@ function extractInstanceDecoratorBlocks(
     if (decStart === -1) break;
 
     const startBracket = decStart + '__decorate(['.length - 1; // position of '['
-    const endBracket = findMatchingBracket(
-      jsCode,
-      startBracket + 1,
-      '[',
-      ']',
-    );
+    const endBracket = findMatchingBracket(jsCode, startBracket + 1, '[', ']');
     if (endBracket === -1) {
       searchPos = decStart + 1;
       continue;
@@ -503,10 +496,7 @@ function extractInstanceDecoratorBlocks(
     }
 
     // Skip pure association blocks (no Column, no ForeignKey)
-    if (
-      !/Column/.test(blockContent) &&
-      !/ForeignKey/.test(blockContent)
-    ) {
+    if (!/Column/.test(blockContent) && !/ForeignKey/.test(blockContent)) {
       continue;
     }
 
@@ -573,9 +563,7 @@ function compiledDesignTypeToSequelize(designType: string): string {
 /**
  * Extract column names with optional flag from a .d.ts file.
  */
-function parseDTColumns(
-  dtCode: string,
-): Map<string, boolean> {
+function parseDTColumns(dtCode: string): Map<string, boolean> {
   const result = new Map<string, boolean>();
   // Match property declarations: name?: type or name: type
   const propRegex = /^\s+(\w+)(\??)\s*:\s*(\w+(?:\[\])?)\s*;?\s*$/gm;
@@ -596,18 +584,14 @@ export function scanCompiledModelFile(
   const jsCode = fs.readFileSync(jsFilePath, 'utf-8');
 
   // Extract class name via the __decorate export pattern
-  const classMatch = jsCode.match(
-    /exports\.(\w+)\s*=\s*\1\s*=\s*__decorate\(/,
-  );
+  const classMatch = jsCode.match(/exports\.(\w+)\s*=\s*\1\s*=\s*__decorate\(/);
   if (!classMatch) return null;
   const className = classMatch[1];
 
   // Extract table name
   let tableName: string;
   // Look for explicit tableName in Table({ tableName: 'X' })
-  const explicitTableName = jsCode.match(
-    /tableName\s*:\s*'([^']+)'/,
-  );
+  const explicitTableName = jsCode.match(/tableName\s*:\s*'([^']+)'/);
   if (explicitTableName) {
     tableName = explicitTableName[1];
   } else {
@@ -643,8 +627,7 @@ export function scanCompiledModelFile(
       /(?:sequelize_typescript_1\.)?DataType\.(\w+)(?:\((\d+)\))?/,
     );
     if (dtTypeMatch) {
-      colType =
-        dtTypeMatch[1] + (dtTypeMatch[2] ? `(${dtTypeMatch[2]})` : '');
+      colType = dtTypeMatch[1] + (dtTypeMatch[2] ? `(${dtTypeMatch[2]})` : '');
     }
 
     // Primary key & auto-increment
@@ -691,9 +674,7 @@ export function scanCompiledModelFile(
 
     // Resolve FK reference
     if (fkRef) {
-      const resolvedRef = classToTable
-        ? classToTable[fkRef] || fkRef
-        : fkRef;
+      const resolvedRef = classToTable ? classToTable[fkRef] || fkRef : fkRef;
       colMeta.references = { model: resolvedRef, key: 'id' };
       foreignKeys.push({
         columns: [colName],
