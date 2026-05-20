@@ -175,6 +175,9 @@ export type I18nTranslations = {
         "STRING": string;
         "NUMBER": string;
     };
+    "zootag": {
+        "not_found": string;
+    };
 };
 /* prettier-ignore */
 export type I18nPath = Path<I18nTranslations>;

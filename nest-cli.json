@@ -180,6 +180,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/localdatabase/tsconfig.lib.json"
       }
+    },
+    "zootag": {
+      "type": "application",
+      "root": "apps/zootag",
+      "entryFile": "index",
+      "sourceRoot": "apps/zootag/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/zootag/tsconfig.lib.json"
+      }
     }
   }
 }

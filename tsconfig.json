@@ -53,7 +53,9 @@
       "@rahino/sms": ["libs/sms/src"],
       "@rahino/sms/*": ["libs/sms/src/*"],
       "@rahino/localdatabase": ["libs/localdatabase/src"],
-      "@rahino/localdatabase/*": ["libs/localdatabase/src/*"]
+      "@rahino/localdatabase/*": ["libs/localdatabase/src/*"],
+      "@rahino/zootag": ["apps/zootag/src"],
+      "@rahino/zootag/*": ["apps/zootag/src/*"]
     }
   }
 }

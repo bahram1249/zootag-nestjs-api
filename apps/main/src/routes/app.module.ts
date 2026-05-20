@@ -37,6 +37,7 @@ import {
   coreModels as localCoreModels,
   bpmnModels,
   eavEntities,
+  zootagModels,
 } from '@rahino/localdatabase/subsystem-models';
 import { ModuleInitializerModule } from '../module-initializer/module-initializer.module';
 import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
@@ -98,6 +99,7 @@ import { LocalizationModule } from '../common/localization';
           ...localCoreModels,
           ...eavEntities,
           ...bpmnModels,
+          ...zootagModels,
         ],
       }),
     }),

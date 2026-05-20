@@ -179,7 +179,8 @@
       "^@rahino/commontools(|/.*)$": "<rootDir>/libs/commontools/src/$1",
       "^@rahino/minio-client(|/.*)$": "<rootDir>/libs/minio-client/src/$1",
       "^@rahino/sms(|/.*)$": "<rootDir>/libs/sms/src/$1",
-      "^@rahino/localdatabase(|/.*)$": "<rootDir>/libs/localdatabase/src/$1"
+      "^@rahino/localdatabase(|/.*)$": "<rootDir>/libs/localdatabase/src/$1",
+      "^@rahino/zootag(|/.*)$": "<rootDir>/apps/zootag/src/$1"
     }
   }
 }
