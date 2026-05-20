@@ -39,7 +39,7 @@ npm run start:dev
 
 ## Monorepo Structure
 
-- `apps/` - Applications: core, BPMN
+- `apps/` - Applications: core, BPMN, zootag
 - `libs/` - Shared libraries: file, thumbnail, logger, query-filter, redis-client, sms, minio-client, pay, permission-checker, response, commontools, localdatabase
 
 ## Path Aliases
@@ -47,6 +47,7 @@ npm run start:dev
 Always use path aliases instead of relative imports:
 
 - `@rahino/bpmn` or `@rahino/bpmn/*` for bpmn app
+- `@rahino/zootag` or `@rahino/zootag/*` for zootag app
 - `@rahino/localdatabase` or `@rahino/localdatabase/*` for models
 - `@rahino/<lib-name>` for library imports
 
@@ -716,6 +717,7 @@ Keys are organized by domain in `apps/main/src/i18n/{lang}/`:
 | `eav`     | `eav.json`          | EAV (entity-attribute-value) domain messages |
 | `ecommerce`| `ecommerce.json`     | E-commerce domain messages     |
 | `guarantee`| `guarantee.json`     | Guarantee domain messages      |
+| `zootag`   | `zootag.json`        | Zootag domain messages         |
 | `validation`| `validation.json`   | class-validator error messages |
 
 Both `en/` and `fa/` directories must have matching keys with translated values.
@@ -751,7 +753,8 @@ The `translate()` method takes a `PathImpl2<I18nTranslations>` key path and opti
 
 ### ORM (Sequelize)
 
-- Models in `libs/localdatabase/src/models/<domain>/`
+- Models in `libs/localdatabase/src/models/<domain>/` (domains: `core/`, `eav/`, `bpmn/`, `zootag/`)
+- **All zootag tables must include soft delete** via an `isDeleted` column (`@Column({ type: DataType.BOOLEAN, allowNull: true })` on the entity), and all queries must filter with `.filter({ isDeleted: 0 })` or use the `seqHelp.whereIsNullColumnEqualToZero()` helper
 - Each model directory must have an `index.ts` exporting all models
 - When adding a new model, update these files:
   1. `libs/localdatabase/src/models/<domain>/index.ts` — barrel export
@@ -1062,7 +1065,73 @@ export const down = async (sequelize: Sequelize): Promise<void> => {
 };
 ```
 
-#### Migration Index Registration
+#### Seed & Permission File Generators
+
+In addition to schema migrations, you can generate seed and permission files with filled templates that auto-register in `seeds/index.ts`:
+
+```bash
+# Create a seed file (kebab-case name -> file + registered in seeds/index.ts)
+npm run create:seed -- <name>
+npm run create:seed -- user-roles --site zootag   # conditional on SITE_NAME = zootag
+
+# Create a permission file (PascalCase name -> file + registered in seeds/index.ts)
+npm run create:permission -- <Name>
+npm run create:permission -- ZootagFeature --site zootag
+```
+
+Both commands:
+1. Calculate the next globally-unique 4-digit sequence number across `migrations/`, `seeds/`, `permissions/`
+2. Generate a `.ts` file with a `TODO`-filled template in the appropriate directory
+3. Add an `import` and array entry to `seeds/index.ts`
+
+The `--site` flag wraps the entry with `cond()` instead of `m()`, so the seed/permission only runs when `SITE_NAME` matches the given value.
+
+#### Seed File Template
+
+Generated at `apps/main/src/migrator/seeds/<YYYYMMDD>-<NNNN>-seed-<name>.ts`:
+
+```typescript
+import { QueryTypes, Sequelize } from 'sequelize';
+import { createDialectHelpers } from '../migration-helper';
+
+export const name = '<YYYYMMDD>-<NNNN>-seed-<name>';
+
+export async function up(sequelize: Sequelize): Promise<void> {
+  const { nowVal, ns, top } = createDialectHelpers(sequelize);
+  // TODO: implement seed data
+}
+export async function down(sequelize: Sequelize): Promise<void> {
+  // TODO: revert seed
+}
+```
+
+#### Permission File Template
+
+Generated at `apps/main/src/migrator/permissions/<YYYYMMDD>-<NNNN>-<PascalName>.ts`:
+
+```typescript
+export const name = '<YYYYMMDD>-<NNNN>-<PascalName>';
+import { Sequelize } from 'sequelize';
+import { createCrudPermissions } from '../permission-helper';
+import { createDialectHelpers } from '../migration-helper';
+
+export async function up(sequelize: Sequelize): Promise<void> {
+  const { checkSetting } = createDialectHelpers(sequelize);
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
+  await createCrudPermissions(sequelize, {
+    entityName: '<PascalName>',
+    groupName: '<domain>.<group>',  // replace with actual group
+    parentMenuName: '<Parent Menu>',
+    menuName: '<Menu Name>',
+    menuUrl: '/<path>',
+  });
+}
+export async function down(_sequelize: Sequelize): Promise<void> {}
+```
+
+The placeholder values (`<domain>.<group>`, `<Parent Menu>`, `<Menu Name>`, `/<path>`) are written as-is and must be edited after generation.
+
+### Migration Index Registration
 
 - All migrations must be registered in `apps/main/src/migrator/migrations/index.ts`
 - The generator auto-updates this file with import statements and array entries
@@ -1092,6 +1161,61 @@ export const down = async (sequelize: Sequelize): Promise<void> => {
 - **`umzug`** - Runtime migration runner (applies pending migrations on startup)
 - **`sequelize-typescript`** - ORM with decorators (`@Table`, `@Column`, `@ForeignKey`)
 - Dialect adapters in `dialect-adapters.ts` support mssql, postgres, sqlite
+
+### Zootag Project Structure
+
+The zootag app at `apps/zootag/src/` is organized into the following sections:
+
+| Directory      | Description                                                                 |
+| -------------- | --------------------------------------------------------------------------- |
+| `admin/`       | Admin panel modules — protected by `JwtGuard` + `PermissionGuard`           |
+| `client/`      | Authenticated user modules — the user is logged in and uses the app         |
+| `anonymous/`   | Public modules/APIs that require no authentication                          |
+| `jobs/`        | BullMQ job processors and related constants                                 |
+| `shared/`      | Shared modules and business logic reused across other sections              |
+
+#### `admin/`
+Each feature is a self-contained NestJS module with controller, service, module, `dto/`, and optionally `mapper/` subdirectories. All endpoints require authentication and permission checks:
+
+```typescript
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/zootag/admin/<feature>', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+```
+
+Permission symbols follow the pattern: `zootag.admin.<feature>.<action>`.
+
+#### `client/`
+For authenticated users. Uses `JwtGuard` but typically without `PermissionGuard` — access is controlled by ownership or data-level checks:
+
+```typescript
+@UseGuards(JwtGuard)
+@Controller({ path: '/api/zootag/client/<feature>', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+```
+
+#### `anonymous/`
+Public endpoints — no guards, no authentication. Used for lookups, public pages, or webhook callbacks:
+
+```typescript
+@Controller({ path: '/api/zootag/anonymous/<feature>', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+```
+
+#### `jobs/`
+BullMQ job processors organized in subdirectories per job type:
+
+```
+jobs/
+  <job-name>/
+    constants.ts
+    <job-name>.processor.ts
+```
+
+Processors extend `WorkerHost` and use `@Processor(QUEUE_NAME)`.
+
+#### `shared/`
+Reusable modules and business logic imported by admin, client, or anonymous features (e.g., pricing engines, validation helpers, query builders).
 
 ### Testing
 

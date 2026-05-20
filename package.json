@@ -24,6 +24,8 @@
     "gen:migration": "npx ts-node apps/main/src/migrator/cli/index.ts",
     "gen:migration:snapshot": "npx ts-node apps/main/src/migrator/cli/index.ts snapshot",
     "gen:migration:diff": "npx ts-node apps/main/src/migrator/cli/index.ts diff",
+    "create:seed": "npx ts-node apps/main/src/migrator/cli/index.ts create:seed",
+    "create:permission": "npx ts-node apps/main/src/migrator/cli/index.ts create:permission",
     "status": "npx ts-node apps/main/src/migrator/cli/database-cli.ts status",
     "update-database": "npx ts-node apps/main/src/migrator/cli/database-cli.ts update-database",
     "rollback": "npx ts-node apps/main/src/migrator/cli/database-cli.ts rollback"

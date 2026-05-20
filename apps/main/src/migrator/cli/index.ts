@@ -12,6 +12,7 @@ import { diffModels, diffHasChanges } from './differ';
 import { writeMigrations, getMaxSequenceNumber } from './migration-writer';
 import { mapDataType } from './data-type-mapper';
 import { ModelMeta, ColumnMeta } from './types';
+import { createSeed, createPermission } from './seed-permission-writer';
 
 function usage(): void {
   console.log(`
@@ -24,18 +25,24 @@ Commands:
   diff                  Compare current models with snapshot (show changes)
   generate              Generate migration files from diff
   scan <model-file>     Scan a single model file and print metadata
+  create:seed <name>    Generate a seed file with template
+  create:permission <name>  Generate a permission file with template
 
 Options:
   --models-dir <path>   Path to models directory (default: auto-detect)
   --snapshot-dir <path> Path to store snapshot (default: ./migrator)
   --output-dir <path>   Path to output migrations (default: ./migrator/migrations)
   --dry-run             Show what would be generated without writing
+  --site <name>         Site name for conditional seed/permission (used with create:seed / create:permission)
 
 Examples:
   npx ts-node apps/main/src/migrator/cli/index.ts snapshot
   npx ts-node apps/main/src/migrator/cli/index.ts backfill-snapshots
   npx ts-node apps/main/src/migrator/cli/index.ts generate
   npx ts-node apps/main/src/migrator/cli/index.ts diff
+  npx ts-node apps/main/src/migrator/cli/index.ts create:seed user-roles
+  npx ts-node apps/main/src/migrator/cli/index.ts create:seed blog-categories --site zootag
+  npx ts-node apps/main/src/migrator/cli/index.ts create:permission ZootagFeature
 `);
 }
 
@@ -592,6 +599,56 @@ async function main(): Promise<void> {
       }
       const meta = convertToModelMeta(parsed);
       console.log(JSON.stringify(meta, null, 2));
+      break;
+    }
+
+    case 'create:seed': {
+      const seedName = args[1];
+      if (!seedName) {
+        console.error('Usage: create:seed <name> [--site <site>]');
+        process.exit(1);
+      }
+      const seedSite = findArg(args, '--site');
+      const migratorRoot = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        '..',
+        '..',
+        'apps/main/src/migrator',
+      );
+      const createdSeed = createSeed(migratorRoot, seedName, seedSite);
+      if (createdSeed) {
+        console.log(`Seed file created: ${createdSeed}`);
+        console.log(`Registered in: ${path.join(migratorRoot, 'seeds', 'index.ts')}`);
+      }
+      break;
+    }
+
+    case 'create:permission': {
+      const permName = args[1];
+      if (!permName) {
+        console.error('Usage: create:permission <name> [--site <site>]');
+        process.exit(1);
+      }
+      const permSite = findArg(args, '--site');
+      const permMigratorRoot = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        '..',
+        '..',
+        'apps/main/src/migrator',
+      );
+      const createdPerm = createPermission(permMigratorRoot, permName, permSite);
+      if (createdPerm) {
+        console.log(`Permission file created: ${createdPerm}`);
+        console.log(
+          `Registered in: ${path.join(permMigratorRoot, 'seeds', 'index.ts')}`,
+        );
+      }
       break;
     }
 
