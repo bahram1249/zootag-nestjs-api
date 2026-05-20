@@ -23,7 +23,10 @@
     "test:e2e:ecommerce:watch": "jest --config ./apps/e-commerce/test/jest-e2e.json --watch",
     "gen:migration": "npx ts-node apps/main/src/migrator/cli/index.ts",
     "gen:migration:snapshot": "npx ts-node apps/main/src/migrator/cli/index.ts snapshot",
-    "gen:migration:diff": "npx ts-node apps/main/src/migrator/cli/index.ts diff"
+    "gen:migration:diff": "npx ts-node apps/main/src/migrator/cli/index.ts diff",
+    "status": "npx ts-node apps/main/src/migrator/cli/database-cli.ts status",
+    "update-database": "npx ts-node apps/main/src/migrator/cli/database-cli.ts update-database",
+    "rollback": "npx ts-node apps/main/src/migrator/cli/database-cli.ts rollback"
   },
   "dependencies": {
     "@bull-board/api": "^6.9.6",

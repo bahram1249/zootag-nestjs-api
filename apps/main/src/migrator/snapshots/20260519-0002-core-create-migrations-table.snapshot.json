@@ -1,0 +1,72 @@
+{
+  "version": "1",
+  "generatedAt": "2026-05-20T10:32:36.172Z",
+  "models": {
+    "Setting": {
+      "className": "Setting",
+      "tableName": "Settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "key": {
+          "name": "key",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "value": {
+          "name": "value",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "type": {
+          "name": "type",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "migrations": {
+      "className": "migrations",
+      "tableName": "migrations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    }
+  }
+}

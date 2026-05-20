@@ -1,0 +1,3729 @@
+{
+  "version": "1",
+  "generatedAt": "2026-05-20T10:32:36.276Z",
+  "models": {
+    "Setting": {
+      "className": "Setting",
+      "tableName": "Settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "key": {
+          "name": "key",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "value": {
+          "name": "value",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "type": {
+          "name": "type",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "migrations": {
+      "className": "migrations",
+      "tableName": "migrations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "WinstonLog": {
+      "className": "WinstonLog",
+      "tableName": "WinstonLogs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "level": {
+          "name": "level",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "message": {
+          "name": "message",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "meta": {
+          "name": "meta",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "UserType": {
+      "className": "UserType",
+      "tableName": "UserTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "title": {
+          "name": "title",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "User": {
+      "className": "User",
+      "tableName": "Users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "firstname": {
+          "name": "firstname",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "lastname": {
+          "name": "lastname",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "email": {
+          "name": "email",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "username": {
+          "name": "username",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "password": {
+          "name": "password",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "phoneNumber": {
+          "name": "phoneNumber",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "mustChangePassword": {
+          "name": "mustChangePassword",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "lastPasswordChangeDate": {
+          "name": "lastPasswordChangeDate",
+          "type": "DATE",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "static_id": {
+          "name": "static_id",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "birthDate": {
+          "name": "birthDate",
+          "type": "DATE",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nationalCode": {
+          "name": "nationalCode",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "userTypeId": {
+          "name": "userTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "UserTypes",
+            "key": "id"
+          }
+        },
+        "profilePhotoAttachmentId": {
+          "name": "profilePhotoAttachmentId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "userTypeId"
+          ],
+          "refTable": "UserTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "AttachmentType": {
+      "className": "AttachmentType",
+      "tableName": "AttachmentTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "typeName": {
+          "name": "typeName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "settings": {
+          "name": "settings",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "Attachment": {
+      "className": "Attachment",
+      "tableName": "Attachments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "originalFileName": {
+          "name": "originalFileName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "fileName": {
+          "name": "fileName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "ext": {
+          "name": "ext",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "mimetype": {
+          "name": "mimetype",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "path": {
+          "name": "path",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "thumbnailPath": {
+          "name": "thumbnailPath",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "attachmentTypeId": {
+          "name": "attachmentTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "AttachmentTypes",
+            "key": "id"
+          }
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "persianDate": {
+          "name": "persianDate",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "persianMonth": {
+          "name": "persianMonth",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "deletedDate": {
+          "name": "deletedDate",
+          "type": "DATE",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "deletedBy": {
+          "name": "deletedBy",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "bucketName": {
+          "name": "bucketName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "etag": {
+          "name": "etag",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "versionId": {
+          "name": "versionId",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "attachmentTypeId"
+          ],
+          "refTable": "AttachmentTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "permissiongroups": {
+      "className": "permissiongroups",
+      "tableName": "permissiongroups",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "Permission": {
+      "className": "Permission",
+      "tableName": "Permissions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionSymbol": {
+          "name": "permissionSymbol",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionName": {
+          "name": "permissionName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionUrl": {
+          "name": "permissionUrl",
+          "type": "NVARCHAR(1024)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionMethod": {
+          "name": "permissionMethod",
+          "type": "NVARCHAR(10)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionGroupId": {
+          "name": "permissionGroupId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "PermissionGroup",
+            "key": "id"
+          }
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "permissionGroupId"
+          ],
+          "refTable": "PermissionGroup",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "Menu": {
+      "className": "Menu",
+      "tableName": "Menus",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "title": {
+          "name": "title",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "url": {
+          "name": "url",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "icon": {
+          "name": "icon",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "className": {
+          "name": "className",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "order": {
+          "name": "order",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "parentMenuId": {
+          "name": "parentMenuId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Menus",
+            "key": "id"
+          }
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "parentMenuId"
+          ],
+          "refTable": "Menus",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "PermissionMenu": {
+      "className": "PermissionMenu",
+      "tableName": "PermissionMenus",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "permissionId": {
+          "name": "permissionId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Permissions",
+            "key": "id"
+          }
+        },
+        "menuId": {
+          "name": "menuId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Menus",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "permissionId"
+          ],
+          "refTable": "Permissions",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "menuId"
+          ],
+          "refTable": "Menus",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "Role": {
+      "className": "Role",
+      "tableName": "Roles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "roleName": {
+          "name": "roleName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "static_id": {
+          "name": "static_id",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "RolePermission": {
+      "className": "RolePermission",
+      "tableName": "RolePermissions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        },
+        "permissionId": {
+          "name": "permissionId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Permissions",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "roleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "permissionId"
+          ],
+          "refTable": "Permissions",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "UserRole": {
+      "className": "UserRole",
+      "tableName": "UserRoles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "roleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "PersianDate": {
+      "className": "PersianDate",
+      "tableName": "PersianDates",
+      "columns": {
+        "GregorianDate": {
+          "name": "GregorianDate",
+          "type": "DATE",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "YearMonthDay": {
+          "name": "YearMonthDay",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "YearMonth": {
+          "name": "YearMonth",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "WeekDayName": {
+          "name": "WeekDayName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "WeekDayNumber": {
+          "name": "WeekDayNumber",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "DayInMonth": {
+          "name": "DayInMonth",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "DayInMonthAtLeastTwo": {
+          "name": "DayInMonthAtLeastTwo",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "MonthNumber": {
+          "name": "MonthNumber",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "MonthNumberAtLeastTwo": {
+          "name": "MonthNumberAtLeastTwo",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "PersianMonthName": {
+          "name": "PersianMonthName",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "YearNumber": {
+          "name": "YearNumber",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "DayInYearNumber": {
+          "name": "DayInYearNumber",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "DayNameInMonth": {
+          "name": "DayNameInMonth",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "DayNameInYear": {
+          "name": "DayNameInYear",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "EAVEntityModel": {
+      "className": "EAVEntityModel",
+      "tableName": "EAVEntityModels",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "EAVEntityType": {
+      "className": "EAVEntityType",
+      "tableName": "EAVEntityTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "slug": {
+          "name": "slug",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "parentEntityTypeId": {
+          "name": "parentEntityTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntityTypes",
+            "key": "id"
+          }
+        },
+        "entityModelId": {
+          "name": "entityModelId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntityModels",
+            "key": "id"
+          }
+        },
+        "attachmentId": {
+          "name": "attachmentId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Attachments",
+            "key": "id"
+          }
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaTitle": {
+          "name": "metaTitle",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaKeywords": {
+          "name": "metaKeywords",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaDescription": {
+          "name": "metaDescription",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "description": {
+          "name": "description",
+          "type": "UNKNOWN",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "priority": {
+          "name": "priority",
+          "type": "UNKNOWN",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "showlanding": {
+          "name": "showlanding",
+          "type": "UNKNOWN",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "parentEntityTypeId"
+          ],
+          "refTable": "EAVEntityTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "entityModelId"
+          ],
+          "refTable": "EAVEntityModels",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attachmentId"
+          ],
+          "refTable": "Attachments",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVAttributeType": {
+      "className": "EAVAttributeType",
+      "tableName": "EAVAttributeTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "valueBased": {
+          "name": "valueBased",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "EAVAttribute": {
+      "className": "EAVAttribute",
+      "tableName": "EAVAttributes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "attributeTypeId": {
+          "name": "attributeTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVAttributeTypes",
+            "key": "id"
+          }
+        },
+        "minLength": {
+          "name": "minLength",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "maxLength": {
+          "name": "maxLength",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "required": {
+          "name": "required",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "attributeTypeId"
+          ],
+          "refTable": "EAVAttributeTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVEntityAttributeValue": {
+      "className": "EAVEntityAttributeValue",
+      "tableName": "EAVEntityAttributeValues",
+      "columns": {
+        "entityId": {
+          "name": "entityId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntities",
+            "key": "id"
+          }
+        },
+        "attributeId": {
+          "name": "attributeId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVAttributes",
+            "key": "id"
+          }
+        },
+        "val": {
+          "name": "val",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "attributeValueId": {
+          "name": "attributeValueId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVAttributeValue",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityId"
+          ],
+          "refTable": "EAVEntities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attributeId"
+          ],
+          "refTable": "EAVAttributes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attributeValueId"
+          ],
+          "refTable": "EAVAttributeValue",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVEntityAttribute": {
+      "className": "EAVEntityAttribute",
+      "tableName": "EAVEntityAttributes",
+      "columns": {
+        "entityTypeId": {
+          "name": "entityTypeId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntityTypes",
+            "key": "id"
+          }
+        },
+        "attributeId": {
+          "name": "attributeId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVAttributes",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityTypeId"
+          ],
+          "refTable": "EAVEntityTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attributeId"
+          ],
+          "refTable": "EAVAttributes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVEntity": {
+      "className": "EAVEntity",
+      "tableName": "EAVEntities",
+      "columns": {
+        "entityId": {
+          "name": "entityId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "entityTypeId": {
+          "name": "entityTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntityTypes",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityTypeId"
+          ],
+          "refTable": "EAVEntityTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVEntityPhoto": {
+      "className": "EAVEntityPhoto",
+      "tableName": "EAVEntityPhotos",
+      "columns": {
+        "entityId": {
+          "name": "entityId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntities",
+            "key": "id"
+          }
+        },
+        "attachmentId": {
+          "name": "attachmentId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Attachments",
+            "key": "id"
+          }
+        },
+        "priority": {
+          "name": "priority",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityId"
+          ],
+          "refTable": "EAVEntities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attachmentId"
+          ],
+          "refTable": "Attachments",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVEntityVideo": {
+      "className": "EAVEntityVideo",
+      "tableName": "EAVEntityVideos",
+      "columns": {
+        "entityId": {
+          "name": "entityId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntities",
+            "key": "id"
+          }
+        },
+        "attachmentId": {
+          "name": "attachmentId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Attachments",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityId"
+          ],
+          "refTable": "EAVEntities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "attachmentId"
+          ],
+          "refTable": "Attachments",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "EAVBlogPublish": {
+      "className": "EAVBlogPublish",
+      "tableName": "EAVBlogPublishes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "EAVPost": {
+      "className": "EAVPost",
+      "tableName": "EAVPosts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "entityTypeId": {
+          "name": "entityTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVEntityTypes",
+            "key": "id"
+          }
+        },
+        "publishId": {
+          "name": "publishId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "EAVBlogPublishes",
+            "key": "id"
+          }
+        },
+        "title": {
+          "name": "title",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "slug": {
+          "name": "slug",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "description": {
+          "name": "description",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaTitle": {
+          "name": "metaTitle",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaDescription": {
+          "name": "metaDescription",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "metaKeywords": {
+          "name": "metaKeywords",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "entityTypeId"
+          ],
+          "refTable": "EAVEntityTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "publishId"
+          ],
+          "refTable": "EAVBlogPublishes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNPROCESS": {
+      "className": "BPMNPROCESS",
+      "tableName": "BPMNProcess",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isSubProcess": {
+          "name": "isSubProcess",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "staticId": {
+          "name": "staticId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNConditionType": {
+      "className": "BPMNConditionType",
+      "tableName": "BPMNConditionTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNCondition": {
+      "className": "BPMNCondition",
+      "tableName": "BPMNConditions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "conditionTypeId": {
+          "name": "conditionTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNConditionTypes",
+            "key": "id"
+          }
+        },
+        "conditionSource": {
+          "name": "conditionSource",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "conditionText": {
+          "name": "conditionText",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "conditionTypeId"
+          ],
+          "refTable": "BPMNConditionTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNActionType": {
+      "className": "BPMNActionType",
+      "tableName": "BPMNActionTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNAction": {
+      "className": "BPMNAction",
+      "tableName": "BPMNActions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "actionTypeId": {
+          "name": "actionTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActionTypes",
+            "key": "id"
+          }
+        },
+        "actionSource": {
+          "name": "actionSource",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "actionText": {
+          "name": "actionText",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "actionTypeId"
+          ],
+          "refTable": "BPMNActionTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNActivityType": {
+      "className": "BPMNActivityType",
+      "tableName": "BPMNActivityTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNActivity": {
+      "className": "BPMNActivity",
+      "tableName": "BPMNActivities",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isStartActivity": {
+          "name": "isStartActivity",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isEndActivity": {
+          "name": "isEndActivity",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "activityTypeId": {
+          "name": "activityTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivityTypes",
+            "key": "id"
+          }
+        },
+        "processId": {
+          "name": "processId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNProcess",
+            "key": "id"
+          }
+        },
+        "haveMultipleItems": {
+          "name": "haveMultipleItems",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "insideProcessRunnerId": {
+          "name": "insideProcessRunnerId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNProcess",
+            "key": "id"
+          }
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "activityTypeId"
+          ],
+          "refTable": "BPMNActivityTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "processId"
+          ],
+          "refTable": "BPMNProcess",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "insideProcessRunnerId"
+          ],
+          "refTable": "BPMNProcess",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNInboundAction": {
+      "className": "BPMNInboundAction",
+      "tableName": "BPMNInboundActions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "activityId": {
+          "name": "activityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "actionId": {
+          "name": "actionId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActions",
+            "key": "id"
+          }
+        },
+        "priority": {
+          "name": "priority",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "activityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "actionId"
+          ],
+          "refTable": "BPMNActions",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNOutboundAction": {
+      "className": "BPMNOutboundAction",
+      "tableName": "BPMNOutboundActions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "activityId": {
+          "name": "activityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "actionId": {
+          "name": "actionId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActions",
+            "key": "id"
+          }
+        },
+        "priority": {
+          "name": "priority",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "activityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "actionId"
+          ],
+          "refTable": "BPMNActions",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNReferralType": {
+      "className": "BPMNReferralType",
+      "tableName": "BPMNReferralTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNNode": {
+      "className": "BPMNNode",
+      "tableName": "BPMNNodes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "fromActivityId": {
+          "name": "fromActivityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "toActivityId": {
+          "name": "toActivityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "autoIterate": {
+          "name": "autoIterate",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "conditionFailedActionRunnerId": {
+          "name": "conditionFailedActionRunnerId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActions",
+            "key": "id"
+          }
+        },
+        "referralTypeId": {
+          "name": "referralTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNReferralTypes",
+            "key": "id"
+          }
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "injectForm": {
+          "name": "injectForm",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "description": {
+          "name": "description",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "eventCall": {
+          "name": "eventCall",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "fromActivityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "toActivityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "conditionFailedActionRunnerId"
+          ],
+          "refTable": "BPMNActions",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "referralTypeId"
+          ],
+          "refTable": "BPMNReferralTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "roleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNNodeCommandType": {
+      "className": "BPMNNodeCommandType",
+      "tableName": "BPMNNodeCommandTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "commandColor": {
+          "name": "commandColor",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNNodeCommand": {
+      "className": "BPMNNodeCommand",
+      "tableName": "BPMNNodeCommands",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nodeId": {
+          "name": "nodeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNNodes",
+            "key": "id"
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nodeCommandTypeId": {
+          "name": "nodeCommandTypeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNNodeCommandTypes",
+            "key": "id"
+          }
+        },
+        "route": {
+          "name": "route",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "nodeId"
+          ],
+          "refTable": "BPMNNodes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "nodeCommandTypeId"
+          ],
+          "refTable": "BPMNNodeCommandTypes",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNNodeCondition": {
+      "className": "BPMNNodeCondition",
+      "tableName": "BPMNNodeConditions",
+      "columns": {
+        "nodeId": {
+          "name": "nodeId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNNodes",
+            "key": "id"
+          }
+        },
+        "conditionId": {
+          "name": "conditionId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNConditions",
+            "key": "id"
+          }
+        },
+        "priority": {
+          "name": "priority",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "nodeId"
+          ],
+          "refTable": "BPMNNodes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "conditionId"
+          ],
+          "refTable": "BPMNConditions",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNOrganization": {
+      "className": "BPMNOrganization",
+      "tableName": "BPMNOrganizations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "parentId": {
+          "name": "parentId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOrganizations",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "parentId"
+          ],
+          "refTable": "BPMNOrganizations",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNOccurredEvent": {
+      "className": "BPMNOccurredEvent",
+      "tableName": "BPMNOccurredEvents",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "BPMNRequestState": {
+      "className": "BPMNRequestState",
+      "tableName": "BPMNRequestStates",
+      "columns": {
+        "requestId": {
+          "name": "requestId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNRequests",
+            "key": "id"
+          }
+        },
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "activityId": {
+          "name": "activityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        },
+        "organizationId": {
+          "name": "organizationId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOrganizations",
+            "key": "id"
+          }
+        },
+        "returnRequestStateId": {
+          "name": "returnRequestStateId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "requestId"
+          ],
+          "refTable": "BPMNRequests",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "activityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "roleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "organizationId"
+          ],
+          "refTable": "BPMNOrganizations",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNRequestOccurredEvent": {
+      "className": "BPMNRequestOccurredEvent",
+      "tableName": "BPMNRequestOccurredEvents",
+      "columns": {
+        "requestId": {
+          "name": "requestId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNRequests",
+            "key": "id"
+          }
+        },
+        "occurredEventId": {
+          "name": "occurredEventId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOccurredEvents",
+            "key": "id"
+          }
+        },
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "requestId"
+          ],
+          "refTable": "BPMNRequests",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "occurredEventId"
+          ],
+          "refTable": "BPMNOccurredEvents",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNRequestHistory": {
+      "className": "BPMNRequestHistory",
+      "tableName": "BPMNRequestHistories",
+      "columns": {
+        "requestId": {
+          "name": "requestId",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNRequests",
+            "key": "id"
+          }
+        },
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nodeId": {
+          "name": "nodeId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNNodes",
+            "key": "id"
+          }
+        },
+        "nodeCommandId": {
+          "name": "nodeCommandId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNNodeCommands",
+            "key": "id"
+          }
+        },
+        "fromActivityId": {
+          "name": "fromActivityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "toActivityId": {
+          "name": "toActivityId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNActivities",
+            "key": "id"
+          }
+        },
+        "fromUserId": {
+          "name": "fromUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "fromOrganizationId": {
+          "name": "fromOrganizationId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOrganizations",
+            "key": "id"
+          }
+        },
+        "fromRoleId": {
+          "name": "fromRoleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        },
+        "toUserId": {
+          "name": "toUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "toRoleId": {
+          "name": "toRoleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        },
+        "toOrganizationId": {
+          "name": "toOrganizationId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOrganizations",
+            "key": "id"
+          }
+        },
+        "description": {
+          "name": "description",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "executeBundle": {
+          "name": "executeBundle",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "requestId"
+          ],
+          "refTable": "BPMNRequests",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "nodeId"
+          ],
+          "refTable": "BPMNNodes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "nodeCommandId"
+          ],
+          "refTable": "BPMNNodeCommands",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "fromActivityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "toActivityId"
+          ],
+          "refTable": "BPMNActivities",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "fromUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "fromOrganizationId"
+          ],
+          "refTable": "BPMNOrganizations",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "fromRoleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "toUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "toRoleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "toOrganizationId"
+          ],
+          "refTable": "BPMNOrganizations",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "BPMNOrganizationUser": {
+      "className": "BPMNOrganizationUser",
+      "tableName": "BPMNOrganizationUsers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "organizationId": {
+          "name": "organizationId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "BPMNOrganizations",
+            "key": "id"
+          }
+        },
+        "userId": {
+          "name": "userId",
+          "type": "INT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "roleId": {
+          "name": "roleId",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Roles",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "organizationId"
+          ],
+          "refTable": "BPMNOrganizations",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "roleId"
+          ],
+          "refTable": "Roles",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    }
+  }
+}

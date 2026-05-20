@@ -949,7 +949,66 @@ npm run gen:migration:snapshot
 
 # Preview differences between snapshot and current models
 npm run gen:migration:diff
+
+# Backfill per-migration snapshots for all existing definitions
+npx ts-node apps/main/src/migrator/cli/index.ts backfill-snapshots
 ```
+
+#### Database Management CLI
+
+After generating migration files, apply them to the database using these commands:
+
+```bash
+# Check current database version and pending items
+npm run status
+
+# Apply all pending migrations and seeds (updates database to latest)
+npm run update-database
+
+# Revert migrations down to a specific migration name
+npm run update-database -- "20260519-0037-eav-alter-attributetypes-add-valuebased"
+
+# Revert only the last applied migration
+npm run rollback
+```
+
+**Commands:**
+
+| Command | Description |
+|---------|-------------|
+| `npm run status` | Show database version status — latest executed vs latest available across all definitions |
+| `npm run update-database` | Apply all pending definitions |
+| `npm run update-database -- <name>` | Revert executed definitions down to the specified definition name (the named definition is kept) |
+| `npm run rollback` | Revert only the last applied definition |
+
+**How ordering works:**
+- All definitions are registered in `apps/main/src/migrator/definitions/index.ts` (merged from migrations + seeds + permissions in a single array)
+- Execution order is determined by **array position** in `definitions/index.ts`, not by filename or sequence number
+- `npm run status` queries the single `UmzugMeta` table and compares against the definitions array to show pending vs executed
+- The combined array preserves order: all schema migrations first, then all seeds, then permissions
+
+**Per-migration snapshots:**
+- When `npm run gen:migration` generates migration files, it saves a **per-migration snapshot** to `apps/main/src/migrator/snapshots/<migration-name>.snapshot.json` for each generated file
+- Snapshots are **incrementally built**: each migration's snapshot captures the schema state *after* applying that migration, building up from the old snapshot. If 3 migration files are generated, the 1st snapshot shows state after 1st change, 2nd after both 1st+2nd, etc.
+- Snapshots include core tables from `@rahino/database` (e.g., `Users`, `Roles`, `Settings`, `Permissions`, `Menus`) with full column metadata and foreign key references. These are extracted by scanning compiled `.entity.js` files in `node_modules/@rahino/database/dist/models/core/`. The `scanCompiledModelFile()` function in `model-scanner.ts` parses decorator metadata from compiled JavaScript using bracket-matching and regex, then pairs it with `.d.ts` type declarations for optional/nullable inference.
+- To backfill snapshots for all existing migration/seed/permission files:
+  ```
+  npx ts-node apps/main/src/migrator/cli/index.ts backfill-snapshots
+  ```
+  This builds incremental state by parsing migration file names and matching against both local entities (`libs/localdatabase/`) and compiled core models (`@rahino/database`).
+- When reverting with `update-database <migration-name>`, the CLI checks for a snapshot at the target version and displays it if found
+- The `snapshot`, `diff`, and `generate` CLI commands also merge compiled core models alongside local entity models for a complete schema picture.
+
+**Sequence numbers are globally unique across all files:**
+- The `getMaxSequenceNumber()` function scans `migrations/`, `seeds/`, and `permissions/` directories for the highest `NNNN` sequence number
+- When generating a new migration, the next sequence number is `max(NNNN) + 1` across ALL three directories
+- The existing 196 files have been renamed so that **no two files share the same sequence number**:
+  - Migrations: `0001`–`0071` (unchanged, first in execution order)
+  - Seeds: `0072`–`0084` (renamed from `0001`–`0013`)
+  - Permissions: `0085`–`0196` (renamed from `0001`–`0112`)
+- This makes execution order immediately clear from filenames alone
+
+**Under the hood:** These commands use [Umzug](https://github.com/sequelize/umzug) v3 directly via a standalone CLI script at `apps/main/src/migrator/cli/database-cli.ts`. All migration state is tracked in a single `UmzugMeta` table. Legacy `UmzugSeedMeta` entries are automatically migrated to `UmzugMeta` on first run.
 
 #### Workflow (when adding/changing entities)
 
@@ -963,7 +1022,7 @@ npm run gen:migration:diff
   - e.g., `20260519-0001-core-create-settings-table.ts`
   - e.g., `20260519-0008-core-alter-users-add-birthdate.ts`
 - **Actions**: `create` (CREATE TABLE), `alter` with `add-{col}`, `modify-{col}`, `drop-{col}`
-- **Sequence**: 4-digit zero-padded number incrementing from the highest existing number
+- **Sequence**: 4-digit zero-padded number incrementing from the max sequence number parsed from existing filenames
 
 #### Migration File Format
 
@@ -991,17 +1050,19 @@ export const down = async (sequelize: Sequelize): Promise<void> => {
 - **Core tables**: Use `m(module)` wrapper
 - **EAV-prefixed tables**: Use `cond(module, 'SITE_NAME', 'ecommerce')` wrapper
 - **BPMN-prefixed tables**: Use `cond(module, 'SITE_NAME', 'bpmn')` wrapper
+- The combined execution order lives in `apps/main/src/migrator/definitions/index.ts` which merges migrations + seeds
 
 #### Runtime Migration Execution
 
 - Migrations run on app startup via `UmzugMigrationService` (only on the primary cluster instance)
-- Tracked in database table `UmzugMeta` (schema) and `UmzugSeedMeta` (seeds)
+- All definitions (migrations + seeds + permissions) are tracked in a single `UmzugMeta` table
 - Seeds live in `apps/main/src/migrator/seeds/` and `apps/main/src/migrator/permissions/`
 
 #### Migration File Locations
 
 | Directory                                     | Contents                                  |
 | --------------------------------------------- | ----------------------------------------- |
+| `apps/main/src/migrator/definitions/`         | Combined definitions index (execution order source of truth) |
 | `apps/main/src/migrator/migrations/`          | Schema migration `.ts` files + `index.ts` |
 | `apps/main/src/migrator/seeds/`               | Seed data `.ts` files + `index.ts`        |
 | `apps/main/src/migrator/permissions/`         | Permission seeding files                  |

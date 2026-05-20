@@ -428,10 +428,22 @@ export function writeMigrations(
   return createdFiles.map((f) => f.fileName);
 }
 
-export function getExistingMigrationCount(migrationsDir: string): number {
-  if (!fs.existsSync(migrationsDir)) return 0;
-  const files = fs
-    .readdirSync(migrationsDir)
-    .filter((f) => f.endsWith('.ts') && f !== 'index.ts');
-  return files.length;
+export function getMaxSequenceNumber(rootDir: string): number {
+  const dirs = ['migrations', 'seeds', 'permissions'];
+  let maxSeq = 0;
+  for (const dir of dirs) {
+    const fullDir = path.resolve(rootDir, dir);
+    if (!fs.existsSync(fullDir)) continue;
+    const files = fs
+      .readdirSync(fullDir)
+      .filter((f) => f.endsWith('.ts') && f !== 'index.ts');
+    for (const f of files) {
+      const match = f.match(/^\d{8}-(\d{4})-/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxSeq) maxSeq = num;
+      }
+    }
+  }
+  return maxSeq;
 }

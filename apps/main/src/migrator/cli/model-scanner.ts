@@ -403,6 +403,355 @@ export function scanCompiledModelsForClassTable(
   return classToTable;
 }
 
+//#region Compiled JS model scanning (for @rahino/database models)
+
+interface CompiledColumnBlock {
+  colName: string;
+  columnOptsStr: string;
+  fkRef: string | null;
+  designType: string;
+}
+
+function findMatchingBracketReverse(
+  text: string,
+  start: number,
+  open: string,
+  close: string,
+): number {
+  let depth = 1;
+  for (let i = start; i >= 0; i--) {
+    if (text[i] === close) depth++;
+    else if (text[i] === open) depth--;
+    if (depth === 0) return i;
+  }
+  return -1;
+}
+
+/**
+ * Parse Column() options from __decorate block content.
+ * Handles nested braces (e.g., `set(value) { ... }` inside Column options).
+ */
+function extractColumnOptionsFromBlock(
+  blockContent: string,
+): string {
+  // Find Column or sequelize_typescript_1.Column followed by )( { ... } or ( { ... }
+  const colIdx = blockContent.search(/Column\s*\)?\s*\(\s*\{/);
+  if (colIdx === -1) return '';
+
+  const openBraceIdx = blockContent.indexOf('{', colIdx);
+  if (openBraceIdx === -1) return '';
+
+  const closeBraceIdx = findMatchingBracket(
+    blockContent,
+    openBraceIdx + 1,
+    '{',
+    '}',
+  );
+  if (closeBraceIdx === -1) return '';
+
+  return blockContent.substring(openBraceIdx + 1, closeBraceIdx);
+}
+
+/**
+ * Extract all __decorate blocks for instance properties from compiled .entity.js code.
+ */
+function extractInstanceDecoratorBlocks(
+  jsCode: string,
+  className: string,
+): CompiledColumnBlock[] {
+  const blocks: CompiledColumnBlock[] = [];
+  let searchPos = 0;
+
+  while (true) {
+    // Look for __decorate([
+    const decStart = jsCode.indexOf('__decorate([', searchPos);
+    if (decStart === -1) break;
+
+    const startBracket = decStart + '__decorate(['.length - 1; // position of '['
+    const endBracket = findMatchingBracket(
+      jsCode,
+      startBracket + 1,
+      '[',
+      ']',
+    );
+    if (endBracket === -1) {
+      searchPos = decStart + 1;
+      continue;
+    }
+
+    const blockContent = jsCode.substring(startBracket + 1, endBracket);
+
+    // Check tail: ], ClassName.prototype, "colName", void 0)
+    const afterBracket = jsCode.substring(endBracket + 1).trim();
+    const tailMatch = afterBracket.match(
+      /^\]?\s*,\s*(\w+)\.prototype,\s*"(\w+)",\s*void\s*0\)/,
+    );
+    searchPos = endBracket + 1;
+
+    if (!tailMatch) continue;
+    const targetClass = tailMatch[1];
+    if (targetClass !== className) continue; // skip blocks for other classes
+    const colName = tailMatch[2];
+
+    // Skip hook/method decorators (BeforeCreate, AfterCreate, etc.)
+    if (
+      /(BeforeCreate|AfterCreate|BeforeUpdate|AfterUpdate|BeforeSave|AfterSave|BeforeDestroy|AfterDestroy|BeforeBulkCreate|AfterBulkCreate)/.test(
+        blockContent,
+      )
+    ) {
+      continue;
+    }
+
+    // Skip pure association blocks (no Column, no ForeignKey)
+    if (
+      !/Column/.test(blockContent) &&
+      !/ForeignKey/.test(blockContent)
+    ) {
+      continue;
+    }
+
+    // Skip BelongsTo/HasMany/BelongsToMany-only blocks
+    if (
+      /(BelongsTo|HasMany|BelongsToMany)/.test(blockContent) &&
+      !/Column/.test(blockContent)
+    ) {
+      continue;
+    }
+
+    // Extract Column options
+    const columnOptsStr = extractColumnOptionsFromBlock(blockContent);
+
+    // Extract ForeignKey reference
+    // Handles both: ForeignKey(() => X) and ForeignKey)(() => X (compiled call expression)
+    const fkMatch = blockContent.match(
+      /ForeignKey\)?\s*\(\s*\(\)\s*=>\s*(?:\w+\.)*(\w+)\)/,
+    );
+    const fkRef = fkMatch ? fkMatch[1] : null;
+
+    // Extract design type from __metadata using bracket matching (handles nested parens)
+    let designType = 'Object';
+    const metaIdx = blockContent.indexOf('__metadata("design:type",');
+    if (metaIdx !== -1) {
+      const openParen = blockContent.indexOf('(', metaIdx);
+      if (openParen !== -1) {
+        const closeParen = findMatchingBracket(
+          blockContent,
+          openParen + 1,
+          '(',
+          ')',
+        );
+        if (closeParen !== -1) {
+          const fullCall = blockContent.substring(openParen + 1, closeParen);
+          const commaIdx = fullCall.indexOf(',');
+          if (commaIdx !== -1) {
+            designType = fullCall.substring(commaIdx + 1).trim();
+          }
+        }
+      }
+    }
+
+    blocks.push({ colName, columnOptsStr, fkRef, designType });
+  }
+
+  return blocks;
+}
+
+/**
+ * Map a JavaScript design type (from __metadata) to a Sequelize type string.
+ */
+function compiledDesignTypeToSequelize(designType: string): string {
+  if (designType.includes('BigInt')) return 'BIGINT';
+  if (designType === 'String') return 'STRING';
+  if (designType === 'Number') return 'INTEGER';
+  if (designType === 'Boolean') return 'BOOLEAN';
+  if (designType === 'Date') return 'DATE';
+  if (designType === 'Array') return 'JSON';
+  if (designType === 'Object') return 'STRING';
+  return 'STRING';
+}
+
+/**
+ * Extract column names with optional flag from a .d.ts file.
+ */
+function parseDTColumns(
+  dtCode: string,
+): Map<string, boolean> {
+  const result = new Map<string, boolean>();
+  // Match property declarations: name?: type or name: type
+  const propRegex = /^\s+(\w+)(\??)\s*:\s*(\w+(?:\[\])?)\s*;?\s*$/gm;
+  let m: RegExpExecArray | null;
+  while ((m = propRegex.exec(dtCode)) !== null) {
+    result.set(m[1], m[2] === '?');
+  }
+  return result;
+}
+
+/**
+ * Scan a compiled .entity.js file and its corresponding .d.ts to extract full ModelMeta.
+ */
+export function scanCompiledModelFile(
+  jsFilePath: string,
+  classToTable?: Record<string, string>,
+): ModelMeta | null {
+  const jsCode = fs.readFileSync(jsFilePath, 'utf-8');
+
+  // Extract class name via the __decorate export pattern
+  const classMatch = jsCode.match(
+    /exports\.(\w+)\s*=\s*\1\s*=\s*__decorate\(/,
+  );
+  if (!classMatch) return null;
+  const className = classMatch[1];
+
+  // Extract table name
+  let tableName: string;
+  // Look for explicit tableName in Table({ tableName: 'X' })
+  const explicitTableName = jsCode.match(
+    /tableName\s*:\s*'([^']+)'/,
+  );
+  if (explicitTableName) {
+    tableName = explicitTableName[1];
+  } else {
+    // Default: pluralize class name
+    tableName = `${className}s`;
+  }
+
+  // Extract decorator blocks
+  const blocks = extractInstanceDecoratorBlocks(jsCode, className);
+
+  // Read .d.ts for optional markers
+  const dtFilePath = jsFilePath.replace(/\.js$/, '.d.ts');
+  let dOptional = new Map<string, boolean>();
+  try {
+    if (fs.existsSync(dtFilePath)) {
+      const dtCode = fs.readFileSync(dtFilePath, 'utf-8');
+      dOptional = parseDTColumns(dtCode);
+    }
+  } catch {
+    // ignore
+  }
+
+  // Build columns
+  const columns: Record<string, ColumnMeta> = {};
+  const foreignKeys: ForeignKeyMeta[] = [];
+
+  for (const block of blocks) {
+    const { colName, columnOptsStr, fkRef, designType } = block;
+
+    // Parse Column options for Sequelize-specific type
+    let colType = '';
+    const dtTypeMatch = columnOptsStr.match(
+      /(?:sequelize_typescript_1\.)?DataType\.(\w+)(?:\((\d+)\))?/,
+    );
+    if (dtTypeMatch) {
+      colType =
+        dtTypeMatch[1] + (dtTypeMatch[2] ? `(${dtTypeMatch[2]})` : '');
+    }
+
+    // Primary key & auto-increment
+    const primaryKey = /primaryKey\s*:\s*true/i.test(columnOptsStr);
+    const autoIncrement = /autoIncrement\s*:\s*true/i.test(columnOptsStr);
+
+    // allowNull logic
+    let allowNull = false;
+    if (/allowNull\s*:\s*true/i.test(columnOptsStr)) {
+      allowNull = true;
+    } else if (/allowNull\s*:\s*false/i.test(columnOptsStr)) {
+      allowNull = false;
+    } else if (primaryKey) {
+      allowNull = false;
+    } else if (dOptional.get(colName) === true) {
+      allowNull = true;
+    }
+    // default: false (matches entity scanner behavior)
+
+    // Determine final SQL type
+    let sqlType = colType;
+    if (!sqlType) {
+      sqlType = compiledDesignTypeToSequelize(designType);
+    }
+
+    // Default value extraction
+    let defaultValue: string | null = null;
+    const dvMatch = columnOptsStr.match(/defaultValue\s*:\s*([^,\n}]+)/);
+    if (dvMatch) {
+      const dv = dvMatch[1].trim();
+      if (dv !== 'null') defaultValue = dv;
+    }
+
+    const colMeta: ColumnMeta = {
+      name: colName,
+      type: mapDataType(sqlType),
+      primaryKey,
+      autoIncrement,
+      allowNull,
+      defaultValue,
+      unique: /unique\s*:\s*true/i.test(columnOptsStr),
+      comment: null,
+    };
+
+    // Resolve FK reference
+    if (fkRef) {
+      const resolvedRef = classToTable
+        ? classToTable[fkRef] || fkRef
+        : fkRef;
+      colMeta.references = { model: resolvedRef, key: 'id' };
+      foreignKeys.push({
+        columns: [colName],
+        refTable: resolvedRef,
+        refColumns: ['id'],
+      });
+    }
+
+    columns[colName] = colMeta;
+  }
+
+  return {
+    className,
+    tableName,
+    columns,
+    indexes: [],
+    foreignKeys,
+  };
+}
+
+/**
+ * Scan a directory of compiled .entity.js files and extract full ModelMeta for each.
+ */
+export function scanCompiledModelsDirectory(
+  modelsDir: string,
+  classToTable?: Record<string, string>,
+): Record<string, ModelMeta> {
+  const models: Record<string, ModelMeta> = {};
+  const resolvedClassToTable: Record<string, string> = {
+    ...(classToTable || {}),
+  };
+
+  function walk(dir: string) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (
+        entry.name.endsWith('.entity.js') &&
+        !entry.name.endsWith('.d.ts') &&
+        !entry.name.endsWith('.js.map')
+      ) {
+        const meta = scanCompiledModelFile(fullPath, resolvedClassToTable);
+        if (meta) {
+          models[meta.tableName] = meta;
+          resolvedClassToTable[meta.className] = meta.tableName;
+        }
+      }
+    }
+  }
+
+  walk(modelsDir);
+  return models;
+}
+
+//#endregion
+
 export function scanModelsDirectory(
   modelsDir: string,
   extraClassToTable?: Record<string, string>,
