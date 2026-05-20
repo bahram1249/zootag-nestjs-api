@@ -127,6 +127,7 @@ import * as s0196 from '../permissions/20260519-0196-IrangsImportData';
 import * as s0202 from './20260520-0202-seed-zootag-currencies';
 import * as s0203 from '../permissions/20260520-0203-ZootagCurrencies';
 import * as s0205 from '../permissions/20260520-0205-ZootagCompanies';
+import * as s0207 from '../permissions/20260520-0207-ZootagDeviceTypes';
 
 interface Condition {
   key: string;
@@ -294,4 +295,6 @@ export const seeds: SeedDefinition[] = [
   cond(s0203, 'SITE_NAME', 'zootag'),
 
   cond(s0205, 'SITE_NAME', 'zootag'),
+
+  cond(s0207, 'SITE_NAME', 'zootag'),
 ];

@@ -4065,7 +4065,7 @@
       "indexes": [],
       "foreignKeys": []
     },
-    "ZT_DeviceTypes": {
+    "ZTDeviceType": {
       "className": "ZTDeviceType",
       "tableName": "ZT_DeviceTypes",
       "columns": {

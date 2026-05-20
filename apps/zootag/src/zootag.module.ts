@@ -8,9 +8,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CurrencyModule } from './admin/currency/currency.module';
 import { CurrencyCalculationModule } from './shared/currency-calculation/currency-calculation.module';
 import { CompanyModule } from './admin/company/company.module';
+import { DeviceTypeModule } from './admin/device-type/device-type.module';
 
 @Module({
-  imports: [CurrencyCalculationModule, CurrencyModule, CompanyModule],
+  imports: [
+    CurrencyCalculationModule,
+    CurrencyModule,
+    CompanyModule,
+    DeviceTypeModule,
+  ],
 })
 export class ZootagModule implements NestModule {
   constructor() {}

@@ -179,6 +179,7 @@ export type I18nTranslations = {
         "not_found": string;
         "currency_not_found": string;
         "company_not_found": string;
+        "device_type_not_found": string;
     };
 };
 /* prettier-ignore */
