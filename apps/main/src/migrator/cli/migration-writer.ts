@@ -14,6 +14,19 @@ function datePrefix(): string {
   return `${y}${m}${day}`;
 }
 
+function normalizeDefault(
+  defaultValue: string | null | undefined,
+  colType: string,
+): string | null {
+  if (!defaultValue) return null;
+  const upper = colType.toUpperCase();
+  if (upper === 'BIT' || upper.startsWith('BOOLEAN')) {
+    if (defaultValue === 'false') return '0';
+    if (defaultValue === 'true') return '1';
+  }
+  return defaultValue;
+}
+
 function displayColName(colName: string): string {
   return colName === 'createdAt' || colName === 'updatedAt'
     ? `[${colName}]`
@@ -62,7 +75,8 @@ function buildCreateColumnExpr(
   const typeExpr = typeToHelperExpr(col.type, helpers);
 
   const nullStr = col.allowNull ? ' NULL' : ' NOT NULL';
-  const defaultStr = col.defaultValue ? ` DEFAULT ${col.defaultValue}` : '';
+  const dv = normalizeDefault(col.defaultValue, col.type);
+  const defaultStr = dv ? ` DEFAULT ${dv}` : '';
   const pkStr = col.primaryKey ? ' PRIMARY KEY' : '';
 
   let expr: string;
@@ -157,7 +171,8 @@ function generateAddColumnMigration(
   const name = `${prefix}-${pad(seqNum)}-alter-${tableName.toLowerCase()}-add-${col.name.toLowerCase()}`;
   const helpers = new Set<string>(['addColumn']);
   const nullStr = col.allowNull ? 'true' : 'false';
-  const defStr = col.defaultValue ? `'${col.defaultValue}'` : 'undefined';
+  const dv = normalizeDefault(col.defaultValue, col.type);
+  const defStr = dv ? `'${dv}'` : 'undefined';
 
   const typeExpr = typeToHelperExpr(col.type, helpers);
   const typeArg = typeExpr || `'${col.type}'`;

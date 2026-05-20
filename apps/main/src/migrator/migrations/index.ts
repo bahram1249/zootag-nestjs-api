@@ -70,7 +70,7 @@ import * as m0069 from './20260519-0069-bpmn-create-requeststates-table';
 import * as m0070 from './20260519-0070-bpmn-create-requesthistories-table';
 import * as m0071 from './20260519-0071-bpmn-create-organizationusers-table';
 
-import * as m0197 from './20260520-0197-create-coresessions';
+import * as m0198 from './20260520-0198-create-coresessions';
 interface Condition {
   key: string;
   values: string[];
@@ -172,5 +172,5 @@ export const migrations: MigrationDefinition[] = [
   cond(m0070, 'SITE_NAME', 'bpmn'),
   cond(m0071, 'SITE_NAME', 'bpmn'),
 
-  m(m0197),
+  m(m0198),
 ];
