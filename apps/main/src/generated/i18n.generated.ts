@@ -61,6 +61,20 @@ export type I18nTranslations = {
         "super_admin_role_not_defined": string;
         "item_deleted": string;
     };
+    "eav": {
+        "entity_type_not_founded": string;
+        "entity_model_id_not_founded": string;
+        "parent_entity_type_id_not_founded": string;
+        "attribute_type_id_not_founded": string;
+        "attribute_id_not_founded": string;
+        "shipping_way_id_not_founded": string;
+        "product_photo_not_founded": string;
+        "attribute_value_not_valid": string;
+        "attribute_required": string;
+        "attribute_not_in_entity_type": string;
+        "entity_type_id_not_founded": string;
+        "attribute_id_not_founded_for_name": string;
+    };
     "ecommerce": {
         "the_vendor_you_choose_is_not_in_valid_area": string;
         "the_maximum_of_used_this_coupon_code_reach": string;
@@ -151,20 +165,6 @@ export type I18nTranslations = {
         "total_usage_limit_reached": string;
         "discount_code_not_applicable": string;
         "discount_payment_gateway_not_found": string;
-    };
-    "eav": {
-        "entity_type_not_founded": string;
-        "entity_model_id_not_founded": string;
-        "parent_entity_type_id_not_founded": string;
-        "attribute_type_id_not_founded": string;
-        "attribute_id_not_founded": string;
-        "shipping_way_id_not_founded": string;
-        "product_photo_not_founded": string;
-        "attribute_value_not_valid": string;
-        "attribute_required": string;
-        "attribute_not_in_entity_type": string;
-        "entity_type_id_not_founded": string;
-        "attribute_id_not_founded_for_name": string;
     };
     "validation": {
         "NOT_EMPTY": string;
