@@ -75,6 +75,7 @@ import * as m0199 from './20260520-0199-alter-coresessions-modify-expiresat';
 import * as m0200 from './20260520-0200-alter-coresessions-modify-lastactivityat';
 
 import * as m0201 from './20260520-0201-create-zt_currencies';
+import { createDialectHelpers } from '../migration-helper';
 interface Condition {
   key: string;
   values: string[];
@@ -96,12 +97,22 @@ const cond = (
   s: any,
   key: string,
   ...values: string[]
-): MigrationDefinition => ({
-  name: s.name,
-  up: s.up,
-  down: s.down,
-  condition: { key, values },
-});
+): MigrationDefinition => {
+  const wrap = (fn: (sequelize: any) => Promise<void>) => {
+    return async (sequelize: any) => {
+      const { checkSetting } = createDialectHelpers(sequelize);
+      if (await checkSetting('key', [key], ...values)) {
+        await fn(sequelize);
+      }
+    };
+  };
+  return {
+    name: s.name,
+    up: s.up ? wrap(s.up) : undefined,
+    down: s.down ? wrap(s.down) : undefined,
+    condition: { key, values },
+  };
+};
 
 export const migrations: MigrationDefinition[] = [
   m(m0001),
@@ -181,5 +192,5 @@ export const migrations: MigrationDefinition[] = [
   m(m0199),
   m(m0200),
 
-  cond(m0201, 'SITE_NAME', 'zootag'),
+  cond(m0201, 'SITE_NAME', 'Zootag'),
 ];
