@@ -515,10 +515,179 @@ file?: Express.Multer.File,
 - Get authenticated user: `@GetUser() user: User` parameter
 - Public controllers: Use `OptionalJwtGuard`, `OptionalSessionGuard`
 
-### Response Format
+### Response DTO & Swagger Documentation
 
-- Apply `@UseInterceptors(JsonResponseTransformInterceptor)` at method level
-- Return objects with `{ result: data, total?: number }` structure for paginated responses
+The project uses a standardized pattern for API responses with Swagger documentation via the `@rahino/response` library.
+
+#### Response Envelope (`JsonResponseDto`)
+
+Located at `libs/response/src/dto/json-response.dto.ts`, exported from `@rahino/response`:
+
+```typescript
+{
+  statusCode: number,  // HTTP status code
+  reqId: string,       // Request UUID
+  message: string,     // 'Success' or custom message
+  result: T,           // Response payload (single object or array)
+  timestamp: string,   // ISO timestamp
+  path: string,        // Request path
+  total: number,       // Total count for paginated responses
+}
+```
+
+#### `@ApiJsonResponse()` Decorator
+
+Located at `libs/response/src/decorator/api-json-response.decorator.ts`, exported from `@rahino/response`. Automatically wraps Swagger response schemas in the `JsonResponseDto` envelope:
+
+```typescript
+@ApiJsonResponse({
+  type: SomeResponseDto,           // Required: The result DTO class
+  isArray?: boolean,               // true for array responses (paginated lists)
+  status?: number,                 // 200 (default) or 201 for created
+  description?: string,            // Override default 'OK' / 'Created'
+  extraModels?: any[],             // Sub-DTOs referenced via `@ApiProperty({ type: () => ChildDto })`
+})
+```
+
+- Internally uses `allOf` with `$ref` to merge `JsonResponseDto` + result type
+- Registers all models via `@ApiExtraModels()` so nested types resolve in Swagger
+- Selects `@ApiOkResponse` for 200 or `@ApiCreatedResponse` for 201
+
+#### Interceptor (`JsonResponseTransformInterceptor`)
+
+Located at `@rahino/response/interceptor`. Apply at **class level**:
+
+```typescript
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {}
+```
+
+The interceptor expects services to return `{ result, total?, message? }` and transforms them into the envelope at runtime.
+
+#### Response DTO Classes
+
+Define a plain class with `@ApiProperty()` for each result type. Name pattern: `<Entity>ResponseDto`:
+
+```typescript
+import { ApiProperty } from '@nestjs/swagger';
+import { ChildResponseDto } from './child-response.dto';
+
+export class SomeResponseDto {
+  @ApiProperty({ example: 1, description: 'Item ID' })
+  id: number;
+
+  @ApiProperty({ example: 'Sample', description: 'Item name' })
+  name: string;
+
+  @ApiProperty({
+    type: () => [ChildResponseDto],
+    description: 'Related items',
+    required: false,
+  })
+  children?: ChildResponseDto[];
+}
+```
+
+Key rules:
+- Use `@ApiProperty({ type: () => ChildDto })` for lazy-resolved nested types
+- Use `@ApiProperty({ type: () => [ChildDto] })` for arrays of nested types
+- Mark nullable fields with `required: false`
+- Export all response DTOs from `dto/index.ts`
+
+#### Complete Controller Example
+
+```typescript
+import { Controller, Get, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { ApiJsonResponse } from '@rahino/response';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { JwtGuard } from '@rahino/auth';
+import { SomeService } from './some.service';
+import { SomeResponseDto, ChildResponseDto } from './dto';
+
+@ApiTags('Some-Feature')
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/some/feature', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class SomeController {
+  constructor(private readonly service: SomeService) {}
+
+  @ApiOperation({ description: 'show all items' })
+  @ApiJsonResponse({ type: SomeResponseDto, isArray: true, extraModels: [ChildResponseDto] })
+  @CheckPermission({ permissionSymbol: 'some.feature.getall' })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() filter: SomeFilterDto) {
+    return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'show item by given id' })
+  @ApiJsonResponse({ type: SomeResponseDto, extraModels: [ChildResponseDto] })
+  @CheckPermission({ permissionSymbol: 'some.feature.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findById(@Param('id') id: number) {
+    return await this.service.findById(id);
+  }
+
+  @ApiOperation({ description: 'create item' })
+  @ApiJsonResponse({ type: SomeResponseDto, status: 201, extraModels: [ChildResponseDto] })
+  @CheckPermission({ permissionSymbol: 'some.feature.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: SomeDto) {
+    return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update item' })
+  @ApiJsonResponse({ type: SomeResponseDto, extraModels: [ChildResponseDto] })
+  @CheckPermission({ permissionSymbol: 'some.feature.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: number, @Body() dto: SomeDto) {
+    return await this.service.update(id, dto);
+  }
+
+  @ApiOperation({ description: 'delete item' })
+  @ApiJsonResponse({ type: SomeResponseDto, extraModels: [ChildResponseDto] })
+  @CheckPermission({ permissionSymbol: 'some.feature.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') id: number) {
+    return await this.service.deleteById(id);
+  }
+}
+```
+
+#### Service Return Values
+
+Services must return objects compatible with the interceptor:
+
+```typescript
+// Paginated — returns { result, total }
+async findAll(filter: SomeFilterDto) {
+  // ... query logic ...
+  return { result, total };
+}
+
+// Single item — returns { result }
+async findById(id: number) {
+  const item = await this.repository.findOne(...);
+  if (!item) throw new NotFoundException(...);
+  return { result: item };
+}
+```
+
+#### Import Paths Summary
+
+| Import                        | Path                                    |
+| ----------------------------- | --------------------------------------- |
+| `@ApiJsonResponse`            | `@rahino/response`                      |
+| `JsonResponseTransformInterceptor` | `@rahino/response/interceptor`     |
+| `JsonResponseDto`             | `@rahino/response` (rarely needed directly) |
 
 ### Localization / i18n
 
