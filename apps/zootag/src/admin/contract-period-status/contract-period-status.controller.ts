@@ -25,7 +25,7 @@ import { ContractPeriodStatusResponseDto } from './dto';
 @ApiTags('Zootag-Admin-ContractPeriodStatuses')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller({ path: '/api/zootag/admin/contractperiodstatuses', version: ['1'] })
+@Controller({ path: '/api/zootag/admin/contractPeriodStatuses', version: ['1'] })
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class ContractPeriodStatusController {
   constructor(private readonly service: ContractPeriodStatusService) {}

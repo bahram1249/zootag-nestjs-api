@@ -25,7 +25,7 @@ import { DeviceTypeResponseDto } from './dto';
 @ApiTags('Zootag-Admin-DeviceTypes')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller({ path: '/api/zootag/admin/devicetypes', version: ['1'] })
+@Controller({ path: '/api/zootag/admin/deviceTypes', version: ['1'] })
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class DeviceTypeController {
   constructor(private readonly service: DeviceTypeService) {}

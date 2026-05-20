@@ -29,7 +29,7 @@ import { ApiJsonResponse } from '@rahino/response';
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
 @Controller({
-  path: '/api/zootag/admin/contractperioddeviceprices',
+  path: '/api/zootag/admin/contractPeriodDevicePrices',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)

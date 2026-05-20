@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { createDialectHelpers } from '../migration-helper';
 
-export const name = '20260520-0219-create-zt_contractperiods';
+export const name = '20260520-0231-create-zt_contractperiods';
 
 export async function up(sequelize: Sequelize): Promise<void> {
   const { createTable, idCol, pk, ref, nv, text, bit } = createDialectHelpers(sequelize);
