@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T16:45:20.766Z",
+  "generatedAt": "2026-05-20T16:45:20.763Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -3030,7 +3030,7 @@
         },
         "lastActivityAt": {
           "name": "lastActivityAt",
-          "type": "DATETIME",
+          "type": "DATE",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,

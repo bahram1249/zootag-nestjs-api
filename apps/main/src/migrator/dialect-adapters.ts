@@ -19,7 +19,8 @@ export function createAdapters(rawDialect: Dialect) {
     if (t === 'NVARCHAR(MAX)' || t === 'NTEXT' || t === 'NVARCHAR(max)')
       return 'TEXT';
     if (t === 'DATETIMEOFFSET') return isPg ? 'TIMESTAMPTZ' : 'TEXT';
-    if (t === 'DATETIME' || t === 'DATE') return mssqlType;
+    if (t === 'DATE') return mssqlType;
+    if (t === 'DATETIME') return isPg ? 'TIMESTAMP' : mssqlType;
     if (t === 'BIT') return isPg ? 'BOOLEAN' : 'INTEGER';
     if (t === 'FLOAT') return isPg ? 'FLOAT' : 'REAL';
     if (t.startsWith('NVARCHAR(')) {

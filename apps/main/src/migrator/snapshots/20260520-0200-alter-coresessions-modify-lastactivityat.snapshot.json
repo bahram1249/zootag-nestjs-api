@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T16:45:20.766Z",
+  "generatedAt": "2026-05-20T16:45:20.764Z",
   "models": {
     "Attachments": {
       "className": "Attachment",

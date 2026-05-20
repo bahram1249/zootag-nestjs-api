@@ -20,7 +20,7 @@ export function mapDataType(typeStr: string): string {
     return `NVARCHAR(${len})`;
   }
   if (t === 'text' || t === 'ntext') return 'NTEXT';
-  if (t === 'date') return 'DATE';
+  if (t === 'date') return 'DATETIME';
   if (t === 'dateonly') return 'DATE';
   if (t === 'time') return 'TIME';
   if (t === 'datetime' || t === 'timestamp') return 'DATETIME';
