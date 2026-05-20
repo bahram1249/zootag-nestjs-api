@@ -1,3 +1,4 @@
+import { createDialectHelpers } from '../migration-helper';
 import * as s0072 from './20260519-0072-seed-core-settings';
 import * as s0073 from './20260519-0073-seed-core-usertypes';
 import * as s0074 from './20260519-0074-seed-core-superadmin-user';

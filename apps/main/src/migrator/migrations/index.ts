@@ -1,3 +1,5 @@
+import { createDialectHelpers } from '../migration-helper';
+
 import * as m0001 from './20260519-0001-core-create-settings-table';
 import * as m0002 from './20260519-0002-core-create-migrations-table';
 import * as m0003 from './20260519-0003-core-create-winstonlogs-table';
