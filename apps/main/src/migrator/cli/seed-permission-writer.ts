@@ -27,7 +27,7 @@ function toPascalCase(str: string): string {
     .replace(/^(.)/, (c) => c.toUpperCase());
 }
 
-interface CreatedFile {
+export interface CreatedFile {
   fileName: string;
   seqNum: number;
   type: 'seed' | 'permission';
@@ -195,7 +195,7 @@ export function createSeed(
   migratorRoot: string,
   name: string,
   site?: string,
-): string | null {
+): CreatedFile | null {
   const seedsDir = path.resolve(migratorRoot, 'seeds');
   if (!fs.existsSync(seedsDir)) {
     fs.mkdirSync(seedsDir, { recursive: true });
@@ -212,21 +212,22 @@ export function createSeed(
   fs.writeFileSync(filePath, content, 'utf-8');
 
   const indexFilePath = path.resolve(migratorRoot, 'seeds', 'index.ts');
-  updateSeedsIndex(indexFilePath, {
+  const createdFile: CreatedFile = {
     fileName,
     seqNum,
     type: 'seed',
     site,
-  });
+  };
+  updateSeedsIndex(indexFilePath, createdFile);
 
-  return fileName;
+  return createdFile;
 }
 
 export function createPermission(
   migratorRoot: string,
   name: string,
   site?: string,
-): string | null {
+): CreatedFile | null {
   const permsDir = path.resolve(migratorRoot, 'permissions');
   if (!fs.existsSync(permsDir)) {
     fs.mkdirSync(permsDir, { recursive: true });
@@ -243,12 +244,13 @@ export function createPermission(
   fs.writeFileSync(filePath, content, 'utf-8');
 
   const indexFilePath = path.resolve(migratorRoot, 'seeds', 'index.ts');
-  updateSeedsIndex(indexFilePath, {
+  const createdFile: CreatedFile = {
     fileName,
     seqNum,
     type: 'permission',
     site,
-  });
+  };
+  updateSeedsIndex(indexFilePath, createdFile);
 
-  return fileName;
+  return createdFile;
 }

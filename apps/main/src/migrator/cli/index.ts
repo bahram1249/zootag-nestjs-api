@@ -620,10 +620,35 @@ async function main(): Promise<void> {
       );
       const createdSeed = createSeed(migratorRoot, seedName, seedSite);
       if (createdSeed) {
-        console.log(`Seed file created: ${createdSeed}`);
+        console.log(`Seed file created: ${createdSeed.fileName}`);
         console.log(
           `Registered in: ${path.join(migratorRoot, 'seeds', 'index.ts')}`,
         );
+
+        // Generate per-file snapshot for this seed
+        const snapshotsDir = path.resolve(
+          rootDir,
+          'apps/main/src/migrator/snapshots',
+        );
+        if (!fs.existsSync(snapshotsDir)) {
+          fs.mkdirSync(snapshotsDir, { recursive: true });
+        }
+        const slocalModels = scanModelsDirectory(modelsDir, extraClassToTable);
+        let scompiledModels: Record<string, ModelMeta> = {};
+        if (coreModelsDir) {
+          scompiledModels = scanCompiledModelsDirectory(
+            coreModelsDir,
+            extraClassToTable,
+          );
+        }
+        const sallModels = { ...scompiledModels, ...slocalModels };
+        const sbaseName = createdSeed.fileName.replace(/\.ts$/, '');
+        const ssnapshotPath = path.join(
+          snapshotsDir,
+          `${sbaseName}.snapshot.json`,
+        );
+        saveSnapshot(ssnapshotPath, sallModels);
+        console.log(`  Snapshot: ${sbaseName}.snapshot.json`);
       }
       break;
     }
@@ -650,10 +675,35 @@ async function main(): Promise<void> {
         permSite,
       );
       if (createdPerm) {
-        console.log(`Permission file created: ${createdPerm}`);
+        console.log(`Permission file created: ${createdPerm.fileName}`);
         console.log(
           `Registered in: ${path.join(permMigratorRoot, 'seeds', 'index.ts')}`,
         );
+
+        // Generate per-file snapshot for this permission
+        const snapshotsDir = path.resolve(
+          rootDir,
+          'apps/main/src/migrator/snapshots',
+        );
+        if (!fs.existsSync(snapshotsDir)) {
+          fs.mkdirSync(snapshotsDir, { recursive: true });
+        }
+        const plocalModels = scanModelsDirectory(modelsDir, extraClassToTable);
+        let pcompiledModels: Record<string, ModelMeta> = {};
+        if (coreModelsDir) {
+          pcompiledModels = scanCompiledModelsDirectory(
+            coreModelsDir,
+            extraClassToTable,
+          );
+        }
+        const pallModels = { ...pcompiledModels, ...plocalModels };
+        const pbaseName = createdPerm.fileName.replace(/\.ts$/, '');
+        const psnapshotPath = path.join(
+          snapshotsDir,
+          `${pbaseName}.snapshot.json`,
+        );
+        saveSnapshot(psnapshotPath, pallModels);
+        console.log(`  Snapshot: ${pbaseName}.snapshot.json`);
       }
       break;
     }
