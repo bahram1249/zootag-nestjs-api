@@ -68,11 +68,7 @@ export class AuthService {
 
   async refresh(dto: RefreshDto) {
     const session = await this.sessionRepository.findByPk(dto.sessionId);
-    if (
-      !session ||
-      session.isRevoked ||
-      session.expiresAt <= new Date()
-    ) {
+    if (!session || session.isRevoked || session.expiresAt <= new Date()) {
       throw new UnauthorizedException(
         this.localizationService.translate('core.credentials_incorrect'),
       );

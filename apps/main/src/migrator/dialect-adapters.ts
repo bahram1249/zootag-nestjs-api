@@ -85,7 +85,12 @@ export function createAdapters(rawDialect: Dialect) {
     ): string => {
       const mappedType = colType(rawType);
       const nullStr = nullable ? 'NULL' : 'NOT NULL';
-      const safeDefault = defaultValue === 'false' ? '0' : defaultValue === 'true' ? '1' : defaultValue;
+      const safeDefault =
+        defaultValue === 'false'
+          ? '0'
+          : defaultValue === 'true'
+            ? '1'
+            : defaultValue;
       const defStr = safeDefault ? ` DEFAULT ${safeDefault}` : '';
       const constrStr = constraint ? ` ${constraint}` : '';
       const q = (s: string) => (isMssql ? `[${s}]` : `"${s}"`);

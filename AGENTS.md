@@ -78,6 +78,14 @@ import { SomeService } from './some.service';
 - Use `class-validator` decorators for DTO validation
 - Use `@ApiProperty()` from `@nestjs/swagger` for API documentation
 - Use `IsInt()` instead of `IsBigInt()` (which doesn't exist)
+- For service/controller method params use `number`, convert with `Number()` when passing `bigint` (e.g., `Number(user.id)`)
+
+### DTOs & Swagger
+
+- In `@ApiProperty()` do NOT use class-validator decorators as `type` values (e.g., `type: IsString` is wrong — Swagger renders it as `{}`)
+- Omit `type` entirely when it's a primitive — Swagger infers from the TypeScript declaration
+- Use `type: () => ChildDto` only for lazy-resolved nested types
+- Every field exposed in the API must have an `@ApiProperty()` decorator (including `password` etc.)
 
 ### Naming Conventions
 
@@ -745,6 +753,13 @@ The `translate()` method takes a `PathImpl2<I18nTranslations>` key path and opti
 
 - Models in `libs/localdatabase/src/models/<domain>/`
 - Each model directory must have an `index.ts` exporting all models
+- When adding a new model, update these files:
+  1. `libs/localdatabase/src/models/<domain>/index.ts` — barrel export
+  2. `libs/localdatabase/src/models/index.ts` — add domain barrel
+  3. `libs/localdatabase/src/subsystem-models/<domain>.ts` — add model array
+  4. `libs/localdatabase/src/subsystem-models/index.ts` — add domain barrel
+  5. `apps/main/src/routes/app.module.ts` — spread model array in `models: [...]`
+  6. The feature module's `SequelizeModule.forFeature([...])` — register model
 - Use `QueryOptionsBuilder` from `@rahino/query-filter/sequelize-query-builder` for all queries
 - Use `QueryOptionsBuilder` via `import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder'`
 - Complex query logic should be encapsulated in query builder services (e.g., `LogisticSaleQueryBuilderService`)

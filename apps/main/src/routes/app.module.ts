@@ -93,7 +93,12 @@ import { LocalizationModule } from '../common/localization';
           configService.get('DB_DIALECT') === 'sqlite'
             ? '+00:00'
             : configService.get('DB_TIMEZONE') || 'fa-IR',
-        models: [...coreModels, ...localCoreModels, ...eavEntities, ...bpmnModels],
+        models: [
+          ...coreModels,
+          ...localCoreModels,
+          ...eavEntities,
+          ...bpmnModels,
+        ],
       }),
     }),
     KnexModule.forRootAsync({
