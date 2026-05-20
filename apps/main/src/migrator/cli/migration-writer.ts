@@ -287,6 +287,27 @@ function tableToSite(tableName: string): string | null {
   const upper = tableName.toUpperCase();
   if (upper.startsWith('BPMN')) return 'bpmn';
   if (upper.startsWith('EAV')) return 'ecommerce';
+
+  // For unknown table prefixes, read PROJECT_NAME from .env as fallback
+  try {
+    const envPath = path.resolve(__dirname, '../../../../../.env');
+    const content = fs.readFileSync(envPath, 'utf-8');
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim();
+      if (
+        trimmed &&
+        !trimmed.startsWith('#') &&
+        trimmed.toUpperCase().startsWith('PROJECT_NAME')
+      ) {
+        const eqIdx = trimmed.indexOf('=');
+        const value = trimmed.substring(eqIdx + 1).trim();
+        const clean = value.replace(/^["']|["']$/g, '');
+        if (clean) return clean.toLowerCase();
+      }
+    }
+  } catch {
+    // .env not available, fall through to null
+  }
   return null;
 }
 
@@ -363,6 +384,7 @@ function updateIndexFile(
       content.slice(0, insertPos) +
       '\n' +
       entriesWithComma.join('\n') +
+      '\n' +
       content.slice(insertPos);
   }
 
