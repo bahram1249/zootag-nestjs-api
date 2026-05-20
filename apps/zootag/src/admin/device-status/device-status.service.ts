@@ -18,16 +18,12 @@ export class DeviceStatusService {
 
   async findAll(filter: DeviceStatusFilterDto) {
     let qb = new QueryOptionsBuilder()
-      .filter({ isDeleted: 0 })
       .filterIf(!!filter.search && filter.search !== '%%', {
-        [Op.or]: [
-          { title: { [Op.like]: filter.search } },
-          { slug: { [Op.like]: filter.search } },
-        ],
+        name: { [Op.like]: filter.search },
       });
     const total = await this.repository.count(qb.build());
     qb = qb
-      .attributes(['id', 'title', 'slug', 'isActive'])
+      .attributes(['id', 'name', 'isActive'])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -37,7 +33,7 @@ export class DeviceStatusService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder().filter({ id }).build(),
     );
     if (!item)
       throw new NotFoundException(
@@ -49,36 +45,32 @@ export class DeviceStatusService {
   async create(dto: DeviceStatusDto) {
     const item = await this.repository.create({
       id: dto.id,
-      title: dto.title,
-      slug: dto.slug,
+      name: dto.name,
     });
     return { result: item };
   }
 
   async update(id: number, dto: DeviceStatusDto) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder().filter({ id }).build(),
     );
     if (!item)
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_status_not_found'),
       );
-    await item.update({
-      title: dto.title,
-      slug: dto.slug,
-    });
+    await item.update({ name: dto.name });
     return { result: item };
   }
 
   async deleteById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder().filter({ id }).build(),
     );
     if (!item)
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_status_not_found'),
       );
-    await item.update({ isDeleted: true });
+    await item.destroy();
     return { result: item };
   }
 }

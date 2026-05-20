@@ -81,7 +81,20 @@ import * as m0201 from './20260520-0201-create-zt_currencies';
 import * as m0204 from './20260520-0204-create-zt_companies';
 
 import * as m0206 from './20260520-0206-create-zt_devicetypes';
-import * as m0208 from './20260520-0208-create-zt_devicestatuses';
+
+import * as m0211 from './20260520-0211-create-zt_devicestatuses';
+import * as m0212 from './20260520-0212-alter-zt_devicetypes-add-typename';
+import * as m0213 from './20260520-0213-alter-zt_devicetypes-add-modelcode';
+import * as m0214 from './20260520-0214-alter-zt_devicetypes-add-description';
+import * as m0215 from './20260520-0215-alter-zt_devicetypes-drop-title';
+import * as m0216 from './20260520-0216-alter-zt_devicetypes-drop-slug';
+
+import * as m0217 from './20260520-0217-create-zt_contractperioddeviceprices';
+import * as m0218 from './20260520-0218-create-zt_contractperiodstatuses';
+import * as m0219 from './20260520-0219-create-zt_contractperiods';
+import * as m0220 from './20260520-0220-create-zt_contractstatuses';
+import * as m0221 from './20260520-0221-create-zt_contracts';
+import * as m0222 from './20260520-0222-create-zt_devices';
 interface Condition {
   key: string;
   values: string[];
@@ -204,5 +217,17 @@ export const migrations: MigrationDefinition[] = [
 
   cond(m0206, 'SITE_NAME', 'Zootag'),
 
-  cond(m0208, 'SITE_NAME', 'Zootag'),
+  cond(m0211, 'SITE_NAME', 'zootag'),
+  cond(m0212, 'SITE_NAME', 'zootag'),
+  cond(m0213, 'SITE_NAME', 'zootag'),
+  cond(m0214, 'SITE_NAME', 'zootag'),
+  cond(m0215, 'SITE_NAME', 'zootag'),
+  cond(m0216, 'SITE_NAME', 'zootag'),
+
+  cond(m0217, 'SITE_NAME', 'zootag'),
+  cond(m0218, 'SITE_NAME', 'zootag'),
+  cond(m0219, 'SITE_NAME', 'zootag'),
+  cond(m0220, 'SITE_NAME', 'zootag'),
+  cond(m0221, 'SITE_NAME', 'zootag'),
+  cond(m0222, 'SITE_NAME', 'zootag'),
 ];

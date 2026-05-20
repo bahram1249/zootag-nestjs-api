@@ -3,5 +3,11 @@
   "currency_not_found": "ارز مورد نظر یافت نشد",
   "company_not_found": "شرکت مورد نظر یافت نشد",
   "device_type_not_found": "نوع دستگاه مورد نظر یافت نشد",
-  "device_status_not_found": "وضعیت دستگاه مورد نظر یافت نشد"
+  "device_status_not_found": "وضعیت دستگاه مورد نظر یافت نشد",
+  "contract_status_not_found": "وضعیت قرارداد مورد نظر یافت نشد",
+  "contract_period_status_not_found": "وضعیت دوره قرارداد مورد نظر یافت نشد",
+  "contract_not_found": "قرارداد مورد نظر یافت نشد",
+  "contract_period_not_found": "دوره قرارداد مورد نظر یافت نشد",
+  "contract_period_device_price_not_found": "قیمت دستگاه در دوره قرارداد مورد نظر یافت نشد",
+  "device_not_found": "دستگاه مورد نظر یافت نشد"
 }

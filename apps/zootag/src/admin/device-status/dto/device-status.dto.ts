@@ -14,7 +14,7 @@ export class DeviceStatusDto {
   @Type(() => Number)
   @IsInt()
   @IsNotEmpty()
-  @ApiProperty({ required: true, description: 'device status id' })
+  @ApiProperty({ description: 'device status id' })
   id: number;
 
   @AutoMap()
@@ -22,14 +22,6 @@ export class DeviceStatusDto {
   @MaxLength(100)
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ description: 'device status title' })
-  title: string;
-
-  @AutoMap()
-  @MinLength(2)
-  @MaxLength(100)
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ description: 'unique slug' })
-  slug: string;
+  @ApiProperty({ description: 'device status name' })
+  name: string;
 }

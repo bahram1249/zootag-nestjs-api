@@ -181,6 +181,12 @@ export type I18nTranslations = {
         "company_not_found": string;
         "device_type_not_found": string;
         "device_status_not_found": string;
+        "contract_status_not_found": string;
+        "contract_period_status_not_found": string;
+        "contract_not_found": string;
+        "contract_period_not_found": string;
+        "contract_period_device_price_not_found": string;
+        "device_not_found": string;
     };
 };
 /* prettier-ignore */

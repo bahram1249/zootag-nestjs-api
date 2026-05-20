@@ -3,5 +3,11 @@
   "currency_not_found": "currency not found",
   "company_not_found": "company not found",
   "device_type_not_found": "device type not found",
-  "device_status_not_found": "device status not found"
+  "device_status_not_found": "device status not found",
+  "contract_status_not_found": "contract status not found",
+  "contract_period_status_not_found": "contract period status not found",
+  "contract_not_found": "contract not found",
+  "contract_period_not_found": "contract period not found",
+  "contract_period_device_price_not_found": "contract period device price not found",
+  "device_not_found": "device not found"
 }

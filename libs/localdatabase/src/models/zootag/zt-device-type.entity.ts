@@ -7,12 +7,16 @@ export class ZTDeviceType extends Model {
   id: bigint;
 
   @AutoMap()
-  @Column({ type: DataType.STRING(100), allowNull: false })
-  title: string;
+  @Column({ type: DataType.STRING(200), allowNull: false })
+  typeName: string;
 
   @AutoMap()
-  @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-  slug: string;
+  @Column({ type: DataType.STRING(100), allowNull: false })
+  modelCode: string;
+
+  @AutoMap()
+  @Column({ type: DataType.TEXT, allowNull: true })
+  description: string;
 
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })

@@ -10,6 +10,12 @@ import { CurrencyCalculationModule } from './shared/currency-calculation/currenc
 import { CompanyModule } from './admin/company/company.module';
 import { DeviceTypeModule } from './admin/device-type/device-type.module';
 import { DeviceStatusModule } from './admin/device-status/device-status.module';
+import { ContractStatusModule } from './admin/contract-status/contract-status.module';
+import { ContractPeriodStatusModule } from './admin/contract-period-status/contract-period-status.module';
+import { ContractModule } from './admin/contract/contract.module';
+import { ContractPeriodModule } from './admin/contract-period/contract-period.module';
+import { ContractPeriodDevicePriceModule } from './admin/contract-period-device-price/contract-period-device-price.module';
+import { DeviceModule } from './admin/device/device.module';
 
 @Module({
   imports: [
@@ -18,6 +24,12 @@ import { DeviceStatusModule } from './admin/device-status/device-status.module';
     CompanyModule,
     DeviceTypeModule,
     DeviceStatusModule,
+    ContractStatusModule,
+    ContractPeriodStatusModule,
+    ContractModule,
+    ContractPeriodModule,
+    ContractPeriodDevicePriceModule,
+    DeviceModule,
   ],
 })
 export class ZootagModule implements NestModule {

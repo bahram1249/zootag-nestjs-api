@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T20:05:06.607Z",
+  "generatedAt": "2026-05-20T20:23:05.470Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -3967,6 +3967,583 @@
       "indexes": [],
       "foreignKeys": []
     },
+    "ZT_ContractPeriodDevicePrices": {
+      "className": "ZTContractPeriodDevicePrice",
+      "tableName": "ZT_ContractPeriodDevicePrices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "contractPeriodId": {
+          "name": "contractPeriodId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_ContractPeriods",
+            "key": "id"
+          }
+        },
+        "deviceTypeId": {
+          "name": "deviceTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceTypes",
+            "key": "id"
+          }
+        },
+        "purchasePrice": {
+          "name": "purchasePrice",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "purchasePriceIRR": {
+          "name": "purchasePriceIRR",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "minimumQuantity": {
+          "name": "minimumQuantity",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "contractPeriodId"
+          ],
+          "refTable": "ZT_ContractPeriods",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceTypeId"
+          ],
+          "refTable": "ZT_DeviceTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZT_ContractPeriodStatuses": {
+      "className": "ZTContractPeriodStatus",
+      "tableName": "ZT_ContractPeriodStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "ZT_ContractPeriods": {
+      "className": "ZTContractPeriod",
+      "tableName": "ZT_ContractPeriods",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "contractId": {
+          "name": "contractId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Contracts",
+            "key": "id"
+          }
+        },
+        "periodName": {
+          "name": "periodName",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "contractPeriodStatusId": {
+          "name": "contractPeriodStatusId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_ContractPeriodStatuses",
+            "key": "id"
+          }
+        },
+        "notes": {
+          "name": "notes",
+          "type": "NTEXT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "contractId"
+          ],
+          "refTable": "ZT_Contracts",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "contractPeriodStatusId"
+          ],
+          "refTable": "ZT_ContractPeriodStatuses",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZT_ContractStatuses": {
+      "className": "ZTContractStatus",
+      "tableName": "ZT_ContractStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "ZT_Contracts": {
+      "className": "ZTContract",
+      "tableName": "ZT_Contracts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "companyId": {
+          "name": "companyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Companies",
+            "key": "id"
+          }
+        },
+        "contractNumber": {
+          "name": "contractNumber",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "title": {
+          "name": "title",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "contractStatusId": {
+          "name": "contractStatusId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_ContractStatuses",
+            "key": "id"
+          }
+        },
+        "notes": {
+          "name": "notes",
+          "type": "NTEXT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "companyId"
+          ],
+          "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "contractStatusId"
+          ],
+          "refTable": "ZT_ContractStatuses",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
     "ZT_Currencies": {
       "className": "ZTCurrency",
       "tableName": "ZT_Currencies",
@@ -4065,6 +4642,54 @@
       "indexes": [],
       "foreignKeys": []
     },
+    "ZT_DeviceStatuses": {
+      "className": "ZTDeviceStatus",
+      "tableName": "ZT_DeviceStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
     "ZT_DeviceTypes": {
       "className": "ZTDeviceType",
       "tableName": "ZT_DeviceTypes",
@@ -4079,8 +4704,18 @@
           "unique": false,
           "comment": null
         },
-        "title": {
-          "name": "title",
+        "typeName": {
+          "name": "typeName",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "modelCode": {
+          "name": "modelCode",
           "type": "NVARCHAR(100)",
           "primaryKey": false,
           "autoIncrement": false,
@@ -4089,14 +4724,14 @@
           "unique": false,
           "comment": null
         },
-        "slug": {
-          "name": "slug",
-          "type": "NVARCHAR(100)",
+        "description": {
+          "name": "description",
+          "type": "NTEXT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": false,
+          "allowNull": true,
           "defaultValue": null,
-          "unique": true,
+          "unique": false,
           "comment": null
         },
         "isActive": {
@@ -4142,6 +4777,250 @@
       },
       "indexes": [],
       "foreignKeys": []
+    },
+    "ZT_Devices": {
+      "className": "ZTDevice",
+      "tableName": "ZT_Devices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "serialNumber": {
+          "name": "serialNumber",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "imei": {
+          "name": "imei",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "macAddress": {
+          "name": "macAddress",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "companyId": {
+          "name": "companyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Companies",
+            "key": "id"
+          }
+        },
+        "deviceTypeId": {
+          "name": "deviceTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceTypes",
+            "key": "id"
+          }
+        },
+        "contractPeriodId": {
+          "name": "contractPeriodId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_ContractPeriods",
+            "key": "id"
+          }
+        },
+        "purchasePrice": {
+          "name": "purchasePrice",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "purchasePriceIRR": {
+          "name": "purchasePriceIRR",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "purchaseDate": {
+          "name": "purchaseDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "warrantyEndDate": {
+          "name": "warrantyEndDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "deviceStatusId": {
+          "name": "deviceStatusId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceStatuses",
+            "key": "id"
+          }
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "companyId"
+          ],
+          "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceTypeId"
+          ],
+          "refTable": "ZT_DeviceTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "contractPeriodId"
+          ],
+          "refTable": "ZT_ContractPeriods",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceStatusId"
+          ],
+          "refTable": "ZT_DeviceStatuses",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
     }
   }
 }

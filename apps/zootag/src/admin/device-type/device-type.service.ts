@@ -21,13 +21,13 @@ export class DeviceTypeService {
       .filter({ isDeleted: 0 })
       .filterIf(!!filter.search && filter.search !== '%%', {
         [Op.or]: [
-          { title: { [Op.like]: filter.search } },
-          { slug: { [Op.like]: filter.search } },
+          { typeName: { [Op.like]: filter.search } },
+          { modelCode: { [Op.like]: filter.search } },
         ],
       });
     const total = await this.repository.count(qb.build());
     qb = qb
-      .attributes(['id', 'title', 'slug', 'isActive'])
+      .attributes(['id', 'typeName', 'modelCode', 'description', 'isActive'])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -48,8 +48,9 @@ export class DeviceTypeService {
 
   async create(dto: DeviceTypeDto) {
     const item = await this.repository.create({
-      title: dto.title,
-      slug: dto.slug,
+      typeName: dto.typeName,
+      modelCode: dto.modelCode,
+      description: dto.description,
     });
     return { result: item };
   }
@@ -63,8 +64,9 @@ export class DeviceTypeService {
         this.localizationService.translate('zootag.device_type_not_found'),
       );
     await item.update({
-      title: dto.title,
-      slug: dto.slug,
+      typeName: dto.typeName,
+      modelCode: dto.modelCode,
+      description: dto.description,
     });
     return { result: item };
   }

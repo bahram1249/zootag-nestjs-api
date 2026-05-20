@@ -1,0 +1,77 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from '@rahino/auth';
+import { DeviceService } from './device.service';
+import { DeviceDto, DeviceFilterDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { DeviceResponseDto } from './dto';
+
+@ApiTags('Zootag-Admin-Devices')
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
+@Controller({ path: '/api/zootag/admin/devices', version: ['1'] })
+@UseInterceptors(JsonResponseTransformInterceptor)
+export class DeviceController {
+  constructor(private readonly service: DeviceService) {}
+
+  @ApiOperation({ description: 'show all devices' })
+  @ApiJsonResponse({ type: DeviceResponseDto, isArray: true })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.getall' })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() filter: DeviceFilterDto) {
+    return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'show device by given id' })
+  @ApiJsonResponse({ type: DeviceResponseDto })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findById(@Param('id') id: number) {
+    return await this.service.findById(id);
+  }
+
+  @ApiOperation({ description: 'create device' })
+  @ApiJsonResponse({ type: DeviceResponseDto, status: 201 })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: DeviceDto) {
+    return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update device' })
+  @ApiJsonResponse({ type: DeviceResponseDto })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') id: number, @Body() dto: DeviceDto) {
+    return await this.service.update(id, dto);
+  }
+
+  @ApiOperation({ description: 'delete device' })
+  @ApiJsonResponse({ type: DeviceResponseDto })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') id: number) {
+    return await this.service.deleteById(id);
+  }
+}

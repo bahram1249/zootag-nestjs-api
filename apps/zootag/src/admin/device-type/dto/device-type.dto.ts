@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -10,17 +11,23 @@ import { AutoMap } from 'automapper-classes';
 export class DeviceTypeDto {
   @AutoMap()
   @MinLength(2)
-  @MaxLength(100)
+  @MaxLength(200)
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ description: 'device type title' })
-  title: string;
+  @ApiProperty({ description: 'device type name' })
+  typeName: string;
 
   @AutoMap()
-  @MinLength(2)
+  @MinLength(1)
   @MaxLength(100)
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ description: 'unique slug' })
-  slug: string;
+  @ApiProperty({ description: 'model code' })
+  modelCode: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ required: false, description: 'description' })
+  description?: string;
 }

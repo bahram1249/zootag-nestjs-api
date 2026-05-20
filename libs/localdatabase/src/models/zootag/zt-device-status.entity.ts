@@ -8,23 +8,12 @@ export class ZTDeviceStatus extends Model {
 
   @AutoMap()
   @Column({ type: DataType.STRING(100), allowNull: false })
-  title: string;
-
-  @AutoMap()
-  @Column({ type: DataType.STRING(100), allowNull: false, unique: true })
-  slug: string;
+  name: string;
 
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
   isActive: boolean;
 
-  @AutoMap()
-  @Column({ type: DataType.BOOLEAN, allowNull: true })
-  isDeleted: boolean;
-
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;
-
-  @Column({ type: DataType.DATE, allowNull: false })
-  updatedAt: Date;
 }

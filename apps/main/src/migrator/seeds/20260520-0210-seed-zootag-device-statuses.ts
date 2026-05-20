@@ -7,11 +7,11 @@ export async function up(sequelize: Sequelize): Promise<void> {
   const { nowVal, ns, top } = createDialectHelpers(sequelize);
 
   for (const row of [
-    { id: 1, title: 'InStock', slug: 'in-stock' },
-    { id: 2, title: 'Assigned', slug: 'assigned' },
-    { id: 3, title: 'Active', slug: 'active' },
-    { id: 4, title: 'Damaged', slug: 'damaged' },
-    { id: 5, title: 'Retired', slug: 'retired' },
+    { id: 1, name: 'InStock' },
+    { id: 2, name: 'Assigned' },
+    { id: 3, name: 'Active' },
+    { id: 4, name: 'Damaged' },
+    { id: 5, name: 'Retired' },
   ]) {
     const [existing]: any = await sequelize.query(
       top(1, `SELECT 1 FROM ZT_DeviceStatuses WHERE id = ${row.id}`),
@@ -19,7 +19,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     );
     if (!existing) {
       await sequelize.query(
-        `INSERT INTO ZT_DeviceStatuses (id, title, slug, isActive, isDeleted, "createdAt", "updatedAt") VALUES (${row.id}, ${ns(row.title)}, ${ns(row.slug)}, 1, NULL, ${nowVal}, ${nowVal})`,
+        `INSERT INTO ZT_DeviceStatuses (id, name, isActive, "createdAt", "updatedAt") VALUES (${row.id}, ${ns(row.name)}, 1, ${nowVal}, ${nowVal})`,
         { raw: true, type: QueryTypes.RAW },
       );
     }

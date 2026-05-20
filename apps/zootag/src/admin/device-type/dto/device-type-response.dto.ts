@@ -4,11 +4,14 @@ export class DeviceTypeResponseDto {
   @ApiProperty({ example: 1, description: 'Device Type ID' })
   id: number;
 
-  @ApiProperty({ example: 'Dog Tracker', description: 'Device type title' })
-  title: string;
+  @ApiProperty({ example: 'GPS Tracker', description: 'Device type name' })
+  typeName: string;
 
-  @ApiProperty({ example: 'dog-tracker', description: 'Unique slug' })
-  slug: string;
+  @ApiProperty({ example: 'GT-100', description: 'Model code' })
+  modelCode: string;
+
+  @ApiProperty({ example: 'Standard GPS tracker', description: 'Description', required: false })
+  description?: string;
 
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
