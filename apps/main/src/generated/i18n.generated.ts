@@ -177,6 +177,7 @@ export type I18nTranslations = {
     };
     "zootag": {
         "not_found": string;
+        "currency_not_found": string;
     };
 };
 /* prettier-ignore */

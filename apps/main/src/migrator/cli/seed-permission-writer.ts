@@ -34,10 +34,7 @@ interface CreatedFile {
   site?: string;
 }
 
-export function generateSeedFile(
-  name: string,
-  seqNum: number,
-): string {
+export function generateSeedFile(name: string, seqNum: number): string {
   const prefix = datePrefix();
   const kebabName = toKebabCase(name);
   const fileName = `${prefix}-${pad(seqNum)}-seed-${kebabName}`;
@@ -77,10 +74,7 @@ export async function down(sequelize: Sequelize): Promise<void> {
 `;
 }
 
-export function generatePermissionFile(
-  name: string,
-  seqNum: number,
-): string {
+export function generatePermissionFile(name: string, seqNum: number): string {
   const prefix = datePrefix();
   const pascalName = toPascalCase(name);
   const fileName = `${prefix}-${pad(seqNum)}-${pascalName}`;
@@ -105,10 +99,7 @@ export async function down(_sequelize: Sequelize): Promise<void> {}
 `;
 }
 
-function updateSeedsIndex(
-  indexFilePath: string,
-  file: CreatedFile,
-): void {
+function updateSeedsIndex(indexFilePath: string, file: CreatedFile): void {
   if (!fs.existsSync(indexFilePath)) return;
 
   const content = fs.readFileSync(indexFilePath, 'utf-8');
@@ -170,7 +161,8 @@ function updateSeedsIndex(
       /export const seeds: SeedDefinition\[\] = \[/,
     );
     if (closingBracketMatch) {
-      const bracketStart = closingBracketMatch.index! + closingBracketMatch[0].length;
+      const bracketStart =
+        closingBracketMatch.index! + closingBracketMatch[0].length;
       let bracketDepth = 1;
       let bracketIdx = bracketStart;
       while (bracketDepth > 0 && bracketIdx < updatedContent.length) {

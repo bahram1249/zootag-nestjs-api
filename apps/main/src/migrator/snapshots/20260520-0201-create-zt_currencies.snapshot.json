@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T18:25:33.638Z",
+  "generatedAt": "2026-05-20T18:25:33.637Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -3849,7 +3849,7 @@
         }
       ]
     },
-    "ZT_Currencies": {
+    "ZTCurrency": {
       "className": "ZTCurrency",
       "tableName": "ZT_Currencies",
       "columns": {

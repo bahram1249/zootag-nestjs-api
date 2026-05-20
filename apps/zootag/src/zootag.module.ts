@@ -5,9 +5,11 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CurrencyModule } from './admin/currency/currency.module';
+import { CurrencyCalculationModule } from './shared/currency-calculation/currency-calculation.module';
 
 @Module({
-  imports: [],
+  imports: [CurrencyCalculationModule, CurrencyModule],
 })
 export class ZootagModule implements NestModule {
   constructor() {}

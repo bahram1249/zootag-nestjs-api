@@ -123,6 +123,8 @@ import * as s0193 from '../permissions/20260519-0193-GsRewardRule';
 import * as s0194 from '../permissions/20260519-0194-GsGuaranteeDiscountCodeUsages';
 import * as s0195 from '../permissions/20260519-0195-GsGuaranteeRewardHistories';
 import * as s0196 from '../permissions/20260519-0196-IrangsImportData';
+import * as s0202 from './20260520-0202-seed-zootag-currencies';
+import * as s0203 from '../permissions/20260520-0203-ZootagCurrencies';
 
 interface Condition {
   key: string;
@@ -274,4 +276,8 @@ export const seeds: SeedDefinition[] = [
   cond(s0194, 'SITE_NAME', 'guarantee'),
   cond(s0195, 'SITE_NAME', 'guarantee'),
   cond(s0196, 'SITE_NAME', 'guarantee'),
+
+  cond(s0202, 'SITE_NAME', 'zootag'),
+
+  cond(s0203, 'SITE_NAME', 'zootag'),
 ];

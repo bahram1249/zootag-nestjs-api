@@ -621,7 +621,9 @@ async function main(): Promise<void> {
       const createdSeed = createSeed(migratorRoot, seedName, seedSite);
       if (createdSeed) {
         console.log(`Seed file created: ${createdSeed}`);
-        console.log(`Registered in: ${path.join(migratorRoot, 'seeds', 'index.ts')}`);
+        console.log(
+          `Registered in: ${path.join(migratorRoot, 'seeds', 'index.ts')}`,
+        );
       }
       break;
     }
@@ -642,7 +644,11 @@ async function main(): Promise<void> {
         '..',
         'apps/main/src/migrator',
       );
-      const createdPerm = createPermission(permMigratorRoot, permName, permSite);
+      const createdPerm = createPermission(
+        permMigratorRoot,
+        permName,
+        permSite,
+      );
       if (createdPerm) {
         console.log(`Permission file created: ${createdPerm}`);
         console.log(
