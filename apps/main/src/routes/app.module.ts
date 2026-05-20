@@ -34,6 +34,7 @@ const cluster = require('cluster');
 import * as os from 'os';
 import { Dialect } from 'sequelize';
 import {
+  coreModels as localCoreModels,
   bpmnModels,
   eavEntities,
 } from '@rahino/localdatabase/subsystem-models';
@@ -92,7 +93,7 @@ import { LocalizationModule } from '../common/localization';
           configService.get('DB_DIALECT') === 'sqlite'
             ? '+00:00'
             : configService.get('DB_TIMEZONE') || 'fa-IR',
-        models: [...coreModels, ...eavEntities, ...bpmnModels],
+        models: [...coreModels, ...localCoreModels, ...eavEntities, ...bpmnModels],
       }),
     }),
     KnexModule.forRootAsync({

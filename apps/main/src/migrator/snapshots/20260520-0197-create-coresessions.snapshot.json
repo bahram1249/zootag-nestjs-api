@@ -2950,108 +2950,6 @@
         }
       ]
     },
-    "CoreSessions": {
-      "className": "CoreSession",
-      "tableName": "CoreSessions",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": true,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "userId": {
-          "name": "userId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "Users",
-            "key": "id"
-          }
-        },
-        "refreshToken": {
-          "name": "refreshToken",
-          "type": "NVARCHAR(255)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "ipAddress": {
-          "name": "ipAddress",
-          "type": "NVARCHAR(255)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "userAgent": {
-          "name": "userAgent",
-          "type": "NVARCHAR(255)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "expiresAt": {
-          "name": "expiresAt",
-          "type": "DATE",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "isRevoked": {
-          "name": "isRevoked",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "false",
-          "unique": false,
-          "comment": null
-        },
-        "lastActivityAt": {
-          "name": "lastActivityAt",
-          "type": "DATE",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "userId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
-    },
     "EAVAttributeTypes": {
       "className": "EAVAttributeType",
       "tableName": "EAVAttributeTypes",
@@ -3838,6 +3736,108 @@
             "id"
           ]
         },
+        {
+          "columns": [
+            "userId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "CoreSession": {
+      "className": "CoreSession",
+      "tableName": "CoreSessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "userId": {
+          "name": "userId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "refreshToken": {
+          "name": "refreshToken",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "ipAddress": {
+          "name": "ipAddress",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "userAgent": {
+          "name": "userAgent",
+          "type": "NVARCHAR(255)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "DATE",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isRevoked": {
+          "name": "isRevoked",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "false",
+          "unique": false,
+          "comment": null
+        },
+        "lastActivityAt": {
+          "name": "lastActivityAt",
+          "type": "DATE",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
         {
           "columns": [
             "userId"

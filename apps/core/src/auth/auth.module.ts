@@ -9,8 +9,7 @@ import { Menu } from '@rahino/database';
 import { Role } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
-
-// , ...userProviders
+import { CoreSession } from '@rahino/localdatabase/models/core';
 
 @Module({
   imports: [
@@ -21,6 +20,7 @@ import { PermissionMenu } from '@rahino/database';
       Role,
       RolePermission,
       PermissionMenu,
+      CoreSession,
     ]),
   ],
   controllers: [AuthController],

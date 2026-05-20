@@ -662,6 +662,8 @@ export class SomeController {
 }
 ```
 
+**Important:** Controllers must NEVER wrap service returns. Always use `return await this.service.method()` directly — the service already returns `{ result: ... }`.
+
 #### Service Return Values
 
 Services must return objects compatible with the interceptor:
@@ -680,6 +682,8 @@ async findById(id: number) {
   return { result: item };
 }
 ```
+
+**Controller pattern:** Controllers must only call `return this.service.method()`. Never wrap or modify the return value — the service handles the `{ result }` wrapper.
 
 #### Import Paths Summary
 
@@ -1095,6 +1099,32 @@ export const down = async (sequelize: Sequelize): Promise<void> => {
 - Outbound actions execute before leaving current activity; inbound actions execute after transitioning
 - `BPMNRequestHistory.fromUserId` tracks user who executed action
 - `BPMNRequest` holds `organizationId`
+
+### Response DTO Rule
+
+Every API endpoint MUST have a corresponding response DTO class. When creating or editing a controller or service:
+
+1. **Create a response DTO** for each endpoint in `dto/` — name pattern `<Action>ResponseDto`
+2. **Register** it in `dto/index.ts`
+3. **Add** `@ApiJsonResponse({ type: SomeResponseDto })` decorator to the controller method
+4. **Service returns** `{ result: SomeResponseDto }` — the controller only calls `return this.service.method()` with NO additional wrapping
+
+Example:
+
+```typescript
+// Service — returns { result: ... }
+async logout(req: Request) {
+  // ...
+  return { result: { success: true } };
+}
+
+// Controller — just returns the service call
+@ApiJsonResponse({ type: LogoutResponseDto })
+@Post('logout')
+async logout(@Req() req: Request) {
+  return await this.authService.logout(req);
+}
+```
 
 ### Error Handling
 

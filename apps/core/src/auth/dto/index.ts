@@ -2,3 +2,8 @@ export * from './auth.dto';
 export * from './username.dto';
 export * from './auth-response.dto';
 export * from './find-user-response.dto';
+export * from './refresh.dto';
+export * from './session-response.dto';
+export * from './revoke-session.dto';
+export * from './logout-response.dto';
+export * from './revoke-session-response.dto';
