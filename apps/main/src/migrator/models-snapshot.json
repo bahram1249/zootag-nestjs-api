@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T11:19:47.739Z",
+  "generatedAt": "2026-05-20T11:21:11.755Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -1205,16 +1205,6 @@
         "isDeleted": {
           "name": "isDeleted",
           "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "test": {
-          "name": "test",
-          "type": "NVARCHAR(255)",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
