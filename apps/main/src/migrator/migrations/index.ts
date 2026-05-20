@@ -75,7 +75,8 @@ import * as m0199 from './20260520-0199-alter-coresessions-modify-expiresat';
 import * as m0200 from './20260520-0200-alter-coresessions-modify-lastactivityat';
 
 import * as m0201 from './20260520-0201-create-zt_currencies';
-import { createDialectHelpers } from '../migration-helper';
+
+import * as m0204 from './20260520-0204-create-zt_companies';
 interface Condition {
   key: string;
   values: string[];
@@ -192,5 +193,7 @@ export const migrations: MigrationDefinition[] = [
   m(m0199),
   m(m0200),
 
-  cond(m0201, 'SITE_NAME', 'Zootag'),
+  cond(m0201, 'SITE_NAME', 'zootag'),
+
+  cond(m0204, 'SITE_NAME', 'zootag'),
 ];

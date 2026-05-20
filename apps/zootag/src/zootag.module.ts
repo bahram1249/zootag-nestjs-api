@@ -7,9 +7,10 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CurrencyModule } from './admin/currency/currency.module';
 import { CurrencyCalculationModule } from './shared/currency-calculation/currency-calculation.module';
+import { CompanyModule } from './admin/company/company.module';
 
 @Module({
-  imports: [CurrencyCalculationModule, CurrencyModule],
+  imports: [CurrencyCalculationModule, CurrencyModule, CompanyModule],
 })
 export class ZootagModule implements NestModule {
   constructor() {}

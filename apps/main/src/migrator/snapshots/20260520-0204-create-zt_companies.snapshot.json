@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-20T19:32:05.659Z",
+  "generatedAt": "2026-05-20T19:32:05.658Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -3849,7 +3849,105 @@
         }
       ]
     },
-    "ZT_Companies": {
+    "ZT_Currencies": {
+      "className": "ZTCurrency",
+      "tableName": "ZT_Currencies",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "code": {
+          "name": "code",
+          "type": "NVARCHAR(10)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "NVARCHAR(20)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "exchangeRateToIRR": {
+          "name": "exchangeRateToIRR",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "0",
+          "unique": false,
+          "comment": null
+        },
+        "isBaseCurrency": {
+          "name": "isBaseCurrency",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "false",
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "ZTCompany": {
       "className": "ZTCompany",
       "tableName": "ZT_Companies",
       "columns": {
@@ -3940,104 +4038,6 @@
           "autoIncrement": false,
           "allowNull": true,
           "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": []
-    },
-    "ZT_Currencies": {
-      "className": "ZTCurrency",
-      "tableName": "ZT_Currencies",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": true,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "code": {
-          "name": "code",
-          "type": "NVARCHAR(10)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": true,
-          "comment": null
-        },
-        "name": {
-          "name": "name",
-          "type": "NVARCHAR(100)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "symbol": {
-          "name": "symbol",
-          "type": "NVARCHAR(20)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "exchangeRateToIRR": {
-          "name": "exchangeRateToIRR",
-          "type": "DECIMAL",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "0",
-          "unique": false,
-          "comment": null
-        },
-        "isBaseCurrency": {
-          "name": "isBaseCurrency",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "false",
-          "unique": false,
-          "comment": null
-        },
-        "isActive": {
-          "name": "isActive",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "true",
           "unique": false,
           "comment": null
         },

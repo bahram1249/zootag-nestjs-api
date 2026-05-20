@@ -1,4 +1,5 @@
 {
   "not_found": "the given item not found",
-  "currency_not_found": "currency not found"
+  "currency_not_found": "currency not found",
+  "company_not_found": "company not found"
 }

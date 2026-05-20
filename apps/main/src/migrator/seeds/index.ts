@@ -125,7 +125,7 @@ import * as s0195 from '../permissions/20260519-0195-GsGuaranteeRewardHistories'
 import * as s0196 from '../permissions/20260519-0196-IrangsImportData';
 import * as s0202 from './20260520-0202-seed-zootag-currencies';
 import * as s0203 from '../permissions/20260520-0203-ZootagCurrencies';
-import { createDialectHelpers } from '../migration-helper';
+import * as s0205 from '../permissions/20260520-0205-ZootagCompanies';
 
 interface Condition {
   key: string;
@@ -144,11 +144,7 @@ const m = (s: any): SeedDefinition => ({
   up: s.up,
   down: s.down,
 });
-const cond = (
-  s: any,
-  key: string,
-  ...values: string[]
-): SeedDefinition => {
+const cond = (s: any, key: string, ...values: string[]): SeedDefinition => {
   const wrap = (fn: (sequelize: any) => Promise<void>) => {
     return async (sequelize: any) => {
       const { checkSetting } = createDialectHelpers(sequelize);
@@ -292,7 +288,9 @@ export const seeds: SeedDefinition[] = [
   cond(s0195, 'SITE_NAME', 'guarantee'),
   cond(s0196, 'SITE_NAME', 'guarantee'),
 
-  cond(s0202, 'SITE_NAME', 'Zootag'),
+  cond(s0202, 'SITE_NAME', 'zootag'),
 
-  cond(s0203, 'SITE_NAME', 'Zootag'),
+  cond(s0203, 'SITE_NAME', 'zootag'),
+
+  cond(s0205, 'SITE_NAME', 'zootag'),
 ];
