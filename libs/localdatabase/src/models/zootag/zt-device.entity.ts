@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ZTCompany } from './zt-company.entity';
 import { ZTDeviceType } from './zt-device-type.entity';
@@ -29,15 +29,24 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   companyId: bigint;
 
+  @BelongsTo(() => ZTCompany, { foreignKey: 'companyId', as: 'company' })
+  company: ZTCompany;
+
   @AutoMap()
   @ForeignKey(() => ZTDeviceType)
   @Column({ type: DataType.BIGINT, allowNull: false })
   deviceTypeId: bigint;
 
+  @BelongsTo(() => ZTDeviceType, { foreignKey: 'deviceTypeId', as: 'deviceType' })
+  deviceType: ZTDeviceType;
+
   @AutoMap()
   @ForeignKey(() => ZTContractPeriod)
   @Column({ type: DataType.BIGINT, allowNull: false })
   contractPeriodId: bigint;
+
+  @BelongsTo(() => ZTContractPeriod, { foreignKey: 'contractPeriodId', as: 'contractPeriod' })
+  contractPeriod: ZTContractPeriod;
 
   @AutoMap()
   @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
@@ -47,6 +56,9 @@ export class ZTDevice extends Model {
   @ForeignKey(() => ZTCurrency)
   @Column({ type: DataType.BIGINT, allowNull: false })
   currencyId: bigint;
+
+  @BelongsTo(() => ZTCurrency, { foreignKey: 'currencyId', as: 'currency' })
+  currency: ZTCurrency;
 
   @AutoMap()
   @Column({ type: DataType.DECIMAL(18, 2), allowNull: false })
@@ -65,21 +77,30 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   deviceStatusId: bigint;
 
+  @BelongsTo(() => ZTDeviceStatus, { foreignKey: 'deviceStatusId', as: 'deviceStatus' })
+  deviceStatus: ZTDeviceStatus;
+
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
   isActive: boolean;
 
   @AutoMap()
-  @Column({ type: DataType.BOOLEAN, allowNull: true })
+  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: 0 })
   isDeleted: boolean;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })
   createdUserId: bigint;
 
+  @BelongsTo(() => User, { foreignKey: 'createdUserId', as: 'createdUser' })
+  createdUser: User;
+
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })
   updatedUserId: bigint;
+
+  @BelongsTo(() => User, { foreignKey: 'updatedUserId', as: 'updatedUser' })
+  updatedUser: User;
 
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;

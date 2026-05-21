@@ -3,7 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ZTContractPeriodDevicePrice } from '@rahino/localdatabase/models';
+import { ZTContractPeriodDevicePrice, ZTContractPeriod, ZTDeviceType, ZTCurrency } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import {
@@ -43,6 +43,13 @@ export class ContractPeriodDevicePriceService {
         'minimumQuantity',
         'isActive',
       ])
+      .include([
+        { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
+        { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
+        { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -52,7 +59,17 @@ export class ContractPeriodDevicePriceService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ isDeleted: 0 })
+        .include([
+          { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
+          { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
+          { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        ])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

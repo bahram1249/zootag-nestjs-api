@@ -37,6 +37,10 @@ export class CompanyService {
         'phone',
         'isActive',
       ])
+      .include([
+        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -46,7 +50,14 @@ export class CompanyService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ isDeleted: 0 })
+        .include([
+          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        ])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

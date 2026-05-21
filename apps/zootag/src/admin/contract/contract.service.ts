@@ -3,7 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ZTContract } from '@rahino/localdatabase/models';
+import { ZTContract, ZTCompany, ZTCurrency, ZTContractStatus } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractFilterDto, ContractDto } from './dto';
 
@@ -40,6 +40,13 @@ export class ContractService {
         'notes',
         'isActive',
       ])
+      .include([
+        { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
+        { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+        { model: ZTContractStatus, as: 'contractStatus', attributes: ['id', 'name'], required: false },
+        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -49,7 +56,17 @@ export class ContractService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ isDeleted: 0 })
+        .include([
+          { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
+          { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+          { model: ZTContractStatus, as: 'contractStatus', attributes: ['id', 'name'], required: false },
+          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        ])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

@@ -3,7 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ZTContractPeriod } from '@rahino/localdatabase/models';
+import { ZTContractPeriod, ZTContract, ZTContractPeriodStatus } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractPeriodFilterDto, ContractPeriodDto } from './dto';
 
@@ -35,6 +35,12 @@ export class ContractPeriodService {
         'notes',
         'isActive',
       ])
+      .include([
+        { model: ZTContract, as: 'contract', attributes: ['id', 'contractNumber', 'title'], required: false },
+        { model: ZTContractPeriodStatus, as: 'contractPeriodStatus', attributes: ['id', 'name'], required: false },
+        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -44,7 +50,16 @@ export class ContractPeriodService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ isDeleted: 0 })
+        .include([
+          { model: ZTContract, as: 'contract', attributes: ['id', 'contractNumber', 'title'], required: false },
+          { model: ZTContractPeriodStatus, as: 'contractPeriodStatus', attributes: ['id', 'name'], required: false },
+          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        ])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

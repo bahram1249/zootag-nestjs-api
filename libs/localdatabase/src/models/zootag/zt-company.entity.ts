@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { User } from '@rahino/database';
 
@@ -35,16 +35,22 @@ export class ZTCompany extends Model {
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
   isActive: boolean;
 
-  @Column({ type: DataType.BOOLEAN, allowNull: true })
+  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: 0 })
   isDeleted?: boolean;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })
   createdUserId: bigint;
 
+  @BelongsTo(() => User, { foreignKey: 'createdUserId', as: 'createdUser' })
+  createdUser: User;
+
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })
   updatedUserId: bigint;
+
+  @BelongsTo(() => User, { foreignKey: 'updatedUserId', as: 'updatedUser' })
+  updatedUser: User;
 
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;

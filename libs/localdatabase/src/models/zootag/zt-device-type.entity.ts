@@ -23,7 +23,7 @@ export class ZTDeviceType extends Model {
   isActive: boolean;
 
   @AutoMap()
-  @Column({ type: DataType.BOOLEAN, allowNull: true })
+  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: 0 })
   isDeleted: boolean;
 
   @Column({ type: DataType.DATE, allowNull: false })
