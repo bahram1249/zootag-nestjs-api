@@ -1,4 +1,11 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ZTContractPeriod } from './zt-contract-period.entity';
 import { ZTDeviceType } from './zt-device-type.entity';
@@ -15,7 +22,10 @@ export class ZTContractPeriodDevicePrice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   contractPeriodId: bigint;
 
-  @BelongsTo(() => ZTContractPeriod, { foreignKey: 'contractPeriodId', as: 'contractPeriod' })
+  @BelongsTo(() => ZTContractPeriod, {
+    foreignKey: 'contractPeriodId',
+    as: 'contractPeriod',
+  })
   contractPeriod: ZTContractPeriod;
 
   @AutoMap()
@@ -23,7 +33,10 @@ export class ZTContractPeriodDevicePrice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   deviceTypeId: bigint;
 
-  @BelongsTo(() => ZTDeviceType, { foreignKey: 'deviceTypeId', as: 'deviceType' })
+  @BelongsTo(() => ZTDeviceType, {
+    foreignKey: 'deviceTypeId',
+    as: 'deviceType',
+  })
   deviceType: ZTDeviceType;
 
   @AutoMap()
@@ -59,7 +72,10 @@ export class ZTContractPeriodDevicePrice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: true })
   sellingCurrencyId: bigint;
 
-  @BelongsTo(() => ZTCurrency, { foreignKey: 'sellingCurrencyId', as: 'sellingCurrency' })
+  @BelongsTo(() => ZTCurrency, {
+    foreignKey: 'sellingCurrencyId',
+    as: 'sellingCurrency',
+  })
   sellingCurrency: ZTCurrency;
 
   @AutoMap()

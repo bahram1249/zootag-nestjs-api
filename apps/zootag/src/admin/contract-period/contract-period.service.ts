@@ -4,7 +4,11 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
-import { ZTContractPeriod, ZTContract, ZTContractPeriodStatus } from '@rahino/localdatabase/models';
+import {
+  ZTContractPeriod,
+  ZTContract,
+  ZTContractPeriodStatus,
+} from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractPeriodFilterDto, ContractPeriodDto } from './dto';
 import { InjectMapper } from 'automapper-nestjs';
@@ -22,6 +26,12 @@ export class ContractPeriodService {
     private readonly sequelize: Sequelize,
   ) {}
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted contract periods (isDeleted = 0)
+   * - Search matches periodName
+   * - contractPeriodStatus names are localized via i18n
+   */
   async findAll(filter: ContractPeriodFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -41,10 +51,30 @@ export class ContractPeriodService {
         'isActive',
       ])
       .include([
-        { model: ZTContract, as: 'contract', attributes: ['id', 'contractNumber', 'title'], required: false },
-        { model: ZTContractPeriodStatus, as: 'contractPeriodStatus', attributes: ['id', 'name'], required: false },
-        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        {
+          model: ZTContract,
+          as: 'contract',
+          attributes: ['id', 'contractNumber', 'title'],
+          required: false,
+        },
+        {
+          model: ZTContractPeriodStatus,
+          as: 'contractPeriodStatus',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'createdUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'updatedUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -56,16 +86,41 @@ export class ContractPeriodService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted contract periods
+   * - contractPeriodStatus names are localized via i18n
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
         .include([
-          { model: ZTContract, as: 'contract', attributes: ['id', 'contractNumber', 'title'], required: false },
-          { model: ZTContractPeriodStatus, as: 'contractPeriodStatus', attributes: ['id', 'name'], required: false },
-          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          {
+            model: ZTContract,
+            as: 'contract',
+            attributes: ['id', 'contractNumber', 'title'],
+            required: false,
+          },
+          {
+            model: ZTContractPeriodStatus,
+            as: 'contractPeriodStatus',
+            attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'createdUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'updatedUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
         ])
         .build(),
     );
@@ -74,15 +129,20 @@ export class ContractPeriodService {
         this.localizationService.translate('zootag.contract_period_not_found'),
       );
     return {
-      result: this.localizationMapperService.localizeItem(
-        item.toJSON(),
-        { contractPeriodStatus: 'contractPeriodStatus' },
-      ),
+      result: this.localizationMapperService.localizeItem(item.toJSON(), {
+        contractPeriodStatus: 'contractPeriodStatus',
+      }),
     };
   }
 
+  /**
+   * Business rules:
+   * - Sets audit fields (createdUserId, updatedUserId) from authenticated user
+   */
   async create(dto: ContractPeriodDto, user: User) {
-    const mapped = this.mapper.map(dto, ContractPeriodDto, ZTContractPeriod).toJSON();
+    const mapped = this.mapper
+      .map(dto, ContractPeriodDto, ZTContractPeriod)
+      .toJSON();
     const item = await this.repository.create({
       ...mapped,
       createdUserId: BigInt(user.id),
@@ -91,6 +151,11 @@ export class ContractPeriodService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Only non-deleted contract periods can be updated
+   * - Sets updatedUserId from authenticated user
+   */
   async update(id: number, dto: ContractPeriodDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -99,7 +164,9 @@ export class ContractPeriodService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_period_not_found'),
       );
-    const mapped = this.mapper.map(dto, ContractPeriodDto, ZTContractPeriod).toJSON();
+    const mapped = this.mapper
+      .map(dto, ContractPeriodDto, ZTContractPeriod)
+      .toJSON();
     await item.update({
       ...mapped,
       updatedUserId: BigInt(user.id),
@@ -107,6 +174,10 @@ export class ContractPeriodService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Soft delete: sets isDeleted = true instead of hard-deleting
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),

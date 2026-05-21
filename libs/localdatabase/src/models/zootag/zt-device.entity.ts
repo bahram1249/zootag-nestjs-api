@@ -1,4 +1,11 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ZTCompany } from './zt-company.entity';
 import { ZTDeviceType } from './zt-device-type.entity';
@@ -38,7 +45,10 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   deviceTypeId: bigint;
 
-  @BelongsTo(() => ZTDeviceType, { foreignKey: 'deviceTypeId', as: 'deviceType' })
+  @BelongsTo(() => ZTDeviceType, {
+    foreignKey: 'deviceTypeId',
+    as: 'deviceType',
+  })
   deviceType: ZTDeviceType;
 
   @AutoMap()
@@ -46,7 +56,10 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   contractPeriodId: bigint;
 
-  @BelongsTo(() => ZTContractPeriod, { foreignKey: 'contractPeriodId', as: 'contractPeriod' })
+  @BelongsTo(() => ZTContractPeriod, {
+    foreignKey: 'contractPeriodId',
+    as: 'contractPeriod',
+  })
   contractPeriod: ZTContractPeriod;
 
   @AutoMap()
@@ -54,7 +67,10 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   contractPeriodDevicePriceId: bigint;
 
-  @BelongsTo(() => ZTContractPeriodDevicePrice, { foreignKey: 'contractPeriodDevicePriceId', as: 'contractPeriodDevicePrice' })
+  @BelongsTo(() => ZTContractPeriodDevicePrice, {
+    foreignKey: 'contractPeriodDevicePriceId',
+    as: 'contractPeriodDevicePrice',
+  })
   contractPeriodDevicePrice: ZTContractPeriodDevicePrice;
 
   @AutoMap()
@@ -82,7 +98,10 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: true })
   sellingCurrencyId: bigint;
 
-  @BelongsTo(() => ZTCurrency, { foreignKey: 'sellingCurrencyId', as: 'sellingCurrency' })
+  @BelongsTo(() => ZTCurrency, {
+    foreignKey: 'sellingCurrencyId',
+    as: 'sellingCurrency',
+  })
   sellingCurrency: ZTCurrency;
 
   @AutoMap()
@@ -102,7 +121,10 @@ export class ZTDevice extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   deviceStatusId: bigint;
 
-  @BelongsTo(() => ZTDeviceStatus, { foreignKey: 'deviceStatusId', as: 'deviceStatus' })
+  @BelongsTo(() => ZTDeviceStatus, {
+    foreignKey: 'deviceStatusId',
+    as: 'deviceStatus',
+  })
   deviceStatus: ZTDeviceStatus;
 
   @AutoMap()

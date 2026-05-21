@@ -32,7 +32,11 @@ export class ContractPeriodResponseDto {
   @ApiProperty({ example: 1, description: 'Contract ID' })
   contractId: number;
 
-  @ApiProperty({ type: () => ContractBriefDto, description: 'Contract', required: false })
+  @ApiProperty({
+    type: () => ContractBriefDto,
+    description: 'Contract',
+    required: false,
+  })
   contract?: ContractBriefDto;
 
   @ApiProperty({ example: 'Q1 2026', description: 'Period name' })
@@ -47,7 +51,11 @@ export class ContractPeriodResponseDto {
   @ApiProperty({ example: 1, description: 'Contract period status ID' })
   contractPeriodStatusId: number;
 
-  @ApiProperty({ type: () => ContractPeriodStatusBriefDto, description: 'Contract period status', required: false })
+  @ApiProperty({
+    type: () => ContractPeriodStatusBriefDto,
+    description: 'Contract period status',
+    required: false,
+  })
   contractPeriodStatus?: ContractPeriodStatusBriefDto;
 
   @ApiProperty({ required: false, example: 'Some notes', description: 'Notes' })
@@ -56,9 +64,17 @@ export class ContractPeriodResponseDto {
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Created user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Created user',
+    required: false,
+  })
   createdUser?: UserBriefDto;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Updated user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Updated user',
+    required: false,
+  })
   updatedUser?: UserBriefDto;
 }

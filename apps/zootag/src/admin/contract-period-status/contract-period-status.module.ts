@@ -7,7 +7,9 @@ import { ContractPeriodStatusService } from './contract-period-status.service';
 import { ContractPeriodStatusProfile } from './mapper';
 
 @Module({
-  imports: [SequelizeModule.forFeature([ZTContractPeriodStatus, User, Permission])],
+  imports: [
+    SequelizeModule.forFeature([ZTContractPeriodStatus, User, Permission]),
+  ],
   controllers: [ContractPeriodStatusController],
   providers: [ContractPeriodStatusService, ContractPeriodStatusProfile],
 })

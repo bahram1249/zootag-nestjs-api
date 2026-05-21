@@ -7,7 +7,14 @@ import { Permission, User } from '@rahino/database';
 import { CurrencyProfile } from './mapper';
 
 @Module({
-  imports: [SequelizeModule.forFeature([ZTCurrency, ZTCurrencyHistory, User, Permission])],
+  imports: [
+    SequelizeModule.forFeature([
+      ZTCurrency,
+      ZTCurrencyHistory,
+      User,
+      Permission,
+    ]),
+  ],
   controllers: [CurrencyController],
   providers: [CurrencyService, CurrencyProfile],
 })

@@ -21,11 +21,18 @@ export class DeviceStatusService {
     private readonly sequelize: Sequelize,
   ) {}
 
+  /**
+   * Business rules:
+   * - No soft delete filter — all statuses are returned
+   * - Names are localized via i18n lookup
+   */
   async findAll(filter: DeviceStatusFilterDto) {
-    let qb = new QueryOptionsBuilder()
-      .filterIf(!!filter.search && filter.search !== '%%', {
+    let qb = new QueryOptionsBuilder().filterIf(
+      !!filter.search && filter.search !== '%%',
+      {
         name: { [Op.like]: filter.search },
-      });
+      },
+    );
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes(['id', 'name', 'isActive'])
@@ -39,6 +46,10 @@ export class DeviceStatusService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Names are localized via i18n lookup
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
@@ -76,6 +87,10 @@ export class DeviceStatusService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Hard delete: permanently removes the row (no isDeleted column)
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),

@@ -1,4 +1,11 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ZTContract } from './zt-contract.entity';
 import { ZTContractPeriodStatus } from './zt-contract-period-status.entity';
@@ -34,7 +41,10 @@ export class ZTContractPeriod extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   contractPeriodStatusId: bigint;
 
-  @BelongsTo(() => ZTContractPeriodStatus, { foreignKey: 'contractPeriodStatusId', as: 'contractPeriodStatus' })
+  @BelongsTo(() => ZTContractPeriodStatus, {
+    foreignKey: 'contractPeriodStatusId',
+    as: 'contractPeriodStatus',
+  })
   contractPeriodStatus: ZTContractPeriodStatus;
 
   @AutoMap()

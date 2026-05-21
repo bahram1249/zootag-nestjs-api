@@ -21,11 +21,18 @@ export class ContractPeriodStatusService {
     private readonly sequelize: Sequelize,
   ) {}
 
+  /**
+   * Business rules:
+   * - No soft delete filter — all statuses are returned regardless of isDeleted
+   * - Names are localized via i18n lookup
+   */
   async findAll(filter: ContractPeriodStatusFilterDto) {
-    let qb = new QueryOptionsBuilder()
-      .filterIf(!!filter.search && filter.search !== '%%', {
+    let qb = new QueryOptionsBuilder().filterIf(
+      !!filter.search && filter.search !== '%%',
+      {
         name: { [Op.like]: filter.search },
-      });
+      },
+    );
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes(['id', 'name', 'isActive'])
@@ -39,13 +46,19 @@ export class ContractPeriodStatusService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Names are localized via i18n lookup
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.contract_period_status_not_found'),
+        this.localizationService.translate(
+          'zootag.contract_period_status_not_found',
+        ),
       );
     return {
       result: this.localizationMapperService.localizeLookupItem(
@@ -57,7 +70,9 @@ export class ContractPeriodStatusService {
 
   async create(dto: ContractPeriodStatusDto) {
     const item = await this.repository.create(
-      this.mapper.map(dto, ContractPeriodStatusDto, ZTContractPeriodStatus).toJSON(),
+      this.mapper
+        .map(dto, ContractPeriodStatusDto, ZTContractPeriodStatus)
+        .toJSON(),
     );
     return { result: item };
   }
@@ -68,21 +83,31 @@ export class ContractPeriodStatusService {
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.contract_period_status_not_found'),
+        this.localizationService.translate(
+          'zootag.contract_period_status_not_found',
+        ),
       );
     await item.update(
-      this.mapper.map(dto, ContractPeriodStatusDto, ZTContractPeriodStatus).toJSON(),
+      this.mapper
+        .map(dto, ContractPeriodStatusDto, ZTContractPeriodStatus)
+        .toJSON(),
     );
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Hard delete: permanently removes the row (no isDeleted column)
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.contract_period_status_not_found'),
+        this.localizationService.translate(
+          'zootag.contract_period_status_not_found',
+        ),
       );
     await item.destroy();
     return { result: item };

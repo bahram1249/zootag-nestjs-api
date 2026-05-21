@@ -20,6 +20,11 @@ export class CompanyService {
     private readonly sequelize: Sequelize,
   ) {}
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted companies (isDeleted = 0)
+   * - Search matches companyName or legalName
+   */
   async findAll(filter: CompanyFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -41,8 +46,18 @@ export class CompanyService {
         'isActive',
       ])
       .include([
-        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        {
+          model: User,
+          as: 'createdUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'updatedUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -51,14 +66,28 @@ export class CompanyService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted companies
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
         .include([
-          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          {
+            model: User,
+            as: 'createdUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'updatedUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
         ])
         .build(),
     );
@@ -69,6 +98,10 @@ export class CompanyService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Sets audit fields (createdUserId, updatedUserId) from authenticated user
+   */
   async create(dto: CompanyDto, user: User) {
     const mapped = this.mapper.map(dto, CompanyDto, ZTCompany).toJSON();
     const item = await this.repository.create({
@@ -79,6 +112,11 @@ export class CompanyService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Only non-deleted companies can be updated
+   * - Sets updatedUserId from authenticated user
+   */
   async update(id: number, dto: CompanyDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -95,6 +133,10 @@ export class CompanyService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Soft delete: sets isDeleted = true instead of hard-deleting
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),

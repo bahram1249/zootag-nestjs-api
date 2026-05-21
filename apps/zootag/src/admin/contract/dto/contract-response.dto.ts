@@ -41,7 +41,11 @@ export class ContractResponseDto {
   @ApiProperty({ example: 1, description: 'Company ID' })
   companyId: number;
 
-  @ApiProperty({ type: () => CompanyBriefDto, description: 'Company', required: false })
+  @ApiProperty({
+    type: () => CompanyBriefDto,
+    description: 'Company',
+    required: false,
+  })
   company?: CompanyBriefDto;
 
   @ApiProperty({ example: 'CN-001', description: 'Contract number' })
@@ -50,7 +54,10 @@ export class ContractResponseDto {
   @ApiProperty({ example: 'Annual Service Contract', description: 'Title' })
   title: string;
 
-  @ApiProperty({ example: '2026-01-01T00:00:00.000Z', description: 'Start date' })
+  @ApiProperty({
+    example: '2026-01-01T00:00:00.000Z',
+    description: 'Start date',
+  })
   startDate: Date;
 
   @ApiProperty({ example: '2026-12-31T00:00:00.000Z', description: 'End date' })
@@ -59,13 +66,21 @@ export class ContractResponseDto {
   @ApiProperty({ example: 1, description: 'Currency ID' })
   currencyId: number;
 
-  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Currency', required: false })
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Currency',
+    required: false,
+  })
   currency?: CurrencyBriefDto;
 
   @ApiProperty({ example: 1, description: 'Contract status ID' })
   contractStatusId: number;
 
-  @ApiProperty({ type: () => ContractStatusBriefDto, description: 'Contract status', required: false })
+  @ApiProperty({
+    type: () => ContractStatusBriefDto,
+    description: 'Contract status',
+    required: false,
+  })
   contractStatus?: ContractStatusBriefDto;
 
   @ApiProperty({ example: 'Some notes', description: 'Notes', required: false })
@@ -74,9 +89,17 @@ export class ContractResponseDto {
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Created user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Created user',
+    required: false,
+  })
   createdUser?: UserBriefDto;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Updated user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Updated user',
+    required: false,
+  })
   updatedUser?: UserBriefDto;
 }

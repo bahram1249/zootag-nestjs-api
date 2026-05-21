@@ -15,7 +15,12 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { DeviceService } from './device.service';
@@ -69,7 +74,11 @@ export class DeviceController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.devices.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: DeviceDto, @GetUser() user: User) {
+  async update(
+    @Param('id') id: number,
+    @Body() dto: DeviceDto,
+    @GetUser() user: User,
+  ) {
     return await this.service.update(id, dto, user);
   }
 

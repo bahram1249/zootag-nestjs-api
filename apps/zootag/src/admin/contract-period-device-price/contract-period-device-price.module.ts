@@ -8,13 +8,12 @@ import { ContractPeriodDevicePriceProfile } from './mapper';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      ZTContractPeriodDevicePrice,
-      User,
-      Permission,
-    ]),
+    SequelizeModule.forFeature([ZTContractPeriodDevicePrice, User, Permission]),
   ],
   controllers: [ContractPeriodDevicePriceController],
-  providers: [ContractPeriodDevicePriceService, ContractPeriodDevicePriceProfile],
+  providers: [
+    ContractPeriodDevicePriceService,
+    ContractPeriodDevicePriceProfile,
+  ],
 })
 export class ContractPeriodDevicePriceModule {}

@@ -9,6 +9,11 @@ export class CurrencyCalculationService {
     private readonly currencyRepository: typeof ZTCurrency,
   ) {}
 
+  /**
+   * Business rules:
+   * - If the source currency is the base currency, returns amount unchanged
+   * - Otherwise multiplies amount by exchangeRateToIRR
+   */
   async convertToIRR(amount: number, fromCurrencyId: bigint): Promise<number> {
     const currency = await this.currencyRepository.findByPk(fromCurrencyId);
     if (!currency) throw new Error('Currency not found');
@@ -16,6 +21,11 @@ export class CurrencyCalculationService {
     return amount * Number(currency.exchangeRateToIRR);
   }
 
+  /**
+   * Business rules:
+   * - If the target currency is the base currency, returns amount unchanged
+   * - Throws if exchangeRateToIRR is zero (division by zero guard)
+   */
   async convertFromIRR(amount: number, toCurrencyId: bigint): Promise<number> {
     const currency = await this.currencyRepository.findByPk(toCurrencyId);
     if (!currency) throw new Error('Currency not found');

@@ -19,6 +19,11 @@ export class DeviceTypeService {
     private readonly sequelize: Sequelize,
   ) {}
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted device types (isDeleted = 0)
+   * - Search matches typeName or modelCode
+   */
   async findAll(filter: DeviceTypeFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -38,6 +43,10 @@ export class DeviceTypeService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted device types
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -70,6 +79,10 @@ export class DeviceTypeService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Soft delete: sets isDeleted = true instead of hard-deleting
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),

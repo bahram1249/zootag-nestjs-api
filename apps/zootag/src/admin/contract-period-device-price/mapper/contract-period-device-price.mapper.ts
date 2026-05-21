@@ -12,7 +12,11 @@ export class ContractPeriodDevicePriceProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice);
+      createMap(
+        mapper,
+        ContractPeriodDevicePriceDto,
+        ZTContractPeriodDevicePrice,
+      );
     };
   }
 }

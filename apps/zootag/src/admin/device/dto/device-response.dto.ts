@@ -26,7 +26,7 @@ class ContractPeriodBriefDto {
 class ContractPeriodDevicePriceBriefDto {
   @ApiProperty({ example: 1 })
   id: number;
-  @ApiProperty({ example: 1500.00, description: 'Purchase price' })
+  @ApiProperty({ example: 1500.0, description: 'Purchase price' })
   purchasePrice: number;
 }
 
@@ -64,61 +64,113 @@ export class DeviceResponseDto {
   @ApiProperty({ example: 'SN-001', description: 'Serial number' })
   serialNumber: string;
 
-  @ApiProperty({ example: '123456789012345', description: 'IMEI', required: false })
+  @ApiProperty({
+    example: '123456789012345',
+    description: 'IMEI',
+    required: false,
+  })
   imei?: string;
 
-  @ApiProperty({ example: '00:1A:2B:3C:4D:5E', description: 'MAC address', required: false })
+  @ApiProperty({
+    example: '00:1A:2B:3C:4D:5E',
+    description: 'MAC address',
+    required: false,
+  })
   macAddress?: string;
 
   @ApiProperty({ example: 1, description: 'Company ID' })
   companyId: number;
 
-  @ApiProperty({ type: () => CompanyBriefDto, description: 'Company', required: false })
+  @ApiProperty({
+    type: () => CompanyBriefDto,
+    description: 'Company',
+    required: false,
+  })
   company?: CompanyBriefDto;
 
   @ApiProperty({ example: 1, description: 'Device type ID' })
   deviceTypeId: number;
 
-  @ApiProperty({ type: () => DeviceTypeBriefDto, description: 'Device type', required: false })
+  @ApiProperty({
+    type: () => DeviceTypeBriefDto,
+    description: 'Device type',
+    required: false,
+  })
   deviceType?: DeviceTypeBriefDto;
 
   @ApiProperty({ example: 1, description: 'Contract period ID' })
   contractPeriodId: number;
 
-  @ApiProperty({ type: () => ContractPeriodBriefDto, description: 'Contract period', required: false })
+  @ApiProperty({
+    type: () => ContractPeriodBriefDto,
+    description: 'Contract period',
+    required: false,
+  })
   contractPeriod?: ContractPeriodBriefDto;
 
   @ApiProperty({ example: 1, description: 'Contract period device price ID' })
   contractPeriodDevicePriceId: number;
 
-  @ApiProperty({ type: () => ContractPeriodDevicePriceBriefDto, description: 'Contract period device price', required: false })
+  @ApiProperty({
+    type: () => ContractPeriodDevicePriceBriefDto,
+    description: 'Contract period device price',
+    required: false,
+  })
   contractPeriodDevicePrice?: ContractPeriodDevicePriceBriefDto;
 
-  @ApiProperty({ example: 1500.00, description: 'Purchase price', required: false })
+  @ApiProperty({
+    example: 1500.0,
+    description: 'Purchase price',
+    required: false,
+  })
   purchasePrice?: number;
 
   @ApiProperty({ example: 1, description: 'Currency ID' })
   currencyId: number;
 
-  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Currency', required: false })
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Currency',
+    required: false,
+  })
   currency?: CurrencyBriefDto;
 
   @ApiProperty({ example: 50000000, description: 'Purchase price IRR' })
   purchasePriceIRR: number;
 
-  @ApiProperty({ example: 2500.00, description: 'Selling price', required: false })
+  @ApiProperty({
+    example: 2500.0,
+    description: 'Selling price',
+    required: false,
+  })
   sellingPrice?: number;
 
-  @ApiProperty({ example: 1, description: 'Selling currency ID', required: false })
+  @ApiProperty({
+    example: 1,
+    description: 'Selling currency ID',
+    required: false,
+  })
   sellingCurrencyId?: number;
 
-  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Selling currency', required: false })
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Selling currency',
+    required: false,
+  })
   sellingCurrency?: CurrencyBriefDto;
 
-  @ApiProperty({ example: 87500000, description: 'Selling price IRR', required: false })
+  @ApiProperty({
+    example: 87500000,
+    description: 'Selling price IRR',
+    required: false,
+  })
   sellingPriceIRR?: number;
 
-  @ApiProperty({ example: '2026-01-15', description: 'Purchase date', required: false })
+  @ApiProperty({
+    example: '2026-01-15',
+    description: 'Purchase date',
+    required: false,
+  })
   purchaseDate?: string;
 
   @ApiProperty({ example: '2027-01-15', description: 'Warranty end date' })
@@ -127,15 +179,27 @@ export class DeviceResponseDto {
   @ApiProperty({ example: 1, description: 'Device status ID' })
   deviceStatusId: number;
 
-  @ApiProperty({ type: () => DeviceStatusBriefDto, description: 'Device status', required: false })
+  @ApiProperty({
+    type: () => DeviceStatusBriefDto,
+    description: 'Device status',
+    required: false,
+  })
   deviceStatus?: DeviceStatusBriefDto;
 
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Created user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Created user',
+    required: false,
+  })
   createdUser?: UserBriefDto;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Updated user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Updated user',
+    required: false,
+  })
   updatedUser?: UserBriefDto;
 }

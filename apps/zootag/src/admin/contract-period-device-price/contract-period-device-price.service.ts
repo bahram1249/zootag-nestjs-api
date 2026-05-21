@@ -3,7 +3,12 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ZTContractPeriodDevicePrice, ZTContractPeriod, ZTDeviceType, ZTCurrency } from '@rahino/localdatabase/models';
+import {
+  ZTContractPeriodDevicePrice,
+  ZTContractPeriod,
+  ZTDeviceType,
+  ZTCurrency,
+} from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import {
@@ -25,6 +30,11 @@ export class ContractPeriodDevicePriceService {
     private readonly currencyCalculationService: CurrencyCalculationService,
   ) {}
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted price records (isDeleted = 0)
+   * - Search matches contractPeriodId or deviceTypeId
+   */
   async findAll(filter: ContractPeriodDevicePriceFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -51,12 +61,42 @@ export class ContractPeriodDevicePriceService {
         'isActive',
       ])
       .include([
-        { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
-        { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
-        { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-        { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        {
+          model: ZTContractPeriod,
+          as: 'contractPeriod',
+          attributes: ['id', 'periodName'],
+          required: false,
+        },
+        {
+          model: ZTDeviceType,
+          as: 'deviceType',
+          attributes: ['id', 'typeName', 'modelCode'],
+          required: false,
+        },
+        {
+          model: ZTCurrency,
+          as: 'currency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+        {
+          model: ZTCurrency,
+          as: 'sellingCurrency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'createdUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'updatedUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -65,18 +105,52 @@ export class ContractPeriodDevicePriceService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted price records
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
         .include([
-          { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
-          { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
-          { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-          { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          {
+            model: ZTContractPeriod,
+            as: 'contractPeriod',
+            attributes: ['id', 'periodName'],
+            required: false,
+          },
+          {
+            model: ZTDeviceType,
+            as: 'deviceType',
+            attributes: ['id', 'typeName', 'modelCode'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'currency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'sellingCurrency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'createdUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'updatedUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
         ])
         .build(),
     );
@@ -89,22 +163,40 @@ export class ContractPeriodDevicePriceService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - If purchasePrice + currencyId are provided but purchasePriceIRR is null,
+   *   purchasePriceIRR is auto-calculated via currency exchange rate
+   * - If sellingPrice + sellingCurrencyId are provided but sellingPriceIRR is null,
+   *   sellingPriceIRR is auto-calculated similarly
+   * - Sets audit fields from authenticated user
+   */
   async create(dto: ContractPeriodDevicePriceDto, user: User) {
     let purchasePriceIRR = dto.purchasePriceIRR;
-    if (dto.purchasePrice != null && dto.currencyId != null && purchasePriceIRR == null) {
+    if (
+      dto.purchasePrice != null &&
+      dto.currencyId != null &&
+      purchasePriceIRR == null
+    ) {
       purchasePriceIRR = await this.currencyCalculationService.convertToIRR(
         dto.purchasePrice,
         BigInt(dto.currencyId),
       );
     }
     let sellingPriceIRR = dto.sellingPriceIRR;
-    if (dto.sellingPrice != null && dto.sellingCurrencyId != null && sellingPriceIRR == null) {
+    if (
+      dto.sellingPrice != null &&
+      dto.sellingCurrencyId != null &&
+      sellingPriceIRR == null
+    ) {
       sellingPriceIRR = await this.currencyCalculationService.convertToIRR(
         dto.sellingPrice,
         BigInt(dto.sellingCurrencyId),
       );
     }
-    const mapped = this.mapper.map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice).toJSON();
+    const mapped = this.mapper
+      .map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice)
+      .toJSON();
     const item = await this.repository.create({
       ...mapped,
       purchasePriceIRR: purchasePriceIRR ?? 0,
@@ -115,6 +207,13 @@ export class ContractPeriodDevicePriceService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Only non-deleted price records can be updated
+   * - purchasePriceIRR and sellingPriceIRR are FROZEN after creation — once set,
+   *   they cannot be recalculated via update
+   * - Sets updatedUserId from authenticated user
+   */
   async update(id: number, dto: ContractPeriodDevicePriceDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -125,7 +224,9 @@ export class ContractPeriodDevicePriceService {
           'zootag.contract_period_device_price_not_found',
         ),
       );
-    const mapped = this.mapper.map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice).toJSON();
+    const mapped = this.mapper
+      .map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice)
+      .toJSON();
     await item.update({
       ...mapped,
       purchasePriceIRR: item.purchasePriceIRR,
@@ -135,6 +236,10 @@ export class ContractPeriodDevicePriceService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Soft delete: sets isDeleted = true instead of hard-deleting
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),

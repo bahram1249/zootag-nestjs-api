@@ -10,7 +10,11 @@ export class DeviceTypeResponseDto {
   @ApiProperty({ example: 'GT-100', description: 'Model code' })
   modelCode: string;
 
-  @ApiProperty({ example: 'Standard GPS tracker', description: 'Description', required: false })
+  @ApiProperty({
+    example: 'Standard GPS tracker',
+    description: 'Description',
+    required: false,
+  })
   description?: string;
 
   @ApiProperty({ example: true, description: 'Is active' })

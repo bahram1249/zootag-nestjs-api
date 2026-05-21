@@ -15,7 +15,12 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ContractPeriodDevicePriceService } from './contract-period-device-price.service';
@@ -77,7 +82,10 @@ export class ContractPeriodDevicePriceController {
   })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: ContractPeriodDevicePriceDto, @GetUser() user: User) {
+  async create(
+    @Body() dto: ContractPeriodDevicePriceDto,
+    @GetUser() user: User,
+  ) {
     return await this.service.create(dto, user);
   }
 

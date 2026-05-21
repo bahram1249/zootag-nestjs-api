@@ -10,5 +10,12 @@ export async function up(sequelize: Sequelize): Promise<void> {
 
 export async function down(sequelize: Sequelize): Promise<void> {
   const { addColumn, nv } = createDialectHelpers(sequelize);
-  await addColumn('ZT_DeviceTypes', 'slug', nv('100'), false, undefined, undefined);
+  await addColumn(
+    'ZT_DeviceTypes',
+    'slug',
+    nv('100'),
+    false,
+    undefined,
+    undefined,
+  );
 }

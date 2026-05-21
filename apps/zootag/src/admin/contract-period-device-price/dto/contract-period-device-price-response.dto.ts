@@ -43,22 +43,38 @@ export class ContractPeriodDevicePriceResponseDto {
   @ApiProperty({ example: 1, description: 'Contract period ID' })
   contractPeriodId: number;
 
-  @ApiProperty({ type: () => ContractPeriodBriefDto, description: 'Contract period', required: false })
+  @ApiProperty({
+    type: () => ContractPeriodBriefDto,
+    description: 'Contract period',
+    required: false,
+  })
   contractPeriod?: ContractPeriodBriefDto;
 
   @ApiProperty({ example: 1, description: 'Device type ID' })
   deviceTypeId: number;
 
-  @ApiProperty({ type: () => DeviceTypeBriefDto, description: 'Device type', required: false })
+  @ApiProperty({
+    type: () => DeviceTypeBriefDto,
+    description: 'Device type',
+    required: false,
+  })
   deviceType?: DeviceTypeBriefDto;
 
-  @ApiProperty({ example: 1500.50, description: 'Purchase price', required: false })
+  @ApiProperty({
+    example: 1500.5,
+    description: 'Purchase price',
+    required: false,
+  })
   purchasePrice?: number;
 
   @ApiProperty({ example: 1, description: 'Currency ID' })
   currencyId: number;
 
-  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Currency', required: false })
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Currency',
+    required: false,
+  })
   currency?: CurrencyBriefDto;
 
   @ApiProperty({ example: 52500000, description: 'Purchase price IRR' })
@@ -70,24 +86,48 @@ export class ContractPeriodDevicePriceResponseDto {
   @ApiProperty({ example: 100, description: 'Maximum quantity' })
   maximumQuantity: number;
 
-  @ApiProperty({ example: 2500.00, description: 'Selling price', required: false })
+  @ApiProperty({
+    example: 2500.0,
+    description: 'Selling price',
+    required: false,
+  })
   sellingPrice?: number;
 
-  @ApiProperty({ example: 1, description: 'Selling currency ID', required: false })
+  @ApiProperty({
+    example: 1,
+    description: 'Selling currency ID',
+    required: false,
+  })
   sellingCurrencyId?: number;
 
-  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Selling currency', required: false })
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Selling currency',
+    required: false,
+  })
   sellingCurrency?: CurrencyBriefDto;
 
-  @ApiProperty({ example: 87500000, description: 'Selling price IRR', required: false })
+  @ApiProperty({
+    example: 87500000,
+    description: 'Selling price IRR',
+    required: false,
+  })
   sellingPriceIRR?: number;
 
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Created user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Created user',
+    required: false,
+  })
   createdUser?: UserBriefDto;
 
-  @ApiProperty({ type: () => UserBriefDto, description: 'Updated user', required: false })
+  @ApiProperty({
+    type: () => UserBriefDto,
+    description: 'Updated user',
+    required: false,
+  })
   updatedUser?: UserBriefDto;
 }

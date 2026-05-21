@@ -1,7 +1,8 @@
 import { QueryTypes, Sequelize } from 'sequelize';
 import { createDialectHelpers } from '../migration-helper';
 
-export const name = '20260521-0247-alter-zt_contractperioddeviceprices-modify-isdeleted';
+export const name =
+  '20260521-0247-alter-zt_contractperioddeviceprices-modify-isdeleted';
 
 export async function up(sequelize: Sequelize): Promise<void> {
   const { alterColumn, bit } = createDialectHelpers(sequelize);

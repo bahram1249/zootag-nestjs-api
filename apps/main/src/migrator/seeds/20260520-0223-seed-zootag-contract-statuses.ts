@@ -26,8 +26,11 @@ export async function up(sequelize: Sequelize): Promise<void> {
 }
 
 export async function down(sequelize: Sequelize): Promise<void> {
-  await sequelize.query(`DELETE FROM ZT_ContractStatuses WHERE id IN (1, 2, 3, 4)`, {
-    raw: true,
-    type: QueryTypes.RAW,
-  });
+  await sequelize.query(
+    `DELETE FROM ZT_ContractStatuses WHERE id IN (1, 2, 3, 4)`,
+    {
+      raw: true,
+      type: QueryTypes.RAW,
+    },
+  );
 }

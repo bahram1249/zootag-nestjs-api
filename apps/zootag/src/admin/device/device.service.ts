@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -34,6 +38,12 @@ export class DeviceService {
     private readonly currencyCalculationService: CurrencyCalculationService,
   ) {}
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted devices (isDeleted = 0)
+   * - Search matches serialNumber or IMEI
+   * - deviceStatus names are localized via i18n
+   */
   async findAll(filter: DeviceFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -66,15 +76,60 @@ export class DeviceService {
         'isActive',
       ])
       .include([
-        { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
-        { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
-        { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
-        { model: ZTContractPeriodDevicePrice, as: 'contractPeriodDevicePrice', attributes: ['id', 'purchasePrice'], required: false },
-        { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-        { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-        { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
-        { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-        { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+        {
+          model: ZTCompany,
+          as: 'company',
+          attributes: ['id', 'companyName'],
+          required: false,
+        },
+        {
+          model: ZTDeviceType,
+          as: 'deviceType',
+          attributes: ['id', 'typeName', 'modelCode'],
+          required: false,
+        },
+        {
+          model: ZTContractPeriod,
+          as: 'contractPeriod',
+          attributes: ['id', 'periodName'],
+          required: false,
+        },
+        {
+          model: ZTContractPeriodDevicePrice,
+          as: 'contractPeriodDevicePrice',
+          attributes: ['id', 'purchasePrice'],
+          required: false,
+        },
+        {
+          model: ZTCurrency,
+          as: 'currency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+        {
+          model: ZTCurrency,
+          as: 'sellingCurrency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+        {
+          model: ZTDeviceStatus,
+          as: 'deviceStatus',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'createdUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'updatedUser',
+          attributes: ['id', 'firstname', 'lastname'],
+          required: false,
+        },
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -86,21 +141,71 @@ export class DeviceService {
     return { result, total };
   }
 
+  /**
+   * Business rules:
+   * - Only returns non-deleted devices
+   * - deviceStatus names are localized via i18n
+   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
         .include([
-          { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
-          { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
-          { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
-          { model: ZTContractPeriodDevicePrice, as: 'contractPeriodDevicePrice', attributes: ['id', 'purchasePrice'], required: false },
-          { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-          { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
-          { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
-          { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
-          { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
+          {
+            model: ZTCompany,
+            as: 'company',
+            attributes: ['id', 'companyName'],
+            required: false,
+          },
+          {
+            model: ZTDeviceType,
+            as: 'deviceType',
+            attributes: ['id', 'typeName', 'modelCode'],
+            required: false,
+          },
+          {
+            model: ZTContractPeriod,
+            as: 'contractPeriod',
+            attributes: ['id', 'periodName'],
+            required: false,
+          },
+          {
+            model: ZTContractPeriodDevicePrice,
+            as: 'contractPeriodDevicePrice',
+            attributes: ['id', 'purchasePrice'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'currency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'sellingCurrency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+          {
+            model: ZTDeviceStatus,
+            as: 'deviceStatus',
+            attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'createdUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'updatedUser',
+            attributes: ['id', 'firstname', 'lastname'],
+            required: false,
+          },
         ])
         .build(),
     );
@@ -109,13 +214,21 @@ export class DeviceService {
         this.localizationService.translate('zootag.device_not_found'),
       );
     return {
-      result: this.localizationMapperService.localizeItem(
-        item.toJSON(),
-        { deviceStatus: 'deviceStatus' },
-      ),
+      result: this.localizationMapperService.localizeItem(item.toJSON(), {
+        deviceStatus: 'deviceStatus',
+      }),
     };
   }
 
+  /**
+   * Business rules:
+   * - contractPeriodDevicePriceId must reference an existing, non-deleted price record
+   * - deviceTypeId must match the price record's deviceTypeId (prevents incorrect pricing)
+   * - maximumQuantity on price record is enforced: if > 0, rejects when at or above limit
+   * - Pricing fields (purchasePrice, currencyId, purchasePriceIRR, sellingPrice, etc.)
+   *   are derived from the price record, NOT from user input
+   * - contractPeriodId is set automatically from the price record
+   */
   async create(dto: DeviceDto, user: User) {
     const priceRecord = await this.contractPeriodDevicePriceRepository.findOne(
       new QueryOptionsBuilder()
@@ -125,7 +238,9 @@ export class DeviceService {
     );
     if (!priceRecord)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.contract_period_device_price_not_found'),
+        this.localizationService.translate(
+          'zootag.contract_period_device_price_not_found',
+        ),
       );
     if (Number(priceRecord.deviceTypeId) !== Number(dto.deviceTypeId))
       throw new BadRequestException(
@@ -134,7 +249,9 @@ export class DeviceService {
     if (priceRecord.maximumQuantity > 0) {
       const deviceCount = await this.repository.count(
         new QueryOptionsBuilder()
-          .filter({ contractPeriodDevicePriceId: dto.contractPeriodDevicePriceId })
+          .filter({
+            contractPeriodDevicePriceId: dto.contractPeriodDevicePriceId,
+          })
           .filter({ isDeleted: 0 })
           .build(),
       );
@@ -159,6 +276,14 @@ export class DeviceService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - contractPeriodDevicePriceId is FROZEN — cannot be changed after creation
+   * - All pricing and contract fields (contractPeriodId, deviceTypeId, purchasePrice,
+   *   currencyId, purchasePriceIRR, sellingPrice, sellingCurrencyId, sellingPriceIRR)
+   *   are FROZEN — only device descriptor fields (serialNumber, imei, macAddress, etc.)
+   *   and status fields are mutable
+   */
   async update(id: number, dto: DeviceDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -184,6 +309,11 @@ export class DeviceService {
     return { result: item };
   }
 
+  /**
+   * Business rules:
+   * - Soft delete: sets isDeleted = true instead of hard-deleting the row
+   * - Already-deleted devices return NotFoundException
+   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
