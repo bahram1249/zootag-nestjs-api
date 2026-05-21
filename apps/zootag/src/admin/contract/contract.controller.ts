@@ -15,7 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ContractService } from './contract.service';
@@ -35,6 +35,12 @@ export class ContractController {
   @ApiJsonResponse({ type: ContractResponseDto, isArray: true })
   @CheckPermission({ permissionSymbol: 'zootag.admin.contracts.getall' })
   @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: ContractFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ContractFilterDto) {
     return await this.service.findAll(filter);

@@ -15,7 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CurrencyService } from './currency.service';
@@ -35,6 +35,12 @@ export class CurrencyController {
   @ApiJsonResponse({ type: CurrencyResponseDto, isArray: true })
   @CheckPermission({ permissionSymbol: 'zootag.admin.currencies.getall' })
   @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: CurrencyFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: CurrencyFilterDto) {
     return await this.service.findAll(filter);

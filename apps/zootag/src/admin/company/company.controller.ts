@@ -15,7 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CompanyService } from './company.service';
@@ -35,6 +35,12 @@ export class CompanyController {
   @ApiJsonResponse({ type: CompanyResponseDto, isArray: true })
   @CheckPermission({ permissionSymbol: 'zootag.admin.companies.getall' })
   @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: CompanyFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: CompanyFilterDto) {
     return await this.service.findAll(filter);
