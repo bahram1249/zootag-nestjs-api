@@ -40,10 +40,10 @@ export class ContractPeriodDevicePriceDto {
 
   @AutoMap()
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  @ApiProperty({ description: 'purchase price IRR' })
-  purchasePriceIRR: number;
+  @ApiProperty({ required: false, description: 'purchase price IRR' })
+  purchasePriceIRR?: number;
 
   @AutoMap()
   @Type(() => Number)

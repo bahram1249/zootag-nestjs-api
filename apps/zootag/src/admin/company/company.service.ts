@@ -4,6 +4,7 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTCompany } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { CompanyFilterDto, CompanyDto } from './dto';
 
 @Injectable()
@@ -54,7 +55,7 @@ export class CompanyService {
     return { result: item };
   }
 
-  async create(dto: CompanyDto) {
+  async create(dto: CompanyDto, user: User) {
     const item = await this.repository.create({
       companyName: dto.companyName,
       legalName: dto.legalName,
@@ -62,11 +63,13 @@ export class CompanyService {
       email: dto.email,
       phone: dto.phone,
       address: dto.address,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  async update(id: number, dto: CompanyDto) {
+  async update(id: number, dto: CompanyDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
     );
@@ -81,6 +84,7 @@ export class CompanyService {
       email: dto.email,
       phone: dto.phone,
       address: dto.address,
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }

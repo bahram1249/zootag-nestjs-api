@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript
 import { AutoMap } from 'automapper-classes';
 import { ZTContract } from './zt-contract.entity';
 import { ZTContractPeriodStatus } from './zt-contract-period-status.entity';
+import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_ContractPeriods' })
 export class ZTContractPeriod extends Model {
@@ -41,6 +42,14 @@ export class ZTContractPeriod extends Model {
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: true })
   isDeleted: boolean;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  createdUserId: bigint;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  updatedUserId: bigint;
 
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;

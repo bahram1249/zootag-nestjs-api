@@ -16,7 +16,8 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { CompanyService } from './company.service';
 import { CompanyDto, CompanyFilterDto } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
@@ -53,8 +54,8 @@ export class CompanyController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.companies.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: CompanyDto) {
-    return await this.service.create(dto);
+  async create(@Body() dto: CompanyDto, @GetUser() user: User) {
+    return await this.service.create(dto, user);
   }
 
   @ApiOperation({ description: 'update company' })
@@ -62,8 +63,8 @@ export class CompanyController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.companies.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: CompanyDto) {
-    return await this.service.update(id, dto);
+  async update(@Param('id') id: number, @Body() dto: CompanyDto, @GetUser() user: User) {
+    return await this.service.update(id, dto, user);
   }
 
   @ApiOperation({ description: 'delete company' })

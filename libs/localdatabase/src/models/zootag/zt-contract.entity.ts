@@ -3,6 +3,7 @@ import { AutoMap } from 'automapper-classes';
 import { ZTCompany } from './zt-company.entity';
 import { ZTCurrency } from './zt-currency.entity';
 import { ZTContractStatus } from './zt-contract-status.entity';
+import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Contracts' })
 export class ZTContract extends Model {
@@ -51,6 +52,14 @@ export class ZTContract extends Model {
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: true })
   isDeleted: boolean;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  createdUserId: bigint;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  updatedUserId: bigint;
 
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;

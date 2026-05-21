@@ -16,7 +16,8 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { ContractPeriodDevicePriceService } from './contract-period-device-price.service';
 import {
   ContractPeriodDevicePriceDto,
@@ -70,8 +71,8 @@ export class ContractPeriodDevicePriceController {
   })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: ContractPeriodDevicePriceDto) {
-    return await this.service.create(dto);
+  async create(@Body() dto: ContractPeriodDevicePriceDto, @GetUser() user: User) {
+    return await this.service.create(dto, user);
   }
 
   @ApiOperation({ description: 'update contract period device price' })
@@ -84,8 +85,9 @@ export class ContractPeriodDevicePriceController {
   async update(
     @Param('id') id: number,
     @Body() dto: ContractPeriodDevicePriceDto,
+    @GetUser() user: User,
   ) {
-    return await this.service.update(id, dto);
+    return await this.service.update(id, dto, user);
   }
 
   @ApiOperation({ description: 'delete contract period device price' })

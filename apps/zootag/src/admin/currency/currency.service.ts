@@ -3,7 +3,8 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ZTCurrency } from '@rahino/localdatabase/models';
+import { ZTCurrency, ZTCurrencyHistory } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { CurrencyFilterDto, CurrencyDto } from './dto';
 
 @Injectable()
@@ -11,6 +12,8 @@ export class CurrencyService {
   constructor(
     @InjectModel(ZTCurrency)
     private readonly repository: typeof ZTCurrency,
+    @InjectModel(ZTCurrencyHistory)
+    private readonly currencyHistoryRepository: typeof ZTCurrencyHistory,
     private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -50,18 +53,28 @@ export class CurrencyService {
     return { result: item };
   }
 
-  async create(dto: CurrencyDto) {
+  async create(dto: CurrencyDto, user: User) {
     const item = await this.repository.create({
       code: dto.code,
       name: dto.name,
       symbol: dto.symbol,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
+    if (dto.exchangeRateToIRR != null && !dto.isBaseCurrency) {
+      await this.currencyHistoryRepository.create({
+        currencyId: item.id,
+        exchangeRateToIRR: dto.exchangeRateToIRR,
+        createdUserId: BigInt(user.id),
+        updatedUserId: BigInt(user.id),
+      });
+    }
     return { result: item };
   }
 
-  async update(id: number, dto: CurrencyDto) {
+  async update(id: number, dto: CurrencyDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).build(),
     );
@@ -69,13 +82,25 @@ export class CurrencyService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.currency_not_found'),
       );
+    const rateChanged =
+      dto.exchangeRateToIRR != null &&
+      Number(dto.exchangeRateToIRR) !== Number(item.exchangeRateToIRR);
     await item.update({
       code: dto.code,
       name: dto.name,
       symbol: dto.symbol,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
+      updatedUserId: BigInt(user.id),
     });
+    if (rateChanged && !dto.isBaseCurrency) {
+      await this.currencyHistoryRepository.create({
+        currencyId: item.id,
+        exchangeRateToIRR: dto.exchangeRateToIRR,
+        createdUserId: BigInt(user.id),
+        updatedUserId: BigInt(user.id),
+      });
+    }
     return { result: item };
   }
 

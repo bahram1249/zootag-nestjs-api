@@ -1,5 +1,6 @@
 import {
   ZTCurrency,
+  ZTCurrencyHistory,
   ZTCompany,
   ZTDeviceType,
   ZTDeviceStatus,
@@ -13,6 +14,7 @@ import {
 
 export const zootagModels = [
   ZTCurrency,
+  ZTCurrencyHistory,
   ZTCompany,
   ZTDeviceType,
   ZTDeviceStatus,

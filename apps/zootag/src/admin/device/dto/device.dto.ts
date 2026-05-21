@@ -71,10 +71,10 @@ export class DeviceDto {
 
   @AutoMap()
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  @ApiProperty({ description: 'purchase price IRR' })
-  purchasePriceIRR: number;
+  @ApiProperty({ required: false, description: 'purchase price IRR' })
+  purchasePriceIRR?: number;
 
   @AutoMap()
   @IsOptional()

@@ -16,7 +16,8 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { DeviceService } from './device.service';
 import { DeviceDto, DeviceFilterDto } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
@@ -53,8 +54,8 @@ export class DeviceController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.devices.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: DeviceDto) {
-    return await this.service.create(dto);
+  async create(@Body() dto: DeviceDto, @GetUser() user: User) {
+    return await this.service.create(dto, user);
   }
 
   @ApiOperation({ description: 'update device' })
@@ -62,8 +63,8 @@ export class DeviceController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.devices.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: DeviceDto) {
-    return await this.service.update(id, dto);
+  async update(@Param('id') id: number, @Body() dto: DeviceDto, @GetUser() user: User) {
+    return await this.service.update(id, dto, user);
   }
 
   @ApiOperation({ description: 'delete device' })

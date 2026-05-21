@@ -4,6 +4,7 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTContract } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { ContractFilterDto, ContractDto } from './dto';
 
 @Injectable()
@@ -57,7 +58,7 @@ export class ContractService {
     return { result: item };
   }
 
-  async create(dto: ContractDto) {
+  async create(dto: ContractDto, user: User) {
     const item = await this.repository.create({
       companyId: dto.companyId,
       contractNumber: dto.contractNumber,
@@ -67,11 +68,13 @@ export class ContractService {
       currencyId: dto.currencyId,
       contractStatusId: dto.contractStatusId,
       notes: dto.notes,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  async update(id: number, dto: ContractDto) {
+  async update(id: number, dto: ContractDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
     );
@@ -88,6 +91,7 @@ export class ContractService {
       currencyId: dto.currencyId,
       contractStatusId: dto.contractStatusId,
       notes: dto.notes,
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }

@@ -4,6 +4,8 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTContractPeriodDevicePrice } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
+import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import {
   ContractPeriodDevicePriceFilterDto,
   ContractPeriodDevicePriceDto,
@@ -17,6 +19,7 @@ export class ContractPeriodDevicePriceService {
     private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly currencyCalculationService: CurrencyCalculationService,
   ) {}
 
   async findAll(filter: ContractPeriodDevicePriceFilterDto) {
@@ -60,19 +63,28 @@ export class ContractPeriodDevicePriceService {
     return { result: item };
   }
 
-  async create(dto: ContractPeriodDevicePriceDto) {
+  async create(dto: ContractPeriodDevicePriceDto, user: User) {
+    let purchasePriceIRR = dto.purchasePriceIRR;
+    if (dto.purchasePrice != null && dto.currencyId != null && purchasePriceIRR == null) {
+      purchasePriceIRR = await this.currencyCalculationService.convertToIRR(
+        dto.purchasePrice,
+        BigInt(dto.currencyId),
+      );
+    }
     const item = await this.repository.create({
       contractPeriodId: dto.contractPeriodId,
       deviceTypeId: dto.deviceTypeId,
       purchasePrice: dto.purchasePrice,
       currencyId: dto.currencyId,
-      purchasePriceIRR: dto.purchasePriceIRR,
+      purchasePriceIRR: purchasePriceIRR ?? 0,
       minimumQuantity: dto.minimumQuantity,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  async update(id: number, dto: ContractPeriodDevicePriceDto) {
+  async update(id: number, dto: ContractPeriodDevicePriceDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
     );
@@ -87,8 +99,9 @@ export class ContractPeriodDevicePriceService {
       deviceTypeId: dto.deviceTypeId,
       purchasePrice: dto.purchasePrice,
       currencyId: dto.currencyId,
-      purchasePriceIRR: dto.purchasePriceIRR,
+      purchasePriceIRR: item.purchasePriceIRR,
       minimumQuantity: dto.minimumQuantity,
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }

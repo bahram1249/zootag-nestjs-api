@@ -16,7 +16,8 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { CurrencyService } from './currency.service';
 import { CurrencyDto, CurrencyFilterDto } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
@@ -53,8 +54,8 @@ export class CurrencyController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.currencies.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: CurrencyDto) {
-    return await this.service.create(dto);
+  async create(@Body() dto: CurrencyDto, @GetUser() user: User) {
+    return await this.service.create(dto, user);
   }
 
   @ApiOperation({ description: 'update currency' })
@@ -62,8 +63,8 @@ export class CurrencyController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.currencies.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: CurrencyDto) {
-    return await this.service.update(id, dto);
+  async update(@Param('id') id: number, @Body() dto: CurrencyDto, @GetUser() user: User) {
+    return await this.service.update(id, dto, user);
   }
 
   @ApiOperation({ description: 'delete currency' })

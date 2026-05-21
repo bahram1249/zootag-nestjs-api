@@ -3943,6 +3943,26 @@
           "unique": false,
           "comment": null
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -3970,49 +3990,10 @@
             "model": "Users",
             "key": "id"
           }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
         }
       },
       "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
+      "foreignKeys": []
     },
     "ZT_ContractPeriodDevicePrices": {
       "className": "ZTContractPeriodDevicePrice",
@@ -4120,6 +4101,26 @@
           "unique": false,
           "comment": null
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -4147,26 +4148,6 @@
             "model": "Users",
             "key": "id"
           }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
         }
       },
       "indexes": [],
@@ -4194,24 +4175,6 @@
             "currencyId"
           ],
           "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
           "refColumns": [
             "id"
           ]
@@ -4368,6 +4331,26 @@
           "unique": false,
           "comment": null
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -4395,26 +4378,6 @@
             "model": "Users",
             "key": "id"
           }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
         }
       },
       "indexes": [],
@@ -4433,24 +4396,6 @@
             "contractPeriodStatusId"
           ],
           "refTable": "ZT_ContractPeriodStatuses",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
           "refColumns": [
             "id"
           ]
@@ -4631,6 +4576,26 @@
           "unique": false,
           "comment": null
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -4658,26 +4623,6 @@
             "model": "Users",
             "key": "id"
           }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
         }
       },
       "indexes": [],
@@ -4705,142 +4650,6 @@
             "contractStatusId"
           ],
           "refTable": "ZT_ContractStatuses",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
-    },
-    "ZT_CurrencyHistories": {
-      "className": "ZTCurrencyHistory",
-      "tableName": "ZT_CurrencyHistories",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": true,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "currencyId": {
-          "name": "currencyId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Currencies",
-            "key": "id"
-          }
-        },
-        "exchangeRateToIRR": {
-          "name": "exchangeRateToIRR",
-          "type": "DECIMAL",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "createdUserId": {
-          "name": "createdUserId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "Users",
-            "key": "id"
-          }
-        },
-        "updatedUserId": {
-          "name": "updatedUserId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "Users",
-            "key": "id"
-          }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "currencyId"
-          ],
-          "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
           "refColumns": [
             "id"
           ]
@@ -5255,6 +5064,128 @@
           "unique": false,
           "comment": null
         },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdUserId": {
+          "name": "createdUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "companyId"
+          ],
+          "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceTypeId"
+          ],
+          "refTable": "ZT_DeviceTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "contractPeriodId"
+          ],
+          "refTable": "ZT_ContractPeriods",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceStatusId"
+          ],
+          "refTable": "ZT_DeviceStatuses",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZTCurrencyHistory": {
+      "className": "ZTCurrencyHistory",
+      "tableName": "ZT_CurrencyHistories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "exchangeRateToIRR": {
+          "name": "exchangeRateToIRR",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -5308,45 +5239,9 @@
       "foreignKeys": [
         {
           "columns": [
-            "companyId"
-          ],
-          "refTable": "ZT_Companies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "deviceTypeId"
-          ],
-          "refTable": "ZT_DeviceTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "contractPeriodId"
-          ],
-          "refTable": "ZT_ContractPeriods",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
             "currencyId"
           ],
           "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "deviceStatusId"
-          ],
-          "refTable": "ZT_DeviceStatuses",
           "refColumns": [
             "id"
           ]

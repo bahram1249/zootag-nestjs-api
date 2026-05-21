@@ -5,6 +5,7 @@ import { ZTDeviceType } from './zt-device-type.entity';
 import { ZTContractPeriod } from './zt-contract-period.entity';
 import { ZTCurrency } from './zt-currency.entity';
 import { ZTDeviceStatus } from './zt-device-status.entity';
+import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Devices' })
 export class ZTDevice extends Model {
@@ -71,6 +72,14 @@ export class ZTDevice extends Model {
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: true })
   isDeleted: boolean;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  createdUserId: bigint;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  updatedUserId: bigint;
 
   @Column({ type: DataType.DATE, allowNull: false })
   createdAt: Date;

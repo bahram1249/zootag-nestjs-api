@@ -4,6 +4,7 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTContractPeriod } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { ContractPeriodFilterDto, ContractPeriodDto } from './dto';
 
 @Injectable()
@@ -52,7 +53,7 @@ export class ContractPeriodService {
     return { result: item };
   }
 
-  async create(dto: ContractPeriodDto) {
+  async create(dto: ContractPeriodDto, user: User) {
     const item = await this.repository.create({
       contractId: dto.contractId,
       periodName: dto.periodName,
@@ -60,11 +61,13 @@ export class ContractPeriodService {
       endDate: dto.endDate,
       contractPeriodStatusId: dto.contractPeriodStatusId,
       notes: dto.notes,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  async update(id: number, dto: ContractPeriodDto) {
+  async update(id: number, dto: ContractPeriodDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
     );
@@ -79,6 +82,7 @@ export class ContractPeriodService {
       endDate: dto.endDate,
       contractPeriodStatusId: dto.contractPeriodStatusId,
       notes: dto.notes,
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }

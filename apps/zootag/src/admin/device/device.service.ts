@@ -4,6 +4,8 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTDevice } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
+import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import { DeviceFilterDto, DeviceDto } from './dto';
 
 @Injectable()
@@ -14,6 +16,7 @@ export class DeviceService {
     private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly currencyCalculationService: CurrencyCalculationService,
   ) {}
 
   async findAll(filter: DeviceFilterDto) {
@@ -61,7 +64,14 @@ export class DeviceService {
     return { result: item };
   }
 
-  async create(dto: DeviceDto) {
+  async create(dto: DeviceDto, user: User) {
+    let purchasePriceIRR = dto.purchasePriceIRR;
+    if (dto.purchasePrice != null && dto.currencyId != null && purchasePriceIRR == null) {
+      purchasePriceIRR = await this.currencyCalculationService.convertToIRR(
+        dto.purchasePrice,
+        BigInt(dto.currencyId),
+      );
+    }
     const item = await this.repository.create({
       serialNumber: dto.serialNumber,
       imei: dto.imei,
@@ -71,15 +81,17 @@ export class DeviceService {
       contractPeriodId: dto.contractPeriodId,
       purchasePrice: dto.purchasePrice,
       currencyId: dto.currencyId,
-      purchasePriceIRR: dto.purchasePriceIRR,
+      purchasePriceIRR: purchasePriceIRR ?? 0,
       purchaseDate: dto.purchaseDate,
       warrantyEndDate: dto.warrantyEndDate,
       deviceStatusId: dto.deviceStatusId,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  async update(id: number, dto: DeviceDto) {
+  async update(id: number, dto: DeviceDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
     );
@@ -96,10 +108,11 @@ export class DeviceService {
       contractPeriodId: dto.contractPeriodId,
       purchasePrice: dto.purchasePrice,
       currencyId: dto.currencyId,
-      purchasePriceIRR: dto.purchasePriceIRR,
+      purchasePriceIRR: item.purchasePriceIRR,
       purchaseDate: dto.purchaseDate,
       warrantyEndDate: dto.warrantyEndDate,
       deviceStatusId: dto.deviceStatusId,
+      updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
