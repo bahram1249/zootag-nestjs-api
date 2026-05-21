@@ -65,6 +65,22 @@ export class ZTDevice extends Model {
   purchasePriceIRR: number;
 
   @AutoMap()
+  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
+  sellingPrice: number;
+
+  @AutoMap()
+  @ForeignKey(() => ZTCurrency)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  sellingCurrencyId: bigint;
+
+  @BelongsTo(() => ZTCurrency, { foreignKey: 'sellingCurrencyId', as: 'sellingCurrency' })
+  sellingCurrency: ZTCurrency;
+
+  @AutoMap()
+  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
+  sellingPriceIRR: number;
+
+  @AutoMap()
   @Column({ type: DataType.DATE, allowNull: true })
   purchaseDate: Date;
 

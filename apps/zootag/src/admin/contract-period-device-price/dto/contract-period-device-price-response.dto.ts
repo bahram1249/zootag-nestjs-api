@@ -67,6 +67,21 @@ export class ContractPeriodDevicePriceResponseDto {
   @ApiProperty({ example: 10, description: 'Minimum quantity' })
   minimumQuantity: number;
 
+  @ApiProperty({ example: 100, description: 'Maximum quantity' })
+  maximumQuantity: number;
+
+  @ApiProperty({ example: 2500.00, description: 'Selling price', required: false })
+  sellingPrice?: number;
+
+  @ApiProperty({ example: 1, description: 'Selling currency ID', required: false })
+  sellingCurrencyId?: number;
+
+  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Selling currency', required: false })
+  sellingCurrency?: CurrencyBriefDto;
+
+  @ApiProperty({ example: 87500000, description: 'Selling price IRR', required: false })
+  sellingPriceIRR?: number;
+
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 

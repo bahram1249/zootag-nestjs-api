@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-21T20:42:51.157Z",
+  "generatedAt": "2026-05-21T20:42:51.155Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -4100,50 +4100,6 @@
           "unique": false,
           "comment": null
         },
-        "maximumQuantity": {
-          "name": "maximumQuantity",
-          "type": "INT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "0",
-          "unique": false,
-          "comment": null
-        },
-        "sellingPrice": {
-          "name": "sellingPrice",
-          "type": "DECIMAL(18,2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "sellingCurrencyId": {
-          "name": "sellingCurrencyId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Currencies",
-            "key": "id"
-          }
-        },
-        "sellingPriceIRR": {
-          "name": "sellingPriceIRR",
-          "type": "DECIMAL(18,2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
         "isActive": {
           "name": "isActive",
           "type": "BIT",
@@ -4211,6 +4167,50 @@
           "defaultValue": null,
           "unique": false,
           "comment": null
+        },
+        "maximumQuantity": {
+          "name": "maximumQuantity",
+          "type": "INT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "0",
+          "unique": false,
+          "comment": null
+        },
+        "sellingPrice": {
+          "name": "sellingPrice",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "sellingCurrencyId": {
+          "name": "sellingCurrencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "sellingPriceIRR": {
+          "name": "sellingPriceIRR",
+          "type": "DECIMAL",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
         }
       },
       "indexes": [],
@@ -4236,15 +4236,6 @@
         {
           "columns": [
             "currencyId"
-          ],
-          "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "sellingCurrencyId"
           ],
           "refTable": "ZT_Currencies",
           "refColumns": [
@@ -5254,40 +5245,6 @@
           "unique": false,
           "comment": null
         },
-        "sellingPrice": {
-          "name": "sellingPrice",
-          "type": "DECIMAL(18,2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "sellingCurrencyId": {
-          "name": "sellingCurrencyId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Currencies",
-            "key": "id"
-          }
-        },
-        "sellingPriceIRR": {
-          "name": "sellingPriceIRR",
-          "type": "DECIMAL(18,2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
         "purchaseDate": {
           "name": "purchaseDate",
           "type": "DATETIME",
@@ -5423,15 +5380,6 @@
         {
           "columns": [
             "currencyId"
-          ],
-          "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "sellingCurrencyId"
           ],
           "refTable": "ZT_Currencies",
           "refColumns": [

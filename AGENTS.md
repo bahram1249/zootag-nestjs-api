@@ -1033,8 +1033,8 @@ The project uses a custom code-generation migrator at `apps/main/src/migrator/`.
 #### CLI Commands
 
 ```bash
-# Generate migration files (runs snapshot + generate in one step)
-npm run gen:migration
+# Generate migration files from entity changes (diffs current entities vs snapshot)
+npm run gen:migration:generate
 
 # Save current model state to models-snapshot.json
 npm run gen:migration:snapshot
@@ -1045,6 +1045,8 @@ npm run gen:migration:diff
 # Backfill per-migration snapshots for all existing definitions
 npx ts-node apps/main/src/migrator/cli/index.ts backfill-snapshots
 ```
+
+**Important:** After running `gen:migration:generate`, you must manually fix the generated `cond()` casing in `apps/main/src/migrator/migrations/index.ts` — the generator outputs `'zootag'` (lowercase) but the project convention is `'Zootag'` (capital Z).
 
 #### Database Management CLI
 
@@ -1105,8 +1107,9 @@ npm run rollback
 #### Workflow (when adding/changing entities)
 
 1. **Edit or create** `*.entity.ts` files in `libs/localdatabase/src/models/<domain>/`
-2. **Generate migrations**: Run `npm run gen:migration` (combines snapshot + generate)
-   - Or step-by-step: `gen:migration:snapshot` → `gen:migration:diff` (verify) → `npm run gen:migration` (which does snapshot + generate when no snapshot changes)
+2. **Generate migrations**: Run `npm run gen:migration:generate`
+   - Or step-by-step: `gen:migration:snapshot` → `gen:migration:diff` (verify) → `npm run gen:migration:generate`
+3. **Fix casing**: After generation, manually change `'zootag'` → `'Zootag'` in `apps/main/src/migrator/migrations/index.ts`
 
 #### Migration File Conventions
 
@@ -1208,6 +1211,7 @@ The placeholder values (`<domain>.<group>`, `<Parent Menu>`, `<Menu Name>`, `/<p
 - **Core tables**: Use `m(module)` wrapper
 - **EAV-prefixed tables**: Use `cond(module, 'SITE_NAME', 'ecommerce')` wrapper
 - **BPMN-prefixed tables**: Use `cond(module, 'SITE_NAME', 'bpmn')` wrapper
+- **Zootag tables**: Use `cond(module, 'SITE_NAME', 'Zootag')` — note capital Z
 - The combined execution order lives in `apps/main/src/migrator/definitions/index.ts` which merges migrations + seeds
 
 #### Runtime Migration Execution

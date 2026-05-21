@@ -624,7 +624,7 @@ export function scanCompiledModelFile(
     // Parse Column options for Sequelize-specific type
     let colType = '';
     const dtTypeMatch = columnOptsStr.match(
-      /(?:sequelize_typescript_1\.)?DataType\.(\w+)(?:\((\d+)\))?/,
+      /(?:sequelize_typescript_1\.)?DataType\.(\w+)(?:\(([^)]+)\))?/,
     );
     if (dtTypeMatch) {
       colType = dtTypeMatch[1] + (dtTypeMatch[2] ? `(${dtTypeMatch[2]})` : '');

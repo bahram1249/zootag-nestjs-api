@@ -93,6 +93,18 @@ export class DeviceResponseDto {
   @ApiProperty({ example: 50000000, description: 'Purchase price IRR' })
   purchasePriceIRR: number;
 
+  @ApiProperty({ example: 2500.00, description: 'Selling price', required: false })
+  sellingPrice?: number;
+
+  @ApiProperty({ example: 1, description: 'Selling currency ID', required: false })
+  sellingCurrencyId?: number;
+
+  @ApiProperty({ type: () => CurrencyBriefDto, description: 'Selling currency', required: false })
+  sellingCurrency?: CurrencyBriefDto;
+
+  @ApiProperty({ example: 87500000, description: 'Selling price IRR', required: false })
+  sellingPriceIRR?: number;
+
   @ApiProperty({ example: '2026-01-15', description: 'Purchase date', required: false })
   purchaseDate?: string;
 

@@ -44,12 +44,17 @@ export class ContractPeriodDevicePriceService {
         'currencyId',
         'purchasePriceIRR',
         'minimumQuantity',
+        'maximumQuantity',
+        'sellingPrice',
+        'sellingCurrencyId',
+        'sellingPriceIRR',
         'isActive',
       ])
       .include([
         { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
         { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
         { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+        { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
         { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
         { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
       ])
@@ -69,6 +74,7 @@ export class ContractPeriodDevicePriceService {
           { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
           { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
           { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+          { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
           { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
           { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
         ])
@@ -91,10 +97,18 @@ export class ContractPeriodDevicePriceService {
         BigInt(dto.currencyId),
       );
     }
+    let sellingPriceIRR = dto.sellingPriceIRR;
+    if (dto.sellingPrice != null && dto.sellingCurrencyId != null && sellingPriceIRR == null) {
+      sellingPriceIRR = await this.currencyCalculationService.convertToIRR(
+        dto.sellingPrice,
+        BigInt(dto.sellingCurrencyId),
+      );
+    }
     const mapped = this.mapper.map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice).toJSON();
     const item = await this.repository.create({
       ...mapped,
       purchasePriceIRR: purchasePriceIRR ?? 0,
+      sellingPriceIRR: sellingPriceIRR ?? null,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -115,6 +129,7 @@ export class ContractPeriodDevicePriceService {
     await item.update({
       ...mapped,
       purchasePriceIRR: item.purchasePriceIRR,
+      sellingPriceIRR: item.sellingPriceIRR,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

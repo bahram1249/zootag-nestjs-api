@@ -53,14 +53,11 @@ Update these files:
 ## 3. Generate Migration
 
 ```bash
-npm run gen:migration
+npm run gen:migration:generate
 ```
 
-Then **manually verify and fix**:
-- [ ] Remove `allowNull: true` from `isDeleted` and add `allowNull: false, defaultValue: 0` **in the entity first** before generating (the generator reads entity metadata)
-- [ ] Fix `cond(... 'zootag')` → `cond(... 'Zootag')` (capital Z) in `apps/main/src/migrator/migrations/index.ts`
-- [ ] Verify the migration adds a `DEFAULT 0` constraint (add raw SQL if the generator doesn't)
-- [ ] Verify the migration updates existing NULL rows to 0
+Then **manually fix**:
+- [ ] `cond(... 'zootag')` → `cond(... 'Zootag')` (capital Z) in `apps/main/src/migrator/migrations/index.ts`
 
 ## 4. Create Module
 
@@ -295,4 +292,4 @@ npm run start:dev
 | **Localized lookup name** | Inject `LocalizationMapperService`; use `localizeLookupItems()` / `localizeLookupItem()` for direct lookup entities; use `localizeItems()` / `localizeItem()` with `{ relationKey: 'entityType' }` for nested relations |
 | **IRR auto-calculation** | Mark `CurrencyCalculationModule` as `@Global()`, inject `CurrencyCalculationService`, call on **create only** |
 | **No `@GetUser()` user param** | Lookup table controllers omit user param in create/update |
-| **Migration fixes needed** | After generation: fix `cond()` casing, add `DEFAULT` constraints, add UPDATE for existing NULLs |
+| **Migration fixes needed** | After generation: fix `cond(... 'zootag')` → `cond(... 'Zootag')` in `apps/main/src/migrator/migrations/index.ts` |

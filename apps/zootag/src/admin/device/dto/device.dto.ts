@@ -57,27 +57,6 @@ export class DeviceDto {
 
   @AutoMap()
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @ApiProperty({ required: false, description: 'purchase price' })
-  purchasePrice?: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsNumber()
-  @ApiProperty({ description: 'currency id' })
-  currencyId: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty({ required: false, description: 'purchase price IRR' })
-  purchasePriceIRR?: number;
-
-  @AutoMap()
-  @IsOptional()
   @IsDateString()
   @ApiProperty({ required: false, description: 'purchase date' })
   purchaseDate?: string;

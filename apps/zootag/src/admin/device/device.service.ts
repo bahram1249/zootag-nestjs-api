@@ -9,6 +9,7 @@ import {
   ZTCompany,
   ZTDeviceType,
   ZTContractPeriod,
+  ZTContractPeriodDevicePrice,
   ZTCurrency,
   ZTDeviceStatus,
 } from '@rahino/localdatabase/models';
@@ -23,6 +24,8 @@ export class DeviceService {
   constructor(
     @InjectModel(ZTDevice)
     private readonly repository: typeof ZTDevice,
+    @InjectModel(ZTContractPeriodDevicePrice)
+    private readonly contractPeriodDevicePriceRepository: typeof ZTContractPeriodDevicePrice,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
     @InjectMapper() private readonly mapper: Mapper,
@@ -53,6 +56,9 @@ export class DeviceService {
         'purchasePrice',
         'currencyId',
         'purchasePriceIRR',
+        'sellingPrice',
+        'sellingCurrencyId',
+        'sellingPriceIRR',
         'purchaseDate',
         'warrantyEndDate',
         'deviceStatusId',
@@ -63,6 +69,7 @@ export class DeviceService {
         { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
         { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
         { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+        { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
         { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
         { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
         { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
@@ -87,6 +94,7 @@ export class DeviceService {
           { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
           { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
           { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
+          { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
           { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
           { model: User, as: 'createdUser', attributes: ['id', 'firstname', 'lastname'], required: false },
           { model: User, as: 'updatedUser', attributes: ['id', 'firstname', 'lastname'], required: false },
@@ -106,17 +114,26 @@ export class DeviceService {
   }
 
   async create(dto: DeviceDto, user: User) {
-    let purchasePriceIRR = dto.purchasePriceIRR;
-    if (dto.purchasePrice != null && dto.currencyId != null && purchasePriceIRR == null) {
-      purchasePriceIRR = await this.currencyCalculationService.convertToIRR(
-        dto.purchasePrice,
-        BigInt(dto.currencyId),
+    const priceRecord = await this.contractPeriodDevicePriceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ contractPeriodId: dto.contractPeriodId })
+        .filter({ deviceTypeId: dto.deviceTypeId })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!priceRecord)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.contract_period_device_price_not_found'),
       );
-    }
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     const item = await this.repository.create({
       ...mapped,
-      purchasePriceIRR: purchasePriceIRR ?? 0,
+      purchasePrice: priceRecord.purchasePrice,
+      currencyId: priceRecord.currencyId,
+      purchasePriceIRR: priceRecord.purchasePriceIRR,
+      sellingPrice: priceRecord.sellingPrice,
+      sellingCurrencyId: priceRecord.sellingCurrencyId,
+      sellingPriceIRR: priceRecord.sellingPriceIRR,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -134,7 +151,14 @@ export class DeviceService {
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     await item.update({
       ...mapped,
+      contractPeriodId: item.contractPeriodId,
+      deviceTypeId: item.deviceTypeId,
+      purchasePrice: item.purchasePrice,
+      currencyId: item.currencyId,
       purchasePriceIRR: item.purchasePriceIRR,
+      sellingPrice: item.sellingPrice,
+      sellingCurrencyId: item.sellingCurrencyId,
+      sellingPriceIRR: item.sellingPriceIRR,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

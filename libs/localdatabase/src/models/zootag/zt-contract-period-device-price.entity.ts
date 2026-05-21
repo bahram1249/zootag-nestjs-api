@@ -47,6 +47,26 @@ export class ZTContractPeriodDevicePrice extends Model {
   minimumQuantity: number;
 
   @AutoMap()
+  @Column({ type: DataType.INTEGER, allowNull: false, defaultValue: 0 })
+  maximumQuantity: number;
+
+  @AutoMap()
+  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
+  sellingPrice: number;
+
+  @AutoMap()
+  @ForeignKey(() => ZTCurrency)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  sellingCurrencyId: bigint;
+
+  @BelongsTo(() => ZTCurrency, { foreignKey: 'sellingCurrencyId', as: 'sellingCurrency' })
+  sellingCurrency: ZTCurrency;
+
+  @AutoMap()
+  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
+  sellingPriceIRR: number;
+
+  @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
   isActive: boolean;
 
