@@ -73,11 +73,12 @@ import { ZTYourModel } from '@rahino/localdatabase/models';
 import { Permission, User } from '@rahino/database';
 import { YourController } from './your.controller';
 import { YourService } from './your.service';
+import { YourProfile } from './mapper';
 
 @Module({
   imports: [SequelizeModule.forFeature([ZTYourModel, User, Permission])],
   controllers: [YourController],
-  providers: [YourService],
+  providers: [YourService, YourProfile],
 })
 export class YourModule {}
 ```
@@ -122,7 +123,42 @@ export * from './{feature-name}-response.dto';
 export * from './{feature-name}-filter.dto';
 ```
 
-## 6. Create Service
+## 6. Create Mapper Profile
+
+`mapper/{feature-name}.mapper.ts`
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { YourDto } from '../dto';
+import { ZTYourModel } from '@rahino/localdatabase/models';
+import { Mapper, createMap } from 'automapper-core';
+
+@Injectable()
+export class YourProfile extends AutomapperProfile {
+  constructor(@InjectMapper() mapper: Mapper) {
+    super(mapper);
+  }
+
+  override get profile() {
+    return (mapper) => {
+      createMap(mapper, YourDto, ZTYourModel);
+    };
+  }
+}
+```
+
+`mapper/index.ts`
+
+```typescript
+export * from './{feature-name}.mapper';
+```
+
+- The profile is registered in the module's `providers` (step 4 template already includes it)
+- `createMap` maps all fields with matching `@AutoMap()` decorators automatically
+- No `forMember(ignore())` needed — if `id` is in the DTO (lookup tables) it should be mapped; if `id` is auto-generated it should not be in the DTO
+
+## 7. Create Service
 
 `{feature-name}.service.ts`
 
@@ -132,11 +168,11 @@ Key patterns:
 |--------|---------|
 | `findAll` | Use `let qb = new QueryOptionsBuilder()`; call `count()` first, then `findAll()` with `.include()`, `.limit()`, `.offset()`, `.order()` |
 | `findById` | `findOne` with `.filter({ id }).filter({ isDeleted: 0 })`; throw `NotFoundException` if not found |
-| `create` | `this.repository.create({...})`; set `createdUserId` and `updatedUserId` from `user` param |
-| `update` | `findOne` first (404 if not found), then `item.update({..., updatedUserId})` |
+| `create` | `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); this.repository.create({ ...mapped, createdUserId: BigInt(user.id), updatedUserId: BigInt(user.id) })` |
+| `update` | `findOne` first (404 if not found), then `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); item.update({ ...mapped, updatedUserId: BigInt(user.id) })` |
 | `deleteById` | `findOne` first (404 if not found), then `item.update({ isDeleted: true })` |
 
-- Inject: `@InjectModel()`, `@InjectConnection()`, `LocalizationService`
+- Inject: `@InjectModel()`, `@InjectConnection()`, `LocalizationService`, `@InjectMapper() private readonly mapper: Mapper`
 - All `findAll`/`findById` queries must include related models via `.include()`
 - Filter with `.filter({ isDeleted: 0 })` on every read query
 - Use `this.localizationService.translate('zootag.{entity}_not_found')` for localization
@@ -255,7 +291,8 @@ npm run start:dev
 
 | Case | Action |
 |------|--------|
-| **Lookup table** (e.g. Status, Type) | No `createdUserId`/`updatedUserId`; no `isDeleted`; no `updatedAt`; no `slug`; no `AutoMap()` |
+| **Lookup table** (e.g. Status, Type) | No `createdUserId`/`updatedUserId`; no `isDeleted`; no `updatedAt`; no `slug`; DTO includes `id` (static PK); still uses `@AutoMap()` and mapper profile |
+| **Localized lookup name** | Inject `LocalizationMapperService`; use `localizeLookupItems()` / `localizeLookupItem()` for direct lookup entities; use `localizeItems()` / `localizeItem()` with `{ relationKey: 'entityType' }` for nested relations |
 | **IRR auto-calculation** | Mark `CurrencyCalculationModule` as `@Global()`, inject `CurrencyCalculationService`, call on **create only** |
 | **No `@GetUser()` user param** | Lookup table controllers omit user param in create/update |
 | **Migration fixes needed** | After generation: fix `cond()` casing, add `DEFAULT` constraints, add UPDATE for existing NULLs |

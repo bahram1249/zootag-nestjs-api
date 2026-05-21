@@ -449,7 +449,65 @@ export class SomeService {
 }
 ```
 
-Create mapper profiles in a `mapper/` subdirectory when complex mapping logic is needed (though `@AutoMap()` decorators handle most cases automatically).
+Create mapper profiles in a `mapper/` subdirectory to register DTO → Entity mappings:
+
+```typescript
+// mapper/some.mapper.ts
+import { Injectable } from '@nestjs/common';
+import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { SomeDto } from '../dto';
+import { SomeModel } from '@rahino/localdatabase/models';
+import { Mapper, createMap } from 'automapper-core';
+
+@Injectable()
+export class SomeProfile extends AutomapperProfile {
+  constructor(@InjectMapper() mapper: Mapper) {
+    super(mapper);
+  }
+
+  override get profile() {
+    return (mapper) => {
+      createMap(mapper, SomeDto, SomeModel);
+    };
+  }
+}
+```
+
+Register the profile in the module:
+
+```typescript
+@Module({
+  imports: [SequelizeModule.forFeature([SomeModel, User, Permission])],
+  controllers: [SomeController],
+  providers: [SomeService, SomeProfile],
+})
+export class SomeModule {}
+```
+
+In services, map DTO → Entity via `this.mapper.map(dto, DtoClass, EntityClass).toJSON()`.
+Service-level fields (audit, calculated) are set after the spread:
+
+```typescript
+async create(dto: SomeDto, user: User) {
+  const mapped = this.mapper.map(dto, SomeDto, SomeModel).toJSON();
+  const item = await this.repository.create({
+    ...mapped,
+    createdUserId: BigInt(user.id),
+    updatedUserId: BigInt(user.id),
+  });
+  return { result: item };
+}
+
+async update(id: number, dto: SomeDto, user: User) {
+  // ... findOne + NotFoundException ...
+  const mapped = this.mapper.map(dto, SomeDto, SomeModel).toJSON();
+  await item.update({
+    ...mapped,
+    updatedUserId: BigInt(user.id),
+  });
+  return { result: item };
+}
+```
 
 #### File Upload with Multer
 
