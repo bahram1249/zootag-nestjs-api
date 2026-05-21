@@ -1197,6 +1197,9 @@ Each feature is a self-contained NestJS module with controller, service, module,
 
 Permission symbols follow the pattern: `zootag.admin.<feature>.<action>`.
 
+> For the complete step-by-step workflow to create or edit admin modules,
+> see [CREATE_EDIT_MODULE_FLOW.md](/CREATE_EDIT_MODULE_FLOW.md) at the project root.
+
 #### `client/`
 For authenticated users. Uses `JwtGuard` but typically without `PermissionGuard` — access is controlled by ownership or data-level checks:
 
