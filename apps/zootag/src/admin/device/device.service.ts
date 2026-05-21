@@ -151,6 +151,26 @@ export class DeviceService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'serialNumber',
+          'imei',
+          'macAddress',
+          'companyId',
+          'deviceTypeId',
+          'contractPeriodId',
+          'contractPeriodDevicePriceId',
+          'purchasePrice',
+          'currencyId',
+          'purchasePriceIRR',
+          'sellingPrice',
+          'sellingCurrencyId',
+          'sellingPriceIRR',
+          'purchaseDate',
+          'warrantyEndDate',
+          'deviceStatusId',
+          'isActive',
+        ])
         .include([
           {
             model: ZTCompany,

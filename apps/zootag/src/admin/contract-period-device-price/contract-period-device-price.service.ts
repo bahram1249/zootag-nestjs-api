@@ -114,6 +114,20 @@ export class ContractPeriodDevicePriceService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'contractPeriodId',
+          'deviceTypeId',
+          'purchasePrice',
+          'currencyId',
+          'purchasePriceIRR',
+          'minimumQuantity',
+          'maximumQuantity',
+          'sellingPrice',
+          'sellingCurrencyId',
+          'sellingPriceIRR',
+          'isActive',
+        ])
         .include([
           {
             model: ZTContractPeriod,

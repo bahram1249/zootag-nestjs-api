@@ -52,7 +52,10 @@ export class DeviceStatusService {
    */
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .attributes(['id', 'name', 'isActive'])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

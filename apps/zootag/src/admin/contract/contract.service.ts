@@ -108,6 +108,18 @@ export class ContractService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'companyId',
+          'contractNumber',
+          'title',
+          'startDate',
+          'endDate',
+          'currencyId',
+          'contractStatusId',
+          'notes',
+          'isActive',
+        ])
         .include([
           {
             model: ZTCompany,

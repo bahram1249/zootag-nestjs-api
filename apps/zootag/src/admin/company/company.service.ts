@@ -75,6 +75,15 @@ export class CompanyService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'companyName',
+          'legalName',
+          'taxNumber',
+          'email',
+          'phone',
+          'isActive',
+        ])
         .include([
           {
             model: User,

@@ -56,6 +56,15 @@ export class CurrencyService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isActive: true })
+        .attributes([
+          'id',
+          'code',
+          'name',
+          'symbol',
+          'exchangeRateToIRR',
+          'isBaseCurrency',
+          'isActive',
+        ])
         .build(),
     );
     if (!item)

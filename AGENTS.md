@@ -242,7 +242,10 @@ export class SomeService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .attributes(['id', 'name'])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(this.localizationService.translate('core.not_found'));

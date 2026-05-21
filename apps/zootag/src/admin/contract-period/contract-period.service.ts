@@ -96,6 +96,16 @@ export class ContractPeriodService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'contractId',
+          'periodName',
+          'startDate',
+          'endDate',
+          'contractPeriodStatusId',
+          'notes',
+          'isActive',
+        ])
         .include([
           {
             model: ZTContract,

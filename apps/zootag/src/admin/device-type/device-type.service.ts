@@ -49,7 +49,11 @@ export class DeviceTypeService {
    */
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ isDeleted: 0 })
+        .attributes(['id', 'typeName', 'modelCode', 'description', 'isActive'])
+        .build(),
     );
     if (!item)
       throw new NotFoundException(

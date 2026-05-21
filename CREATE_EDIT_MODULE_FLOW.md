@@ -164,7 +164,7 @@ Key patterns:
 | Method | Pattern |
 |--------|---------|
 | `findAll` | Use `let qb = new QueryOptionsBuilder()`; call `count()` first, then `findAll()` with `.include()`, `.limit()`, `.offset()`, `.order()` |
-| `findById` | `findOne` with `.filter({ id }).filter({ isDeleted: 0 })`; throw `NotFoundException` if not found |
+| `findById` | `findOne` with `.filter({ id }).filter({ isDeleted: 0 })` and `.attributes([...])` matching `findAll`; throw `NotFoundException` if not found |
 | `create` | `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); this.repository.create({ ...mapped, createdUserId: BigInt(user.id), updatedUserId: BigInt(user.id) })` |
 | `update` | `findOne` first (404 if not found), then `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); item.update({ ...mapped, updatedUserId: BigInt(user.id) })` |
 | `deleteById` | `findOne` first (404 if not found), then `item.update({ isDeleted: true })` |
