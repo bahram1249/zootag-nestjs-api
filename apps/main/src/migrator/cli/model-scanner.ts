@@ -81,7 +81,7 @@ function parseColumnContent(content: string): {
     comment: null as string | null,
   };
 
-  const dtMatch = content.match(/DataType\.(\w+)(?:\((\d+)\))?/);
+  const dtMatch = content.match(/DataType\.(\w+)(?:\(([^)]+)\))?/);
   if (dtMatch) {
     const rawType = dtMatch[1];
     const len = dtMatch[2];

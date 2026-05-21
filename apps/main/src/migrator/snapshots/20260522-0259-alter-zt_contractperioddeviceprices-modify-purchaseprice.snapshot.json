@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-21T21:05:28.688Z",
+  "generatedAt": "2026-05-21T21:05:28.684Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -4082,7 +4082,7 @@
         },
         "purchasePriceIRR": {
           "name": "purchasePriceIRR",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": false,
@@ -4112,7 +4112,7 @@
         },
         "sellingPrice": {
           "name": "sellingPrice",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL(18,2)",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -4136,7 +4136,7 @@
         },
         "sellingPriceIRR": {
           "name": "sellingPriceIRR",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL(18,2)",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -4812,7 +4812,7 @@
         },
         "exchangeRateToIRR": {
           "name": "exchangeRateToIRR",
-          "type": "DECIMAL(18, 6)",
+          "type": "DECIMAL",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": false,
@@ -4946,7 +4946,7 @@
         },
         "exchangeRateToIRR": {
           "name": "exchangeRateToIRR",
-          "type": "DECIMAL(18, 6)",
+          "type": "DECIMAL",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": false,
@@ -5220,23 +5220,9 @@
             "key": "id"
           }
         },
-        "contractPeriodDevicePriceId": {
-          "name": "contractPeriodDevicePriceId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_ContractPeriodDevicePrices",
-            "key": "id"
-          }
-        },
         "purchasePrice": {
           "name": "purchasePrice",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -5260,7 +5246,7 @@
         },
         "purchasePriceIRR": {
           "name": "purchasePriceIRR",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": false,
@@ -5270,7 +5256,7 @@
         },
         "sellingPrice": {
           "name": "sellingPrice",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL(18,2)",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -5294,7 +5280,7 @@
         },
         "sellingPriceIRR": {
           "name": "sellingPriceIRR",
-          "type": "DECIMAL(18, 2)",
+          "type": "DECIMAL(18,2)",
           "primaryKey": false,
           "autoIncrement": false,
           "allowNull": true,
@@ -5430,15 +5416,6 @@
             "contractPeriodId"
           ],
           "refTable": "ZT_ContractPeriods",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "contractPeriodDevicePriceId"
-          ],
-          "refTable": "ZT_ContractPeriodDevicePrices",
           "refColumns": [
             "id"
           ]

@@ -23,6 +23,13 @@ class ContractPeriodBriefDto {
   periodName: string;
 }
 
+class ContractPeriodDevicePriceBriefDto {
+  @ApiProperty({ example: 1 })
+  id: number;
+  @ApiProperty({ example: 1500.00, description: 'Purchase price' })
+  purchasePrice: number;
+}
+
 class CurrencyBriefDto {
   @ApiProperty({ example: 1 })
   id: number;
@@ -80,6 +87,12 @@ export class DeviceResponseDto {
 
   @ApiProperty({ type: () => ContractPeriodBriefDto, description: 'Contract period', required: false })
   contractPeriod?: ContractPeriodBriefDto;
+
+  @ApiProperty({ example: 1, description: 'Contract period device price ID' })
+  contractPeriodDevicePriceId: number;
+
+  @ApiProperty({ type: () => ContractPeriodDevicePriceBriefDto, description: 'Contract period device price', required: false })
+  contractPeriodDevicePrice?: ContractPeriodDevicePriceBriefDto;
 
   @ApiProperty({ example: 1500.00, description: 'Purchase price', required: false })
   purchasePrice?: number;

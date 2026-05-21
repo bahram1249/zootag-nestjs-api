@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -53,6 +53,7 @@ export class DeviceService {
         'companyId',
         'deviceTypeId',
         'contractPeriodId',
+        'contractPeriodDevicePriceId',
         'purchasePrice',
         'currencyId',
         'purchasePriceIRR',
@@ -68,6 +69,7 @@ export class DeviceService {
         { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
         { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
         { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
+        { model: ZTContractPeriodDevicePrice, as: 'contractPeriodDevicePrice', attributes: ['id', 'purchasePrice'], required: false },
         { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
         { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
         { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
@@ -93,6 +95,7 @@ export class DeviceService {
           { model: ZTCompany, as: 'company', attributes: ['id', 'companyName'], required: false },
           { model: ZTDeviceType, as: 'deviceType', attributes: ['id', 'typeName', 'modelCode'], required: false },
           { model: ZTContractPeriod, as: 'contractPeriod', attributes: ['id', 'periodName'], required: false },
+          { model: ZTContractPeriodDevicePrice, as: 'contractPeriodDevicePrice', attributes: ['id', 'purchasePrice'], required: false },
           { model: ZTCurrency, as: 'currency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
           { model: ZTCurrency, as: 'sellingCurrency', attributes: ['id', 'code', 'name', 'symbol'], required: false },
           { model: ZTDeviceStatus, as: 'deviceStatus', attributes: ['id', 'name'], required: false },
@@ -116,8 +119,7 @@ export class DeviceService {
   async create(dto: DeviceDto, user: User) {
     const priceRecord = await this.contractPeriodDevicePriceRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ contractPeriodId: dto.contractPeriodId })
-        .filter({ deviceTypeId: dto.deviceTypeId })
+        .filter({ id: dto.contractPeriodDevicePriceId })
         .filter({ isDeleted: 0 })
         .build(),
     );
@@ -125,9 +127,26 @@ export class DeviceService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_period_device_price_not_found'),
       );
+    if (Number(priceRecord.deviceTypeId) !== Number(dto.deviceTypeId))
+      throw new BadRequestException(
+        this.localizationService.translate('zootag.device_type_mismatch'),
+      );
+    if (priceRecord.maximumQuantity > 0) {
+      const deviceCount = await this.repository.count(
+        new QueryOptionsBuilder()
+          .filter({ contractPeriodDevicePriceId: dto.contractPeriodDevicePriceId })
+          .filter({ isDeleted: 0 })
+          .build(),
+      );
+      if (deviceCount >= priceRecord.maximumQuantity)
+        throw new BadRequestException(
+          this.localizationService.translate('zootag.maximum_quantity_reached'),
+        );
+    }
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     const item = await this.repository.create({
       ...mapped,
+      contractPeriodId: priceRecord.contractPeriodId,
       purchasePrice: priceRecord.purchasePrice,
       currencyId: priceRecord.currencyId,
       purchasePriceIRR: priceRecord.purchasePriceIRR,
@@ -151,6 +170,7 @@ export class DeviceService {
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     await item.update({
       ...mapped,
+      contractPeriodDevicePriceId: item.contractPeriodDevicePriceId,
       contractPeriodId: item.contractPeriodId,
       deviceTypeId: item.deviceTypeId,
       purchasePrice: item.purchasePrice,

@@ -3,6 +3,7 @@ import { AutoMap } from 'automapper-classes';
 import { ZTCompany } from './zt-company.entity';
 import { ZTDeviceType } from './zt-device-type.entity';
 import { ZTContractPeriod } from './zt-contract-period.entity';
+import { ZTContractPeriodDevicePrice } from './zt-contract-period-device-price.entity';
 import { ZTCurrency } from './zt-currency.entity';
 import { ZTDeviceStatus } from './zt-device-status.entity';
 import { User } from '@rahino/database';
@@ -47,6 +48,14 @@ export class ZTDevice extends Model {
 
   @BelongsTo(() => ZTContractPeriod, { foreignKey: 'contractPeriodId', as: 'contractPeriod' })
   contractPeriod: ZTContractPeriod;
+
+  @AutoMap()
+  @ForeignKey(() => ZTContractPeriodDevicePrice)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  contractPeriodDevicePriceId: bigint;
+
+  @BelongsTo(() => ZTContractPeriodDevicePrice, { foreignKey: 'contractPeriodDevicePriceId', as: 'contractPeriodDevicePrice' })
+  contractPeriodDevicePrice: ZTContractPeriodDevicePrice;
 
   @AutoMap()
   @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })

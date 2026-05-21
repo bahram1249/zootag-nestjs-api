@@ -10,6 +10,8 @@
   "contract_period_not_found": "دوره قرارداد مورد نظر یافت نشد",
   "contract_period_device_price_not_found": "قیمت دستگاه در دوره قرارداد مورد نظر یافت نشد",
   "device_not_found": "دستگاه مورد نظر یافت نشد",
+  "device_type_mismatch": "رکورد قیمت انتخاب شده با نوع دستگاه مطابقت ندارد",
+  "maximum_quantity_reached": "حداکثر تعداد دستگاه برای این رکورد قیمت به اتمام رسیده است",
   "deviceStatus": {
     "inStock": "موجود در انبار",
     "assigned": "اختصاص داده شده",

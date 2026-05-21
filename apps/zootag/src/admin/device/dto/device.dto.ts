@@ -52,8 +52,8 @@ export class DeviceDto {
   @Type(() => Number)
   @IsNotEmpty()
   @IsNumber()
-  @ApiProperty({ description: 'contract period id' })
-  contractPeriodId: number;
+  @ApiProperty({ description: 'contract period device price id' })
+  contractPeriodDevicePriceId: number;
 
   @AutoMap()
   @IsOptional()
