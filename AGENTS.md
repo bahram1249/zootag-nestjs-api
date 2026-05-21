@@ -140,7 +140,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SomeService } from './some.service';
@@ -157,6 +157,12 @@ export class SomeController {
   @ApiOperation({ description: 'show all items' })
   @CheckPermission({ permissionSymbol: 'some.feature.getall' })
   @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: SomeFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: SomeFilterDto) {
     return await this.service.findAll(filter);
@@ -607,7 +613,7 @@ Key rules:
 
 ```typescript
 import { Controller, Get, Post, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { ApiJsonResponse } from '@rahino/response';
@@ -628,6 +634,12 @@ export class SomeController {
   @ApiJsonResponse({ type: SomeResponseDto, isArray: true, extraModels: [ChildResponseDto] })
   @CheckPermission({ permissionSymbol: 'some.feature.getall' })
   @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: SomeFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: SomeFilterDto) {
     return await this.service.findAll(filter);
