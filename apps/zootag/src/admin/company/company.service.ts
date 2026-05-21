@@ -6,6 +6,8 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTCompany } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CompanyFilterDto, CompanyDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class CompanyService {
@@ -13,6 +15,7 @@ export class CompanyService {
     @InjectModel(ZTCompany)
     private readonly repository: typeof ZTCompany,
     private readonly localizationService: LocalizationService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -67,13 +70,9 @@ export class CompanyService {
   }
 
   async create(dto: CompanyDto, user: User) {
+    const mapped = this.mapper.map(dto, CompanyDto, ZTCompany).toJSON();
     const item = await this.repository.create({
-      companyName: dto.companyName,
-      legalName: dto.legalName,
-      taxNumber: dto.taxNumber,
-      email: dto.email,
-      phone: dto.phone,
-      address: dto.address,
+      ...mapped,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -88,13 +87,9 @@ export class CompanyService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.company_not_found'),
       );
+    const mapped = this.mapper.map(dto, CompanyDto, ZTCompany).toJSON();
     await item.update({
-      companyName: dto.companyName,
-      legalName: dto.legalName,
-      taxNumber: dto.taxNumber,
-      email: dto.email,
-      phone: dto.phone,
-      address: dto.address,
+      ...mapped,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

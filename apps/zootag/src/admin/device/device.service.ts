@@ -15,6 +15,8 @@ import {
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import { DeviceFilterDto, DeviceDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class DeviceService {
@@ -23,6 +25,7 @@ export class DeviceService {
     private readonly repository: typeof ZTDevice,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly currencyCalculationService: CurrencyCalculationService,
@@ -110,19 +113,10 @@ export class DeviceService {
         BigInt(dto.currencyId),
       );
     }
+    const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     const item = await this.repository.create({
-      serialNumber: dto.serialNumber,
-      imei: dto.imei,
-      macAddress: dto.macAddress,
-      companyId: dto.companyId,
-      deviceTypeId: dto.deviceTypeId,
-      contractPeriodId: dto.contractPeriodId,
-      purchasePrice: dto.purchasePrice,
-      currencyId: dto.currencyId,
+      ...mapped,
       purchasePriceIRR: purchasePriceIRR ?? 0,
-      purchaseDate: dto.purchaseDate,
-      warrantyEndDate: dto.warrantyEndDate,
-      deviceStatusId: dto.deviceStatusId,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -137,19 +131,10 @@ export class DeviceService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_not_found'),
       );
+    const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     await item.update({
-      serialNumber: dto.serialNumber,
-      imei: dto.imei,
-      macAddress: dto.macAddress,
-      companyId: dto.companyId,
-      deviceTypeId: dto.deviceTypeId,
-      contractPeriodId: dto.contractPeriodId,
-      purchasePrice: dto.purchasePrice,
-      currencyId: dto.currencyId,
+      ...mapped,
       purchasePriceIRR: item.purchasePriceIRR,
-      purchaseDate: dto.purchaseDate,
-      warrantyEndDate: dto.warrantyEndDate,
-      deviceStatusId: dto.deviceStatusId,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

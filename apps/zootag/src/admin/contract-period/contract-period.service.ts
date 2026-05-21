@@ -7,6 +7,8 @@ import { LocalizationMapperService } from '@rahino/zootag/shared/localization-ma
 import { ZTContractPeriod, ZTContract, ZTContractPeriodStatus } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractPeriodFilterDto, ContractPeriodDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class ContractPeriodService {
@@ -15,6 +17,7 @@ export class ContractPeriodService {
     private readonly repository: typeof ZTContractPeriod,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -79,13 +82,9 @@ export class ContractPeriodService {
   }
 
   async create(dto: ContractPeriodDto, user: User) {
+    const mapped = this.mapper.map(dto, ContractPeriodDto, ZTContractPeriod).toJSON();
     const item = await this.repository.create({
-      contractId: dto.contractId,
-      periodName: dto.periodName,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-      contractPeriodStatusId: dto.contractPeriodStatusId,
-      notes: dto.notes,
+      ...mapped,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -100,13 +99,9 @@ export class ContractPeriodService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_period_not_found'),
       );
+    const mapped = this.mapper.map(dto, ContractPeriodDto, ZTContractPeriod).toJSON();
     await item.update({
-      contractId: dto.contractId,
-      periodName: dto.periodName,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-      contractPeriodStatusId: dto.contractPeriodStatusId,
-      notes: dto.notes,
+      ...mapped,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

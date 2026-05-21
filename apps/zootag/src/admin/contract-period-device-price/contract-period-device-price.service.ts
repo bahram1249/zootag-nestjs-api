@@ -10,6 +10,8 @@ import {
   ContractPeriodDevicePriceFilterDto,
   ContractPeriodDevicePriceDto,
 } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class ContractPeriodDevicePriceService {
@@ -17,6 +19,7 @@ export class ContractPeriodDevicePriceService {
     @InjectModel(ZTContractPeriodDevicePrice)
     private readonly repository: typeof ZTContractPeriodDevicePrice,
     private readonly localizationService: LocalizationService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly currencyCalculationService: CurrencyCalculationService,
@@ -88,13 +91,10 @@ export class ContractPeriodDevicePriceService {
         BigInt(dto.currencyId),
       );
     }
+    const mapped = this.mapper.map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice).toJSON();
     const item = await this.repository.create({
-      contractPeriodId: dto.contractPeriodId,
-      deviceTypeId: dto.deviceTypeId,
-      purchasePrice: dto.purchasePrice,
-      currencyId: dto.currencyId,
+      ...mapped,
       purchasePriceIRR: purchasePriceIRR ?? 0,
-      minimumQuantity: dto.minimumQuantity,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -111,13 +111,10 @@ export class ContractPeriodDevicePriceService {
           'zootag.contract_period_device_price_not_found',
         ),
       );
+    const mapped = this.mapper.map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice).toJSON();
     await item.update({
-      contractPeriodId: dto.contractPeriodId,
-      deviceTypeId: dto.deviceTypeId,
-      purchasePrice: dto.purchasePrice,
-      currencyId: dto.currencyId,
+      ...mapped,
       purchasePriceIRR: item.purchasePriceIRR,
-      minimumQuantity: dto.minimumQuantity,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

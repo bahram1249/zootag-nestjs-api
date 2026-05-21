@@ -6,6 +6,8 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTCurrency, ZTCurrencyHistory } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CurrencyFilterDto, CurrencyDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class CurrencyService {
@@ -15,6 +17,7 @@ export class CurrencyService {
     @InjectModel(ZTCurrencyHistory)
     private readonly currencyHistoryRepository: typeof ZTCurrencyHistory,
     private readonly localizationService: LocalizationService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -54,10 +57,9 @@ export class CurrencyService {
   }
 
   async create(dto: CurrencyDto, user: User) {
+    const mapped = this.mapper.map(dto, CurrencyDto, ZTCurrency).toJSON();
     const item = await this.repository.create({
-      code: dto.code,
-      name: dto.name,
-      symbol: dto.symbol,
+      ...mapped,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
       createdUserId: BigInt(user.id),
@@ -85,10 +87,9 @@ export class CurrencyService {
     const rateChanged =
       dto.exchangeRateToIRR != null &&
       Number(dto.exchangeRateToIRR) !== Number(item.exchangeRateToIRR);
+    const mapped = this.mapper.map(dto, CurrencyDto, ZTCurrency).toJSON();
     await item.update({
-      code: dto.code,
-      name: dto.name,
-      symbol: dto.symbol,
+      ...mapped,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
       updatedUserId: BigInt(user.id),

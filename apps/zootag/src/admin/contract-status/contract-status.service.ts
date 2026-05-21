@@ -6,6 +6,8 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTContractStatus } from '@rahino/localdatabase/models';
 import { ContractStatusFilterDto, ContractStatusDto } from './dto';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class ContractStatusService {
@@ -14,6 +16,7 @@ export class ContractStatusService {
     private readonly repository: typeof ZTContractStatus,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -53,10 +56,9 @@ export class ContractStatusService {
   }
 
   async create(dto: ContractStatusDto) {
-    const item = await this.repository.create({
-      id: dto.id,
-      name: dto.name,
-    });
+    const item = await this.repository.create(
+      this.mapper.map(dto, ContractStatusDto, ZTContractStatus).toJSON(),
+    );
     return { result: item };
   }
 
@@ -68,7 +70,9 @@ export class ContractStatusService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_status_not_found'),
       );
-    await item.update({ name: dto.name });
+    await item.update(
+      this.mapper.map(dto, ContractStatusDto, ZTContractStatus).toJSON(),
+    );
     return { result: item };
   }
 

@@ -7,6 +7,8 @@ import { LocalizationMapperService } from '@rahino/zootag/shared/localization-ma
 import { ZTContract, ZTCompany, ZTCurrency, ZTContractStatus } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractFilterDto, ContractDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class ContractService {
@@ -15,6 +17,7 @@ export class ContractService {
     private readonly repository: typeof ZTContract,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -86,15 +89,9 @@ export class ContractService {
   }
 
   async create(dto: ContractDto, user: User) {
+    const mapped = this.mapper.map(dto, ContractDto, ZTContract).toJSON();
     const item = await this.repository.create({
-      companyId: dto.companyId,
-      contractNumber: dto.contractNumber,
-      title: dto.title,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-      currencyId: dto.currencyId,
-      contractStatusId: dto.contractStatusId,
-      notes: dto.notes,
+      ...mapped,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -109,15 +106,9 @@ export class ContractService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_not_found'),
       );
+    const mapped = this.mapper.map(dto, ContractDto, ZTContract).toJSON();
     await item.update({
-      companyId: dto.companyId,
-      contractNumber: dto.contractNumber,
-      title: dto.title,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-      currencyId: dto.currencyId,
-      contractStatusId: dto.contractStatusId,
-      notes: dto.notes,
+      ...mapped,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

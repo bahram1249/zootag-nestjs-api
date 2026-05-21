@@ -5,6 +5,8 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTDeviceType } from '@rahino/localdatabase/models';
 import { DeviceTypeFilterDto, DeviceTypeDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class DeviceTypeService {
@@ -12,6 +14,7 @@ export class DeviceTypeService {
     @InjectModel(ZTDeviceType)
     private readonly repository: typeof ZTDeviceType,
     private readonly localizationService: LocalizationService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -47,11 +50,9 @@ export class DeviceTypeService {
   }
 
   async create(dto: DeviceTypeDto) {
-    const item = await this.repository.create({
-      typeName: dto.typeName,
-      modelCode: dto.modelCode,
-      description: dto.description,
-    });
+    const item = await this.repository.create(
+      this.mapper.map(dto, DeviceTypeDto, ZTDeviceType).toJSON(),
+    );
     return { result: item };
   }
 
@@ -63,11 +64,9 @@ export class DeviceTypeService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_type_not_found'),
       );
-    await item.update({
-      typeName: dto.typeName,
-      modelCode: dto.modelCode,
-      description: dto.description,
-    });
+    await item.update(
+      this.mapper.map(dto, DeviceTypeDto, ZTDeviceType).toJSON(),
+    );
     return { result: item };
   }
 

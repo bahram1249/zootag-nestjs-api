@@ -6,6 +6,8 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTDeviceStatus } from '@rahino/localdatabase/models';
 import { DeviceStatusFilterDto, DeviceStatusDto } from './dto';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
 
 @Injectable()
 export class DeviceStatusService {
@@ -14,6 +16,7 @@ export class DeviceStatusService {
     private readonly repository: typeof ZTDeviceStatus,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -53,10 +56,9 @@ export class DeviceStatusService {
   }
 
   async create(dto: DeviceStatusDto) {
-    const item = await this.repository.create({
-      id: dto.id,
-      name: dto.name,
-    });
+    const item = await this.repository.create(
+      this.mapper.map(dto, DeviceStatusDto, ZTDeviceStatus).toJSON(),
+    );
     return { result: item };
   }
 
@@ -68,7 +70,9 @@ export class DeviceStatusService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_status_not_found'),
       );
-    await item.update({ name: dto.name });
+    await item.update(
+      this.mapper.map(dto, DeviceStatusDto, ZTDeviceStatus).toJSON(),
+    );
     return { result: item };
   }
 
