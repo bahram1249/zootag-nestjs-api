@@ -3,6 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 import {
   ZTDevice,
   ZTCompany,
@@ -21,6 +22,7 @@ export class DeviceService {
     @InjectModel(ZTDevice)
     private readonly repository: typeof ZTDevice,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly currencyCalculationService: CurrencyCalculationService,
@@ -65,7 +67,10 @@ export class DeviceService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      { deviceStatus: 'deviceStatus' },
+    );
     return { result, total };
   }
 
@@ -89,7 +94,12 @@ export class DeviceService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeItem(
+        item.toJSON(),
+        { deviceStatus: 'deviceStatus' },
+      ),
+    };
   }
 
   async create(dto: DeviceDto, user: User) {

@@ -3,6 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 import { ZTContractPeriod, ZTContract, ZTContractPeriodStatus } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ContractPeriodFilterDto, ContractPeriodDto } from './dto';
@@ -13,6 +14,7 @@ export class ContractPeriodService {
     @InjectModel(ZTContractPeriod)
     private readonly repository: typeof ZTContractPeriod,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -44,7 +46,10 @@ export class ContractPeriodService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      { contractPeriodStatus: 'contractPeriodStatus' },
+    );
     return { result, total };
   }
 
@@ -65,7 +70,12 @@ export class ContractPeriodService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_period_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeItem(
+        item.toJSON(),
+        { contractPeriodStatus: 'contractPeriodStatus' },
+      ),
+    };
   }
 
   async create(dto: ContractPeriodDto, user: User) {

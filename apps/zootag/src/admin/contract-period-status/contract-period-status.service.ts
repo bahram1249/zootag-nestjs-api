@@ -5,6 +5,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTContractPeriodStatus } from '@rahino/localdatabase/models';
 import { ContractPeriodStatusFilterDto, ContractPeriodStatusDto } from './dto';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 
 @Injectable()
 export class ContractPeriodStatusService {
@@ -12,6 +13,7 @@ export class ContractPeriodStatusService {
     @InjectModel(ZTContractPeriodStatus)
     private readonly repository: typeof ZTContractPeriodStatus,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -27,7 +29,10 @@ export class ContractPeriodStatusService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeLookupItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      'contractPeriodStatus',
+    );
     return { result, total };
   }
 
@@ -39,7 +44,12 @@ export class ContractPeriodStatusService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.contract_period_status_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeLookupItem(
+        item.toJSON(),
+        'contractPeriodStatus',
+      ),
+    };
   }
 
   async create(dto: ContractPeriodStatusDto) {

@@ -5,6 +5,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ZTDeviceStatus } from '@rahino/localdatabase/models';
 import { DeviceStatusFilterDto, DeviceStatusDto } from './dto';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 
 @Injectable()
 export class DeviceStatusService {
@@ -12,6 +13,7 @@ export class DeviceStatusService {
     @InjectModel(ZTDeviceStatus)
     private readonly repository: typeof ZTDeviceStatus,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -27,7 +29,10 @@ export class DeviceStatusService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeLookupItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      'deviceStatus',
+    );
     return { result, total };
   }
 
@@ -39,7 +44,12 @@ export class DeviceStatusService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_status_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeLookupItem(
+        item.toJSON(),
+        'deviceStatus',
+      ),
+    };
   }
 
   async create(dto: DeviceStatusDto) {

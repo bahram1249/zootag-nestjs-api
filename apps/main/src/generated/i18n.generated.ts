@@ -187,6 +187,24 @@ export type I18nTranslations = {
         "contract_period_not_found": string;
         "contract_period_device_price_not_found": string;
         "device_not_found": string;
+        "deviceStatus": {
+            "inStock": string;
+            "assigned": string;
+            "active": string;
+            "damaged": string;
+            "retired": string;
+        };
+        "contractStatus": {
+            "draft": string;
+            "active": string;
+            "expired": string;
+            "cancelled": string;
+        };
+        "contractPeriodStatus": {
+            "future": string;
+            "active": string;
+            "expired": string;
+        };
     };
 };
 /* prettier-ignore */

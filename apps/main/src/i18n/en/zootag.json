@@ -9,5 +9,23 @@
   "contract_not_found": "contract not found",
   "contract_period_not_found": "contract period not found",
   "contract_period_device_price_not_found": "contract period device price not found",
-  "device_not_found": "device not found"
+  "device_not_found": "device not found",
+  "deviceStatus": {
+    "inStock": "In Stock",
+    "assigned": "Assigned",
+    "active": "Active",
+    "damaged": "Damaged",
+    "retired": "Retired"
+  },
+  "contractStatus": {
+    "draft": "Draft",
+    "active": "Active",
+    "expired": "Expired",
+    "cancelled": "Cancelled"
+  },
+  "contractPeriodStatus": {
+    "future": "Future",
+    "active": "Active",
+    "expired": "Expired"
+  }
 }

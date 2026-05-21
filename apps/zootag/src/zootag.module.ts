@@ -7,6 +7,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CurrencyModule } from './admin/currency/currency.module';
 import { CurrencyCalculationModule } from './shared/currency-calculation/currency-calculation.module';
+import { LocalizationMapperModule } from './shared/localization-mapper/localization-mapper.module';
 import { CompanyModule } from './admin/company/company.module';
 import { DeviceTypeModule } from './admin/device-type/device-type.module';
 import { DeviceStatusModule } from './admin/device-status/device-status.module';
@@ -20,6 +21,7 @@ import { DeviceModule } from './admin/device/device.module';
 @Module({
   imports: [
     CurrencyCalculationModule,
+    LocalizationMapperModule,
     CurrencyModule,
     CompanyModule,
     DeviceTypeModule,

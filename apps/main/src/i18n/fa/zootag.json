@@ -9,5 +9,23 @@
   "contract_not_found": "قرارداد مورد نظر یافت نشد",
   "contract_period_not_found": "دوره قرارداد مورد نظر یافت نشد",
   "contract_period_device_price_not_found": "قیمت دستگاه در دوره قرارداد مورد نظر یافت نشد",
-  "device_not_found": "دستگاه مورد نظر یافت نشد"
+  "device_not_found": "دستگاه مورد نظر یافت نشد",
+  "deviceStatus": {
+    "inStock": "موجود در انبار",
+    "assigned": "اختصاص داده شده",
+    "active": "فعال",
+    "damaged": "خراب",
+    "retired": "بازنشسته"
+  },
+  "contractStatus": {
+    "draft": "پیش‌نویس",
+    "active": "فعال",
+    "expired": "منقضی شده",
+    "cancelled": "لغو شده"
+  },
+  "contractPeriodStatus": {
+    "future": "آینده",
+    "active": "فعال",
+    "expired": "منقضی شده"
+  }
 }
