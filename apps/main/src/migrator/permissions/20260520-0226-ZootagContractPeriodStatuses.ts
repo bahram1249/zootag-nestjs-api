@@ -1,17 +1,14 @@
 export const name = '20260520-0226-ZootagContractPeriodStatuses';
 import { Sequelize } from 'sequelize';
 import { createCrudPermissions } from '../permission-helper';
-import { createDialectHelpers } from '../migration-helper';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { checkSetting } = createDialectHelpers(sequelize);
-  if (!(await checkSetting('key', ['SITE_NAME']))) return;
   await createCrudPermissions(sequelize, {
     entityName: 'ZootagContractPeriodStatuses',
     groupName: 'zootag.admin.contractperiodstatuses',
     parentMenuName: 'قراردادها',
     menuName: 'وضعیت دوره قرارداد',
-    menuUrl: '/zootag/admin/contractperiodstatuses',
+    menuUrl: '/admin/zootag/contractperiodstatuses',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

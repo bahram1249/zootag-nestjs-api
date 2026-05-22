@@ -8,7 +8,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     groupName: 'zootag.admin.manufacturers',
     parentMenuName: 'مدیریت',
     menuName: 'سازنده‌ها',
-    menuUrl: '/zootag/admin/manufacturers',
+    menuUrl: '/admin/zootag/manufacturers',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}
