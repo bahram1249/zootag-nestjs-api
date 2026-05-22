@@ -12,7 +12,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     findParentMenu: true,
     parentMenuName: 'مدیریت',
     menuName: 'نمایش دسترسی ها',
-    menuUrl: '/core/admin/permissions',
+    menuUrl: '/admin/core/permissions',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

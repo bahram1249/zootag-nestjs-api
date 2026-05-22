@@ -12,7 +12,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     findParentMenu: true,
     parentMenuName: 'مدیریت',
     menuName: 'مدیریت نقش ها',
-    menuUrl: '/core/admin/roles',
+    menuUrl: '/admin/core/roles',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

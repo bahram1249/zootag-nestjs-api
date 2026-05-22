@@ -11,7 +11,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     groupName: 'core.admin.users',
     parentMenuName: 'مدیریت',
     menuName: 'کاربران',
-    menuUrl: '/core/admin/users',
+    menuUrl: '/admin/core/users',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}
