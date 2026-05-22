@@ -13,12 +13,12 @@ export async function up(sequelize: Sequelize): Promise<void> {
   if (!existing) {
     await sequelize.query(
       `INSERT INTO Settings (${quote('key')}, ${quote('value')}, ${quote('type')}, ${quote('createdAt')}, ${quote('updatedAt')})
-       VALUES (${ns('SITE_NAME')}, ${ns(process.env.SITE_NAME || 'ecommerce')}, ${ns('string')}, ${nowVal}, ${nowVal})`,
+       VALUES (${ns('SITE_NAME')}, ${ns(process.env.PROJECT_NAME || 'Zootag')}, ${ns('string')}, ${nowVal}, ${nowVal})`,
       { raw: true, type: QueryTypes.RAW },
     );
     await sequelize.query(
       `INSERT INTO Settings (${quote('key')}, ${quote('value')}, ${quote('type')}, ${quote('createdAt')}, ${quote('updatedAt')})
-       VALUES (${ns('CUSTOMER_NAME')}, ${ns(process.env.PROJECT_NAME || 'jahizan')}, ${ns('string')}, ${nowVal}, ${nowVal})`,
+       VALUES (${ns('CUSTOMER_NAME')}, ${ns(process.env.PROJECT_NAME || 'Zootag')}, ${ns('string')}, ${nowVal}, ${nowVal})`,
       { raw: true, type: QueryTypes.RAW },
     );
   }
