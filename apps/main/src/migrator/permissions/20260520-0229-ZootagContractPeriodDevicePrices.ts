@@ -6,9 +6,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
   await createCrudPermissions(sequelize, {
     entityName: 'ZootagContractPeriodDevicePrices',
     groupName: 'zootag.admin.contractperioddeviceprices',
-    parentMenuName: 'قراردادها',
-    menuName: 'قیمت‌های دستگاه',
-    menuUrl: '/admin/zootag/contractperioddeviceprices',
+    includePermissions: ['getall', 'getone', 'create', 'update', 'delete'],
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

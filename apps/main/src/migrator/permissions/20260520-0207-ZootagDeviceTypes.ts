@@ -6,6 +6,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
   await createCrudPermissions(sequelize, {
     entityName: 'ZootagDeviceTypes',
     groupName: 'zootag.admin.devicetypes',
+    findParentMenu: true,
     parentMenuName: 'مدیریت',
     menuName: 'انواع دستگاه',
     menuUrl: '/admin/zootag/devicetypes',
