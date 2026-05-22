@@ -23,9 +23,7 @@ export class ManufacturerService {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
       .filterIf(!!filter.search && filter.search !== '%%', {
-        [Op.or]: [
-          { manufacturerName: { [Op.like]: filter.search } },
-        ],
+        [Op.or]: [{ manufacturerName: { [Op.like]: filter.search } }],
       });
     const total = await this.repository.count(qb.build());
     qb = qb

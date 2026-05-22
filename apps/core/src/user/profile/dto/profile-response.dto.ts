@@ -5,6 +5,9 @@ export class ProfileResponseDto {
   @ApiProperty({ example: 1, description: 'User ID' })
   id: number;
 
+  @ApiProperty({ example: 'johndoe', description: 'Username', required: false })
+  username?: string;
+
   @ApiProperty({ example: 'John', description: 'First name', required: false })
   firstname?: string;
 

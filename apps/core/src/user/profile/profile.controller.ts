@@ -46,6 +46,17 @@ export class ProfileController {
 
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @ApiOperation({ description: 'get current user profile' })
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @ApiJsonResponse({ type: ProfileResponseDto })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async getProfile(@GetUser() user: User) {
+    return await this.service.getProfile(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @ApiOperation({ description: 'edit profile user' })
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiJsonResponse({ type: ProfileResponseDto })

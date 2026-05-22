@@ -34,6 +34,34 @@ export class ProfileService {
     private readonly localizationService: LocalizationService,
   ) {}
 
+  async getProfile(user: User) {
+    const profile = await this.userRepoisitory.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'username', 'firstname', 'lastname', 'birthDate'])
+        .include([
+          {
+            attributes: [
+              'id',
+              'originalFileName',
+              'fileName',
+              'mimetype',
+              'createdAt',
+              'updatedAt',
+            ],
+            model: Attachment,
+            as: 'profileAttachment',
+          },
+        ])
+        .filter({ id: user.id })
+        .build(),
+    );
+    if (!profile)
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
+    return { result: profile };
+  }
+
   async editProfile(user: User, dto: EditProfileDto) {
     await this.userRepoisitory.update(
       {

@@ -35,7 +35,14 @@ export class DeviceTypeService {
       });
     const total = await this.repository.count(qb.build());
     qb = qb
-      .attributes(['id', 'typeName', 'modelCode', 'manufacturerId', 'description', 'isActive'])
+      .attributes([
+        'id',
+        'typeName',
+        'modelCode',
+        'manufacturerId',
+        'description',
+        'isActive',
+      ])
       .include([
         {
           model: ZTManufacturer,
@@ -60,7 +67,14 @@ export class DeviceTypeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter({ isDeleted: 0 })
-        .attributes(['id', 'typeName', 'modelCode', 'manufacturerId', 'description', 'isActive'])
+        .attributes([
+          'id',
+          'typeName',
+          'modelCode',
+          'manufacturerId',
+          'description',
+          'isActive',
+        ])
         .include([
           {
             model: ZTManufacturer,
