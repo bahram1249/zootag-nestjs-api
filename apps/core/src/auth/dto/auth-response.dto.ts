@@ -32,8 +32,8 @@ export class AuthResponseDto {
   refresh_token_expires_at: Date;
 
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'Session ID',
   })
-  session_id: string;
+  session_id: number;
 }

@@ -43,9 +43,11 @@ import { ModuleInitializerModule } from '../module-initializer/module-initialize
 import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
 import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
 import { LocalizationModule } from '../common/localization';
+import { BigintPatchModule } from '../bigint-patch/bigint-patch.module';
 
 @Module({
   imports: [
+    BigintPatchModule,
     ModuleInitializerModule,
     LocalizationModule,
     ConfigModule.forRoot({

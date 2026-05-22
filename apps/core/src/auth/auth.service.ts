@@ -198,7 +198,7 @@ export class AuthService {
         ...token,
         refresh_token: rawRefreshToken || session.refreshToken,
         refresh_token_expires_at: session.expiresAt,
-        session_id: String(session.id),
+        session_id: session.id,
       },
     };
   }
