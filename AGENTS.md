@@ -95,6 +95,7 @@ import { SomeService } from './some.service';
 - Services: `<Feature>Service` or `<Action>Service` (e.g., `ProductService`, `RemoveEmptyPriceService`)
 - DTOs: `<Purpose>Dto` (e.g., `GetProductDto`, `CreateProductDto`, `PriceFilterDto`)
 - Models: `<TwoLetterPrefix><Name>Entity` in `libs/localdatabase/src/models/`
+- All entity models must extend `Model<EntityName>` (e.g., `class SomeModel extends Model<SomeModel>`) — the generic enables strict type checking on `create()` and `update()` calls, catching property mismatches at compile time
 - Queue processors: `<QueueName>Processor`
 
 ### Module Structure

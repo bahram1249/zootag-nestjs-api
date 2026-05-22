@@ -16,7 +16,7 @@ import { ZTDeviceStatus } from './zt-device-status.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Devices' })
-export class ZTDevice extends Model {
+export class ZTDevice extends Model<ZTDevice> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 

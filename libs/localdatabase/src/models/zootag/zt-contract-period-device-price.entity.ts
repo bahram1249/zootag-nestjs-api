@@ -13,7 +13,7 @@ import { ZTCurrency } from './zt-currency.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_ContractPeriodDevicePrices' })
-export class ZTContractPeriodDevicePrice extends Model {
+export class ZTContractPeriodDevicePrice extends Model<ZTContractPeriodDevicePrice> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 

@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ZT_DeviceStatuses' })
-export class ZTDeviceStatus extends Model {
+export class ZTDeviceStatus extends Model<ZTDeviceStatus> {
   @Column({ type: DataType.BIGINT, primaryKey: true })
   id: bigint;
 

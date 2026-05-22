@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ZT_Currencies' })
-export class ZTCurrency extends Model {
+export class ZTCurrency extends Model<ZTCurrency> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 

@@ -88,8 +88,6 @@ export class CurrencyService {
       ...mapped,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
-      createdUserId: BigInt(user.id),
-      updatedUserId: BigInt(user.id),
     });
     if (dto.exchangeRateToIRR != null && !dto.isBaseCurrency) {
       await this.currencyHistoryRepository.create({
@@ -124,7 +122,6 @@ export class CurrencyService {
       ...mapped,
       exchangeRateToIRR: dto.exchangeRateToIRR ?? 0,
       isBaseCurrency: dto.isBaseCurrency ?? false,
-      updatedUserId: BigInt(user.id),
     });
     if (rateChanged && !dto.isBaseCurrency) {
       await this.currencyHistoryRepository.create({

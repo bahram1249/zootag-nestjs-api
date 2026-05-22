@@ -10,7 +10,7 @@ import { ZTCurrency } from './zt-currency.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_CurrencyHistories' })
-export class ZTCurrencyHistory extends Model {
+export class ZTCurrencyHistory extends Model<ZTCurrencyHistory> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 
@@ -20,6 +20,9 @@ export class ZTCurrencyHistory extends Model {
 
   @BelongsTo(() => ZTCurrency, { foreignKey: 'currencyId', as: 'currency' })
   currency: ZTCurrency;
+
+  @Column({ type: DataType.DECIMAL(18, 6), allowNull: false })
+  exchangeRateToIRR: number;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })

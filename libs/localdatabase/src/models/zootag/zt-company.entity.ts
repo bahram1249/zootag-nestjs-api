@@ -10,7 +10,7 @@ import { AutoMap } from 'automapper-classes';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Companies' })
-export class ZTCompany extends Model {
+export class ZTCompany extends Model<ZTCompany> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 

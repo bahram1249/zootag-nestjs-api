@@ -13,7 +13,7 @@ import { ZTContractStatus } from './zt-contract-status.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Contracts' })
-export class ZTContract extends Model {
+export class ZTContract extends Model<ZTContract> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 
