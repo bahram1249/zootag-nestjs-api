@@ -11,6 +11,7 @@
   "contract_period_device_price_not_found": "contract period device price not found",
   "currency_history_not_found": "currency history not found",
   "device_not_found": "device not found",
+  "manufacturer_not_found": "manufacturer not found",
   "device_type_mismatch": "the selected price record does not match the device type",
   "maximum_quantity_reached": "the maximum number of devices for this price record has been reached",
   "deviceStatus": {

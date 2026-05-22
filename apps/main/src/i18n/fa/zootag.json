@@ -11,6 +11,7 @@
   "contract_period_device_price_not_found": "قیمت دستگاه در دوره قرارداد مورد نظر یافت نشد",
   "currency_history_not_found": "تاریخچه ارز مورد نظر یافت نشد",
   "device_not_found": "دستگاه مورد نظر یافت نشد",
+  "manufacturer_not_found": "سازنده مورد نظر یافت نشد",
   "device_type_mismatch": "رکورد قیمت انتخاب شده با نوع دستگاه مطابقت ندارد",
   "maximum_quantity_reached": "حداکثر تعداد دستگاه برای این رکورد قیمت به اتمام رسیده است",
   "deviceStatus": {

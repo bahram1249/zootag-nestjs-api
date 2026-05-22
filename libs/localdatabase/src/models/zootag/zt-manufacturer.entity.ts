@@ -1,37 +1,14 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
-import { ZTManufacturer } from './zt-manufacturer.entity';
 
-@Table({ tableName: 'ZT_DeviceTypes' })
-export class ZTDeviceType extends Model<ZTDeviceType> {
+@Table({ tableName: 'ZT_Manufacturers' })
+export class ZTManufacturer extends Model<ZTManufacturer> {
   @Column({ type: DataType.BIGINT, autoIncrement: true, primaryKey: true })
   id: bigint;
 
   @AutoMap()
   @Column({ type: DataType.STRING(200), allowNull: false })
-  typeName: string;
-
-  @AutoMap()
-  @Column({ type: DataType.STRING(100), allowNull: false })
-  modelCode: string;
-
-  @AutoMap()
-  @ForeignKey(() => ZTManufacturer)
-  @Column({ type: DataType.BIGINT, allowNull: true })
-  manufacturerId: bigint;
-
-  @BelongsTo(() => ZTManufacturer, {
-    foreignKey: 'manufacturerId',
-    as: 'manufacturer',
-  })
-  manufacturer: ZTManufacturer;
+  manufacturerName: string;
 
   @AutoMap()
   @Column({ type: DataType.TEXT, allowNull: true })

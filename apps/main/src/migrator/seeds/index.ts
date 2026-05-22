@@ -139,6 +139,7 @@ import * as s0228 from '../permissions/20260520-0228-ZootagContractPeriods';
 import * as s0229 from '../permissions/20260520-0229-ZootagContractPeriodDevicePrices';
 import * as s0230 from '../permissions/20260520-0230-ZootagDevices';
 import * as s0266 from '../permissions/20260522-0266-ZootagCurrencyHistories';
+import * as s0269 from '../permissions/20260522-0269-ZootagManufacturers';
 
 interface Condition {
   key: string;
@@ -330,4 +331,6 @@ export const seeds: SeedDefinition[] = [
   cond(s0230, 'SITE_NAME', 'Zootag'),
 
   cond(s0266, 'SITE_NAME', 'Zootag'),
+
+  cond(s0269, 'SITE_NAME', 'Zootag'),
 ];

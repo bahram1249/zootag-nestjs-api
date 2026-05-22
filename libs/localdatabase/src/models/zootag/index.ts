@@ -9,3 +9,4 @@ export * from './zt-contract-period.entity';
 export * from './zt-contract-period-device-price.entity';
 export * from './zt-device.entity';
 export * from './zt-currency-history.entity';
+export * from './zt-manufacturer.entity';

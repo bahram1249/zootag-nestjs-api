@@ -188,6 +188,7 @@ export type I18nTranslations = {
         "contract_period_device_price_not_found": string;
         "currency_history_not_found": string;
         "device_not_found": string;
+        "manufacturer_not_found": string;
         "device_type_mismatch": string;
         "maximum_quantity_reached": string;
         "deviceStatus": {

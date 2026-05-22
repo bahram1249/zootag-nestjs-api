@@ -130,6 +130,9 @@ import * as m0262 from './20260522-0262-alter-zt_currencies-modify-exchangeratet
 import * as m0263 from './20260522-0263-alter-zt_devices-add-contractperioddevicepriceid';
 import * as m0264 from './20260522-0264-alter-zt_devices-modify-purchaseprice';
 import * as m0265 from './20260522-0265-alter-zt_devices-modify-purchasepriceirr';
+
+import * as m0267 from './20260522-0267-create-zt_manufacturers';
+import * as m0268 from './20260522-0268-alter-zt_devicetypes-add-manufacturerid';
 interface Condition {
   key: string;
   values: string[];
@@ -300,4 +303,7 @@ export const migrations: MigrationDefinition[] = [
   cond(m0263, 'SITE_NAME', 'Zootag'),
   cond(m0264, 'SITE_NAME', 'Zootag'),
   cond(m0265, 'SITE_NAME', 'Zootag'),
+  cond(m0267, 'SITE_NAME', 'Zootag'),
+
+  cond(m0268, 'SITE_NAME', 'Zootag'),
 ];

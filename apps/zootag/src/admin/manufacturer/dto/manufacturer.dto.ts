@@ -8,27 +8,14 @@ import {
 } from 'class-validator';
 import { AutoMap } from 'automapper-classes';
 
-export class DeviceTypeDto {
+export class ManufacturerDto {
   @AutoMap()
   @MinLength(2)
   @MaxLength(200)
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ description: 'device type name' })
-  typeName: string;
-
-  @AutoMap()
-  @MinLength(1)
-  @MaxLength(100)
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ description: 'model code' })
-  modelCode: string;
-
-  @AutoMap()
-  @IsOptional()
-  @ApiProperty({ required: false, description: 'manufacturer id' })
-  manufacturerId?: number;
+  @ApiProperty({ description: 'manufacturer name' })
+  manufacturerName: string;
 
   @AutoMap()
   @IsOptional()

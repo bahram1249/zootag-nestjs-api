@@ -18,6 +18,7 @@ import { ContractModule } from './admin/contract/contract.module';
 import { ContractPeriodModule } from './admin/contract-period/contract-period.module';
 import { ContractPeriodDevicePriceModule } from './admin/contract-period-device-price/contract-period-device-price.module';
 import { DeviceModule } from './admin/device/device.module';
+import { ManufacturerModule } from './admin/manufacturer/manufacturer.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DeviceModule } from './admin/device/device.module';
     ContractPeriodModule,
     ContractPeriodDevicePriceModule,
     DeviceModule,
+    ManufacturerModule,
   ],
 })
 export class ZootagModule implements NestModule {

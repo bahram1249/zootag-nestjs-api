@@ -1115,6 +1115,8 @@ npm run rollback
    - Or step-by-step: `gen:migration:snapshot` → `gen:migration:diff` (verify) → `npm run gen:migration:generate`
 3. **Fix casing**: After generation, manually change `'zootag'` → `'Zootag'` in `apps/main/src/migrator/migrations/index.ts`
 
+**IMPORTANT: NEVER manually write migration files.** Always use the CLI command `npm run gen:migration:generate` to auto-generate migration files from entity model changes. Manually written migration code will be rejected.
+
 #### Migration File Conventions
 
 - **Naming**: `{YYYYMMDD}-{NNNN}-{action}-{tablename}[-{detail}].ts`

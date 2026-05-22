@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-22T12:18:19.574Z",
+  "generatedAt": "2026-05-22T12:18:19.566Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -5080,20 +5080,6 @@
           "unique": false,
           "comment": null
         },
-        "manufacturerId": {
-          "name": "manufacturerId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Manufacturers",
-            "key": "id"
-          }
-        },
         "description": {
           "name": "description",
           "type": "NTEXT",
@@ -5146,17 +5132,7 @@
         }
       },
       "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "manufacturerId"
-          ],
-          "refTable": "ZT_Manufacturers",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
+      "foreignKeys": []
     },
     "ZT_Devices": {
       "className": "ZTDevice",
@@ -5514,7 +5490,7 @@
         }
       ]
     },
-    "ZT_Manufacturers": {
+    "ZTManufacturer": {
       "className": "ZTManufacturer",
       "tableName": "ZT_Manufacturers",
       "columns": {
