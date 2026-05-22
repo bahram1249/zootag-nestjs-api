@@ -9,19 +9,20 @@ feature module (or editing an existing one) inside `apps/zootag/src/admin/`.
 
 Create `zt-{feature-name}.entity.ts`:
 
-| Convention | Rule |
-|------------|------|
-| Table name | `ZT_{PascalCase}` (e.g. `ZT_Devices`) |
-| Prefix     | `ZT_` |
-| Primary key | `id: bigint` with `autoIncrement: true` |
-| `isDeleted` | `@Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: 0 })` |
-| `isActive` | `@Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })` |
-| `createdUserId` / `updatedUserId` | One `@ForeignKey(() => User)` + `@BelongsTo` each for audit |
-| `@ForeignKey` | Always paired with `@BelongsTo` |
-| `@BelongsTo` | Always use `{ foreignKey: '...', as: '...' }` object syntax |
-| `@AutoMap()` | Add to every DTO-exposed field |
+| Convention                        | Rule                                                                        |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| Table name                        | `ZT_{PascalCase}` (e.g. `ZT_Devices`)                                       |
+| Prefix                            | `ZT_`                                                                       |
+| Primary key                       | `id: bigint` with `autoIncrement: true`                                     |
+| `isDeleted`                       | `@Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: 0 })`    |
+| `isActive`                        | `@Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })` |
+| `createdUserId` / `updatedUserId` | One `@ForeignKey(() => User)` + `@BelongsTo` each for audit                 |
+| `@ForeignKey`                     | Always paired with `@BelongsTo`                                             |
+| `@BelongsTo`                      | Always use `{ foreignKey: '...', as: '...' }` object syntax                 |
+| `@AutoMap()`                      | Add to every DTO-exposed field                                              |
 
 **Example BelongsTo pattern for two User FKs:**
+
 ```typescript
 @ForeignKey(() => User)
 @Column({ type: DataType.BIGINT, allowNull: false })
@@ -42,13 +43,13 @@ updatedUser: User;
 
 Update these files:
 
-| # | File | Action |
-|---|------|--------|
-| 1 | `libs/localdatabase/src/models/zootag/index.ts` | Add `export * from './zt-{name}.entity';` |
-| 2 | `libs/localdatabase/src/models/index.ts` | Ensure zootag barrel is exported |
-| 3 | `libs/localdatabase/src/subsystem-models/zootag.ts` | Add model class to the array |
-| 4 | `libs/localdatabase/src/subsystem-models/index.ts` | Ensure zootag subsystem barrel is exported |
-| 5 | `apps/main/src/routes/app.module.ts` | Spread `zootagModels` in `models: [...]` |
+| #   | File                                                | Action                                     |
+| --- | --------------------------------------------------- | ------------------------------------------ |
+| 1   | `libs/localdatabase/src/models/zootag/index.ts`     | Add `export * from './zt-{name}.entity';`  |
+| 2   | `libs/localdatabase/src/models/index.ts`            | Ensure zootag barrel is exported           |
+| 3   | `libs/localdatabase/src/subsystem-models/zootag.ts` | Add model class to the array               |
+| 4   | `libs/localdatabase/src/subsystem-models/index.ts`  | Ensure zootag subsystem barrel is exported |
+| 5   | `apps/main/src/routes/app.module.ts`                | Spread `zootagModels` in `models: [...]`   |
 
 ## 3. Generate Migration
 
@@ -57,6 +58,7 @@ npm run gen:migration:generate
 ```
 
 Then **manually fix**:
+
 - [ ] `cond(... 'zootag')` → `cond(... 'Zootag')` (capital Z) in `apps/main/src/migrator/migrations/index.ts`
 
 ## 4. Create Module
@@ -83,6 +85,7 @@ export class YourModule {}
 ## 5. Create DTOs (`dto/`)
 
 ### 5a. Create/Update DTO
+
 `dto/{feature-name}.dto.ts`
 
 - Use `class-validator` for validation, `class-transformer` for `@Type(() => Number)`
@@ -92,6 +95,7 @@ export class YourModule {}
 - For optional prices with IRR calculation: mark `purchasePriceIRR` as `@IsOptional()`
 
 ### 5b. Filter DTO
+
 `dto/{feature-name}-filter.dto.ts`
 
 ```typescript
@@ -105,6 +109,7 @@ export class YourFilterDto extends IntersectionType(
 ```
 
 ### 5c. Response DTO
+
 `dto/{feature-name}-response.dto.ts`
 
 - Define inline `BriefDto` classes for nested related data (e.g. `UserBriefDto`, `CompanyBriefDto`)
@@ -112,6 +117,7 @@ export class YourFilterDto extends IntersectionType(
 - Mark nested relation fields with `required: false`
 
 ### 5d. Barrel
+
 `dto/index.ts`
 
 ```typescript
@@ -161,13 +167,13 @@ export * from './{feature-name}.mapper';
 
 Key patterns:
 
-| Method | Pattern |
-|--------|---------|
-| `findAll` | Use `let qb = new QueryOptionsBuilder()`; call `count()` first, then `findAll()` with `.include()`, `.limit()`, `.offset()`, `.order()` |
-| `findById` | `findOne` with `.filter({ id }).filter({ isDeleted: 0 })` and `.attributes([...])` matching `findAll`; throw `NotFoundException` if not found |
-| `create` | `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); this.repository.create({ ...mapped, createdUserId: BigInt(user.id), updatedUserId: BigInt(user.id) })` |
-| `update` | `findOne` first (404 if not found), then `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); item.update({ ...mapped, updatedUserId: BigInt(user.id) })` |
-| `deleteById` | `findOne` first (404 if not found), then `item.update({ isDeleted: true })` |
+| Method       | Pattern                                                                                                                                                                     |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `findAll`    | Use `let qb = new QueryOptionsBuilder()`; call `count()` first, then `findAll()` with `.include()`, `.limit()`, `.offset()`, `.order()`                                     |
+| `findById`   | `findOne` with `.filter({ id }).filter({ isDeleted: 0 })` and `.attributes([...])` matching `findAll`; throw `NotFoundException` if not found                               |
+| `create`     | `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); this.repository.create({ ...mapped, createdUserId: BigInt(user.id), updatedUserId: BigInt(user.id) })` |
+| `update`     | `findOne` first (404 if not found), then `const mapped = this.mapper.map(dto, YourDto, ZTYourModel).toJSON(); item.update({ ...mapped, updatedUserId: BigInt(user.id) })`   |
+| `deleteById` | `findOne` first (404 if not found), then `item.update({ isDeleted: true })`                                                                                                 |
 
 - Inject: `@InjectModel()`, `@InjectConnection()`, `LocalizationService`, `@InjectMapper() private readonly mapper: Mapper`
 - All `findAll`/`findById` queries must include related models via `.include()`
@@ -226,7 +232,11 @@ export class YourController {
   @CheckPermission({ permissionSymbol: 'zootag.admin.{feature}.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: YourDto, @GetUser() user: User) {
+  async update(
+    @Param('id') id: number,
+    @Body() dto: YourDto,
+    @GetUser() user: User,
+  ) {
     return await this.service.update(id, dto, user);
   }
 
@@ -251,7 +261,10 @@ export class YourController {
 npm run create:permission -- YourEntityName --site Zootag
 ```
 
+> When `--site` is provided, the CLI automatically omits the redundant `checkSetting` guard (the `cond()` wrapper in the seeds index already handles site filtering) and uses `/admin/{site}/{feature}` URL prefix.
+
 Then **manually fix**:
+
 - [ ] `'zootag'` → `'Zootag'` (capital Z) in both the generated file's `cond()` and in `apps/main/src/migrator/permissions/index.ts`
 - [ ] Replace placeholders (`<domain>.<group>`, `<Parent Menu>`, etc.) in the generated file
 - [ ] Set correct `groupName`: `zootag.admin.{feature}`
@@ -261,9 +274,9 @@ Then **manually fix**:
 
 Edit both files:
 
-| File | Key |
-|------|-----|
-| `apps/main/src/i18n/en/zootag.json` | `"{feature}_not_found": "{Feature} not found"` |
+| File                                | Key                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------ |
+| `apps/main/src/i18n/en/zootag.json` | `"{feature}_not_found": "{Feature} not found"`                                       |
 | `apps/main/src/i18n/fa/zootag.json` | `"{feature}_not_found": "...,u0641,\u062a \u0646\u0634\u062f"` (Persian translation) |
 
 ## 10. Register the Module
@@ -272,6 +285,10 @@ Add to `apps/zootag/src/zootag.module.ts`:
 
 1. Import the module
 2. Add it to the `imports: [...]` array
+
+## Commit Policy
+
+**IMPORTANT:** Never create commits or push to remote unless explicitly instructed by the user. Only stage, commit, or push when the user directly asks you to do so.
 
 ## 11. Build & Verify
 
@@ -286,10 +303,10 @@ npm run start:dev
 
 ## 12. Special Cases
 
-| Case | Action |
-|------|--------|
-| **Lookup table** (e.g. Status, Type) | No `createdUserId`/`updatedUserId`; no `isDeleted`; no `updatedAt`; no `slug`; DTO includes `id` (static PK); still uses `@AutoMap()` and mapper profile |
-| **Localized lookup name** | Inject `LocalizationMapperService`; use `localizeLookupItems()` / `localizeLookupItem()` for direct lookup entities; use `localizeItems()` / `localizeItem()` with `{ relationKey: 'entityType' }` for nested relations |
-| **IRR auto-calculation** | Mark `CurrencyCalculationModule` as `@Global()`, inject `CurrencyCalculationService`, call on **create only** |
-| **No `@GetUser()` user param** | Lookup table controllers omit user param in create/update |
-| **Migration fixes needed** | After generation: fix `cond(... 'zootag')` → `cond(... 'Zootag')` in `apps/main/src/migrator/migrations/index.ts` |
+| Case                                 | Action                                                                                                                                                                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lookup table** (e.g. Status, Type) | No `createdUserId`/`updatedUserId`; no `isDeleted`; no `updatedAt`; no `slug`; DTO includes `id` (static PK); still uses `@AutoMap()` and mapper profile                                                                |
+| **Localized lookup name**            | Inject `LocalizationMapperService`; use `localizeLookupItems()` / `localizeLookupItem()` for direct lookup entities; use `localizeItems()` / `localizeItem()` with `{ relationKey: 'entityType' }` for nested relations |
+| **IRR auto-calculation**             | Mark `CurrencyCalculationModule` as `@Global()`, inject `CurrencyCalculationService`, call on **create only**                                                                                                           |
+| **No `@GetUser()` user param**       | Lookup table controllers omit user param in create/update                                                                                                                                                               |
+| **Migration fixes needed**           | After generation: fix `cond(... 'zootag')` → `cond(... 'Zootag')` in `apps/main/src/migrator/migrations/index.ts`                                                                                                       |

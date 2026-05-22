@@ -74,25 +74,41 @@ export async function down(sequelize: Sequelize): Promise<void> {
 `;
 }
 
-export function generatePermissionFile(name: string, seqNum: number): string {
+export function generatePermissionFile(
+  name: string,
+  seqNum: number,
+  site?: string,
+): string {
   const prefix = datePrefix();
   const pascalName = toPascalCase(name);
   const fileName = `${prefix}-${pad(seqNum)}-${pascalName}`;
+  const siteLower = site ? site.toLowerCase() : '';
+  const menuUrlPlaceholder = site
+    ? `'/admin/${siteLower}/<path>'`
+    : `'/<path>'`;
+
+  const checkImport = site
+    ? ''
+    : `import { createDialectHelpers } from '../migration-helper';
+`;
+
+  const checkGuard = site
+    ? ''
+    : `  const { checkSetting } = createDialectHelpers(sequelize);
+  if (!(await checkSetting('key', ['SITE_NAME']))) return;
+`;
 
   return `export const name = '${fileName}';
 import { Sequelize } from 'sequelize';
 import { createCrudPermissions } from '../permission-helper';
-import { createDialectHelpers } from '../migration-helper';
-
+${checkImport}
 export async function up(sequelize: Sequelize): Promise<void> {
-  const { checkSetting } = createDialectHelpers(sequelize);
-  if (!(await checkSetting('key', ['SITE_NAME']))) return;
-  await createCrudPermissions(sequelize, {
+${checkGuard}  await createCrudPermissions(sequelize, {
     entityName: '${pascalName}',
     groupName: '<domain>.<group>',
     parentMenuName: '<Parent Menu>',
     menuName: '<Menu Name>',
-    menuUrl: '/<path>',
+    menuUrl: ${menuUrlPlaceholder},
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}
@@ -240,7 +256,7 @@ export function createPermission(
   const fileName = `${prefix}-${pad(seqNum)}-${pascalName}.ts`;
   const filePath = path.join(permsDir, fileName);
 
-  const content = generatePermissionFile(name, seqNum);
+  const content = generatePermissionFile(name, seqNum, site);
   fs.writeFileSync(filePath, content, 'utf-8');
 
   const indexFilePath = path.resolve(migratorRoot, 'seeds', 'index.ts');

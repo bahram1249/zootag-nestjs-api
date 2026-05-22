@@ -1354,6 +1354,10 @@ async logout(@Req() req: Request) {
 - Use `ValidationPipe({ transform: true })` for DTO validation
 - Use `@UsePipes(new ValidationPipe({ transform: true }))` at method level
 
+### Git Commit Policy
+
+- **Never create commits or push to remote** unless explicitly instructed by the user. Do not stage, commit, or push under any circumstance without a direct instruction.
+
 ### Best Practices
 
 - Reuse query logic in private helper methods in services (e.g., by `findAll` and `exportExcel`)
