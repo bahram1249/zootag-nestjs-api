@@ -37,7 +37,8 @@ export class ContractPeriodService {
       .filter({ isDeleted: 0 })
       .filterIf(!!filter.search && filter.search !== '%%', {
         periodName: { [Op.like]: filter.search },
-      });
+      })
+      .filterIf(!!filter.contractId, { contractId: filter.contractId });
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes([

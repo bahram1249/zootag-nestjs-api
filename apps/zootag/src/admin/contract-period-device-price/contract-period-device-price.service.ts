@@ -45,6 +45,9 @@ export class ContractPeriodDevicePriceService {
           { contractPeriodId: { [Op.like]: filter.search } },
           { deviceTypeId: { [Op.like]: filter.search } },
         ],
+      })
+      .filterIf(!!filter.contractPeriodId, {
+        contractPeriodId: filter.contractPeriodId,
       });
     const total = await this.repository.count(qb.build());
     qb = qb
