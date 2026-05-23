@@ -48,6 +48,20 @@ class DeviceStatusBriefDto {
   name: string;
 }
 
+class InventoryStatusBriefDto {
+  @ApiProperty({ example: 1 })
+  id: number;
+  @ApiProperty({ example: 'Available' })
+  name: string;
+}
+
+class DeviceSaleBriefDto {
+  @ApiProperty({ example: 1 })
+  id: number;
+  @ApiProperty({ example: 2500.0 })
+  salePrice: number;
+}
+
 class UserBriefDto {
   @ApiProperty({ example: 1 })
   id: number;
@@ -138,33 +152,25 @@ export class DeviceResponseDto {
   @ApiProperty({ example: 50000000, description: 'Purchase price IRR' })
   purchasePriceIRR: number;
 
-  @ApiProperty({
-    example: 2500.0,
-    description: 'Selling price',
-    required: false,
-  })
-  sellingPrice?: number;
+  @ApiProperty({ example: 1, description: 'Inventory status id' })
+  inventoryStatusId: number;
 
   @ApiProperty({
-    example: 1,
-    description: 'Selling currency ID',
+    type: () => InventoryStatusBriefDto,
+    description: 'Inventory status',
     required: false,
   })
-  sellingCurrencyId?: number;
+  inventoryStatus?: InventoryStatusBriefDto;
+
+  @ApiProperty({ example: 1, description: 'Sale ID', required: false })
+  saleId?: number;
 
   @ApiProperty({
-    type: () => CurrencyBriefDto,
-    description: 'Selling currency',
+    type: () => DeviceSaleBriefDto,
+    description: 'Sale',
     required: false,
   })
-  sellingCurrency?: CurrencyBriefDto;
-
-  @ApiProperty({
-    example: 87500000,
-    description: 'Selling price IRR',
-    required: false,
-  })
-  sellingPriceIRR?: number;
+  sale?: DeviceSaleBriefDto;
 
   @ApiProperty({
     example: '2026-01-15',

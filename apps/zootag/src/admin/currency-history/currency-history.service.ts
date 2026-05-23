@@ -37,12 +37,14 @@ export class CurrencyHistoryService {
         'createdAt',
         'updatedAt',
       ])
-      .include([{
-        model: ZTCurrency,
-        as: 'currency',
-        attributes: ['id', 'code', 'name', 'symbol'],
-        required: false,
-      }])
+      .include([
+        {
+          model: ZTCurrency,
+          as: 'currency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });

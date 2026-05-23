@@ -11,6 +11,13 @@ import {
   ZTContractPeriodDevicePrice,
   ZTDevice,
   ZTManufacturer,
+  ZTMarketer,
+  ZTDeviceSalePrice,
+  ZTDeviceSale,
+  ZTCommissionSettlement,
+  ZTCommissionType,
+  ZTCommissionSettlementStatus,
+  ZTInventoryStatus,
 } from '@rahino/localdatabase/models';
 
 export const zootagModels = [
@@ -26,4 +33,11 @@ export const zootagModels = [
   ZTContractPeriodDevicePrice,
   ZTDevice,
   ZTManufacturer,
+  ZTMarketer,
+  ZTDeviceSalePrice,
+  ZTDeviceSale,
+  ZTCommissionSettlement,
+  ZTCommissionType,
+  ZTCommissionSettlementStatus,
+  ZTInventoryStatus,
 ];

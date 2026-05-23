@@ -140,6 +140,13 @@ import * as s0229 from '../permissions/20260520-0229-ZootagContractPeriodDeviceP
 import * as s0230 from '../permissions/20260520-0230-ZootagDevices';
 import * as s0266 from '../permissions/20260522-0266-ZootagCurrencyHistories';
 import * as s0269 from '../permissions/20260522-0269-ZootagManufacturers';
+import * as s0282 from './20260523-0282-seed-zootag-commission-types';
+import * as s0283 from './20260523-0283-seed-zootag-commission-settlement-statuses';
+import * as s0284 from './20260523-0284-seed-zootag-inventory-statuses';
+import * as s0285 from '../permissions/20260523-0285-ZootagMarketers';
+import * as s0286 from '../permissions/20260523-0286-ZootagDeviceSalePrices';
+import * as s0287 from '../permissions/20260523-0287-ZootagDeviceSales';
+import * as s0288 from '../permissions/20260523-0288-ZootagCommissionSettlements';
 
 interface Condition {
   key: string;
@@ -333,4 +340,18 @@ export const seeds: SeedDefinition[] = [
   cond(s0266, 'SITE_NAME', 'Zootag'),
 
   cond(s0269, 'SITE_NAME', 'Zootag'),
+
+  cond(s0282, 'SITE_NAME', 'Zootag'),
+
+  cond(s0283, 'SITE_NAME', 'Zootag'),
+
+  cond(s0284, 'SITE_NAME', 'Zootag'),
+
+  cond(s0285, 'SITE_NAME', 'Zootag'),
+
+  cond(s0286, 'SITE_NAME', 'Zootag'),
+
+  cond(s0287, 'SITE_NAME', 'Zootag'),
+
+  cond(s0288, 'SITE_NAME', 'Zootag'),
 ];

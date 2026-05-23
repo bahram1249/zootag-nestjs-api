@@ -1,0 +1,184 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Op, Sequelize } from 'sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
+import {
+  ZTDeviceSalePrice,
+  ZTDeviceType,
+  ZTCompany,
+  ZTContractPeriod,
+  ZTCurrency,
+} from '@rahino/localdatabase/models';
+import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
+import { DeviceSalePriceFilterDto, DeviceSalePriceDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
+
+@Injectable()
+export class DeviceSalePriceService {
+  constructor(
+    @InjectModel(ZTDeviceSalePrice)
+    private readonly repository: typeof ZTDeviceSalePrice,
+    private readonly localizationService: LocalizationService,
+    @InjectMapper() private readonly mapper: Mapper,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    private readonly currencyCalculationService: CurrencyCalculationService,
+  ) {}
+
+  async findAll(filter: DeviceSalePriceFilterDto) {
+    let qb = new QueryOptionsBuilder().filterIf(
+      !!filter.search && filter.search !== '%%',
+      {
+        [Op.or]: [],
+      },
+    );
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .attributes([
+        'id',
+        'deviceTypeId',
+        'companyId',
+        'contractPeriodId',
+        'currencyId',
+        'salePrice',
+        'salePriceIRR',
+        'validFrom',
+        'validTo',
+        'isActive',
+      ])
+      .include([
+        {
+          model: ZTDeviceType,
+          as: 'deviceType',
+          attributes: ['id', 'typeName', 'modelCode'],
+          required: false,
+        },
+        {
+          model: ZTCompany,
+          as: 'company',
+          attributes: ['id', 'companyName'],
+          required: false,
+        },
+        {
+          model: ZTContractPeriod,
+          as: 'contractPeriod',
+          attributes: ['id', 'periodName'],
+          required: false,
+        },
+        {
+          model: ZTCurrency,
+          as: 'currency',
+          attributes: ['id', 'code', 'name', 'symbol'],
+          required: false,
+        },
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = await this.repository.findAll(qb.build());
+    return { result, total };
+  }
+
+  async findById(id: number) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .attributes([
+          'id',
+          'deviceTypeId',
+          'companyId',
+          'contractPeriodId',
+          'currencyId',
+          'salePrice',
+          'salePriceIRR',
+          'validFrom',
+          'validTo',
+          'isActive',
+        ])
+        .include([
+          {
+            model: ZTDeviceType,
+            as: 'deviceType',
+            attributes: ['id', 'typeName', 'modelCode'],
+            required: false,
+          },
+          {
+            model: ZTCompany,
+            as: 'company',
+            attributes: ['id', 'companyName'],
+            required: false,
+          },
+          {
+            model: ZTContractPeriod,
+            as: 'contractPeriod',
+            attributes: ['id', 'periodName'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'currency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+        ])
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate(
+          'zootag.device_sale_price_not_found',
+        ),
+      );
+    return { result: item };
+  }
+
+  async create(dto: DeviceSalePriceDto) {
+    const mapped = this.mapper
+      .map(dto, DeviceSalePriceDto, ZTDeviceSalePrice)
+      .toJSON();
+    const salePriceIRR = await this.currencyCalculationService.convertToIRR(
+      dto.salePrice,
+      BigInt(dto.currencyId),
+    );
+
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      // Close previous active price for same deviceType+company+contractPeriod combination
+      if (dto.deviceTypeId && dto.companyId && dto.contractPeriodId) {
+        const previousActive = await this.repository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ deviceTypeId: dto.deviceTypeId })
+            .filter({ companyId: dto.companyId })
+            .filter({ contractPeriodId: dto.contractPeriodId })
+            .filter({ isActive: true })
+            .filter({ validTo: null })
+            .transaction(transaction)
+            .build(),
+        );
+        if (previousActive) {
+          await previousActive.update(
+            { validTo: new Date(), isActive: false },
+            { transaction },
+          );
+        }
+      }
+
+      const item = await this.repository.create(
+        {
+          ...mapped,
+          salePriceIRR,
+        },
+        { transaction },
+      );
+
+      await transaction.commit();
+      return { result: item };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  }
+}

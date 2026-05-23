@@ -191,6 +191,27 @@ export type I18nTranslations = {
         "manufacturer_not_found": string;
         "device_type_mismatch": string;
         "maximum_quantity_reached": string;
+        "marketer_not_found": string;
+        "device_sale_price_not_found": string;
+        "device_sale_not_found": string;
+        "commission_settlement_not_found": string;
+        "device_already_sold": string;
+        "commissionType": {
+            "percent": string;
+            "fixed": string;
+        };
+        "commissionSettlementStatus": {
+            "pending": string;
+            "paid": string;
+            "cancelled": string;
+        };
+        "inventoryStatus": {
+            "available": string;
+            "reserved": string;
+            "sold": string;
+            "returned": string;
+            "damaged": string;
+        };
         "deviceStatus": {
             "inStock": string;
             "assigned": string;

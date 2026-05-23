@@ -17,9 +17,12 @@ import {
   ZTContractPeriodDevicePrice,
   ZTCurrency,
   ZTDeviceStatus,
+  ZTDeviceSale,
+  ZTInventoryStatus,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
+import { InventoryStatus } from '@rahino/zootag/shared/enums';
 import { DeviceFilterDto, DeviceDto } from './dto';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
@@ -39,12 +42,6 @@ export class DeviceService {
     private readonly currencyCalculationService: CurrencyCalculationService,
   ) {}
 
-  /**
-   * Business rules:
-   * - Only returns non-deleted devices (isDeleted = 0)
-   * - Search matches serialNumber or IMEI
-   * - deviceStatus names are localized via i18n
-   */
   async findAll(filter: DeviceFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
@@ -68,9 +65,8 @@ export class DeviceService {
         'purchasePrice',
         'currencyId',
         'purchasePriceIRR',
-        'sellingPrice',
-        'sellingCurrencyId',
-        'sellingPriceIRR',
+        'inventoryStatusId',
+        'saleId',
         'purchaseDate',
         'warrantyEndDate',
         'deviceStatusId',
@@ -108,15 +104,21 @@ export class DeviceService {
           required: false,
         },
         {
-          model: ZTCurrency,
-          as: 'sellingCurrency',
-          attributes: ['id', 'code', 'name', 'symbol'],
-          required: false,
-        },
-        {
           model: ZTDeviceStatus,
           as: 'deviceStatus',
           attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: ZTInventoryStatus,
+          as: 'inventoryStatus',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: ZTDeviceSale,
+          as: 'sale',
+          attributes: ['id', 'salePrice'],
           required: false,
         },
         {
@@ -142,11 +144,6 @@ export class DeviceService {
     return { result, total };
   }
 
-  /**
-   * Business rules:
-   * - Only returns non-deleted devices
-   * - deviceStatus names are localized via i18n
-   */
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -164,9 +161,8 @@ export class DeviceService {
           'purchasePrice',
           'currencyId',
           'purchasePriceIRR',
-          'sellingPrice',
-          'sellingCurrencyId',
-          'sellingPriceIRR',
+          'inventoryStatusId',
+          'saleId',
           'purchaseDate',
           'warrantyEndDate',
           'deviceStatusId',
@@ -204,15 +200,21 @@ export class DeviceService {
             required: false,
           },
           {
-            model: ZTCurrency,
-            as: 'sellingCurrency',
-            attributes: ['id', 'code', 'name', 'symbol'],
-            required: false,
-          },
-          {
             model: ZTDeviceStatus,
             as: 'deviceStatus',
             attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: ZTInventoryStatus,
+            as: 'inventoryStatus',
+            attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: ZTDeviceSale,
+            as: 'sale',
+            attributes: ['id', 'salePrice'],
             required: false,
           },
           {
@@ -241,15 +243,6 @@ export class DeviceService {
     };
   }
 
-  /**
-   * Business rules:
-   * - contractPeriodDevicePriceId must reference an existing, non-deleted price record
-   * - deviceTypeId must match the price record's deviceTypeId (prevents incorrect pricing)
-   * - maximumQuantity on price record is enforced: if > 0, rejects when at or above limit
-   * - Pricing fields (purchasePrice, currencyId, purchasePriceIRR, sellingPrice, etc.)
-   *   are derived from the price record, NOT from user input
-   * - contractPeriodId is set automatically from the price record
-   */
   async create(dto: DeviceDto, user: User) {
     const priceRecord = await this.contractPeriodDevicePriceRepository.findOne(
       new QueryOptionsBuilder()
@@ -308,23 +301,13 @@ export class DeviceService {
       purchasePrice: priceRecord.purchasePrice,
       currencyId: priceRecord.currencyId,
       purchasePriceIRR: priceRecord.purchasePriceIRR,
-      sellingPrice: priceRecord.sellingPrice,
-      sellingCurrencyId: priceRecord.sellingCurrencyId,
-      sellingPriceIRR: priceRecord.sellingPriceIRR,
+      inventoryStatusId: BigInt(InventoryStatus.Available),
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  /**
-   * Business rules:
-   * - contractPeriodDevicePriceId is FROZEN — cannot be changed after creation
-   * - All pricing and contract fields (contractPeriodId, deviceTypeId, purchasePrice,
-   *   currencyId, purchasePriceIRR, sellingPrice, sellingCurrencyId, sellingPriceIRR)
-   *   are FROZEN — only device descriptor fields (serialNumber, imei, macAddress, etc.)
-   *   and status fields are mutable
-   */
   async update(id: number, dto: DeviceDto, user: User) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),
@@ -343,19 +326,11 @@ export class DeviceService {
       purchasePrice: item.purchasePrice,
       currencyId: item.currencyId,
       purchasePriceIRR: item.purchasePriceIRR,
-      sellingPrice: item.sellingPrice,
-      sellingCurrencyId: item.sellingCurrencyId,
-      sellingPriceIRR: item.sellingPriceIRR,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };
   }
 
-  /**
-   * Business rules:
-   * - Soft delete: sets isDeleted = true instead of hard-deleting the row
-   * - Already-deleted devices return NotFoundException
-   */
   async deleteById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ isDeleted: 0 }).build(),

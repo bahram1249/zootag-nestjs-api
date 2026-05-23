@@ -13,6 +13,8 @@ import { ZTContractPeriod } from './zt-contract-period.entity';
 import { ZTContractPeriodDevicePrice } from './zt-contract-period-device-price.entity';
 import { ZTCurrency } from './zt-currency.entity';
 import { ZTDeviceStatus } from './zt-device-status.entity';
+import { ZTDeviceSale } from './zt-device-sale.entity';
+import { ZTInventoryStatus } from './zt-inventory-status.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_Devices' })
@@ -90,23 +92,23 @@ export class ZTDevice extends Model<ZTDevice> {
   purchasePriceIRR: number;
 
   @AutoMap()
-  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
-  sellingPrice: number;
+  @ForeignKey(() => ZTInventoryStatus)
+  @Column({ type: DataType.BIGINT, allowNull: false })
+  inventoryStatusId: bigint;
 
-  @AutoMap()
-  @ForeignKey(() => ZTCurrency)
-  @Column({ type: DataType.BIGINT, allowNull: true })
-  sellingCurrencyId: bigint;
-
-  @BelongsTo(() => ZTCurrency, {
-    foreignKey: 'sellingCurrencyId',
-    as: 'sellingCurrency',
+  @BelongsTo(() => ZTInventoryStatus, {
+    foreignKey: 'inventoryStatusId',
+    as: 'inventoryStatus',
   })
-  sellingCurrency: ZTCurrency;
+  inventoryStatus: ZTInventoryStatus;
 
   @AutoMap()
-  @Column({ type: DataType.DECIMAL(18, 2), allowNull: true })
-  sellingPriceIRR: number;
+  @ForeignKey(() => ZTDeviceSale)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  saleId: bigint;
+
+  @BelongsTo(() => ZTDeviceSale, { foreignKey: 'saleId', as: 'sale' })
+  sale: ZTDeviceSale;
 
   @AutoMap()
   @Column({ type: DataType.DATE, allowNull: true })

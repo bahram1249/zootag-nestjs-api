@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-22T12:18:19.574Z",
+  "generatedAt": "2026-05-23T09:11:13.496Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -3849,6 +3849,220 @@
         }
       ]
     },
+    "ZT_CommissionSettlementStatuses": {
+      "className": "ZTCommissionSettlementStatus",
+      "tableName": "ZT_CommissionSettlementStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
+    "ZT_CommissionSettlements": {
+      "className": "ZTCommissionSettlement",
+      "tableName": "ZT_CommissionSettlements",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "marketerId": {
+          "name": "marketerId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Marketers",
+            "key": "id"
+          }
+        },
+        "deviceSaleId": {
+          "name": "deviceSaleId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceSales",
+            "key": "id"
+          }
+        },
+        "amountIRR": {
+          "name": "amountIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "paymentDate": {
+          "name": "paymentDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "statusId": {
+          "name": "statusId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_CommissionSettlementStatuses",
+            "key": "id"
+          }
+        },
+        "notes": {
+          "name": "notes",
+          "type": "NTEXT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "marketerId"
+          ],
+          "refTable": "ZT_Marketers",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceSaleId"
+          ],
+          "refTable": "ZT_DeviceSales",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "statusId"
+          ],
+          "refTable": "ZT_CommissionSettlementStatuses",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZT_CommissionTypes": {
+      "className": "ZTCommissionType",
+      "tableName": "ZT_CommissionTypes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
+    },
     "ZT_Companies": {
       "className": "ZTCompany",
       "tableName": "ZT_Companies",
@@ -4998,6 +5212,414 @@
       "indexes": [],
       "foreignKeys": []
     },
+    "ZT_DeviceSalePrices": {
+      "className": "ZTDeviceSalePrice",
+      "tableName": "ZT_DeviceSalePrices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "deviceTypeId": {
+          "name": "deviceTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceTypes",
+            "key": "id"
+          }
+        },
+        "companyId": {
+          "name": "companyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Companies",
+            "key": "id"
+          }
+        },
+        "contractPeriodId": {
+          "name": "contractPeriodId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_ContractPeriods",
+            "key": "id"
+          }
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "salePrice": {
+          "name": "salePrice",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "salePriceIRR": {
+          "name": "salePriceIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "validFrom": {
+          "name": "validFrom",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "validTo": {
+          "name": "validTo",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "deviceTypeId"
+          ],
+          "refTable": "ZT_DeviceTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "companyId"
+          ],
+          "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "contractPeriodId"
+          ],
+          "refTable": "ZT_ContractPeriods",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZT_DeviceSales": {
+      "className": "ZTDeviceSale",
+      "tableName": "ZT_DeviceSales",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "deviceId": {
+          "name": "deviceId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Devices",
+            "key": "id"
+          }
+        },
+        "marketerId": {
+          "name": "marketerId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Marketers",
+            "key": "id"
+          }
+        },
+        "customerCompanyId": {
+          "name": "customerCompanyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Companies",
+            "key": "id"
+          }
+        },
+        "saleDate": {
+          "name": "saleDate",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "salePrice": {
+          "name": "salePrice",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "saleCurrencyId": {
+          "name": "saleCurrencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "salePriceIRR": {
+          "name": "salePriceIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "purchasePriceIRR": {
+          "name": "purchasePriceIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "grossProfitIRR": {
+          "name": "grossProfitIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "commissionTypeId": {
+          "name": "commissionTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_CommissionTypes",
+            "key": "id"
+          }
+        },
+        "commissionValue": {
+          "name": "commissionValue",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "commissionAmountIRR": {
+          "name": "commissionAmountIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "netProfitIRR": {
+          "name": "netProfitIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "notes": {
+          "name": "notes",
+          "type": "NTEXT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "createdUserId": {
+          "name": "createdUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "deviceId"
+          ],
+          "refTable": "ZT_Devices",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "marketerId"
+          ],
+          "refTable": "ZT_Marketers",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "customerCompanyId"
+          ],
+          "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "saleCurrencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "commissionTypeId"
+          ],
+          "refTable": "ZT_CommissionTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "createdUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
     "ZT_DeviceStatuses": {
       "className": "ZTDeviceStatus",
       "tableName": "ZT_DeviceStatuses",
@@ -5292,18 +5914,22 @@
           "unique": false,
           "comment": null
         },
-        "sellingPrice": {
-          "name": "sellingPrice",
-          "type": "DECIMAL(18, 2)",
+        "inventoryStatusId": {
+          "name": "inventoryStatusId",
+          "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": true,
+          "allowNull": false,
           "defaultValue": null,
           "unique": false,
-          "comment": null
+          "comment": null,
+          "references": {
+            "model": "ZT_InventoryStatuses",
+            "key": "id"
+          }
         },
-        "sellingCurrencyId": {
-          "name": "sellingCurrencyId",
+        "saleId": {
+          "name": "saleId",
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
@@ -5312,19 +5938,9 @@
           "unique": false,
           "comment": null,
           "references": {
-            "model": "ZT_Currencies",
+            "model": "ZT_DeviceSales",
             "key": "id"
           }
-        },
-        "sellingPriceIRR": {
-          "name": "sellingPriceIRR",
-          "type": "DECIMAL(18, 2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
         },
         "purchaseDate": {
           "name": "purchaseDate",
@@ -5478,9 +6094,18 @@
         },
         {
           "columns": [
-            "sellingCurrencyId"
+            "inventoryStatusId"
           ],
-          "refTable": "ZT_Currencies",
+          "refTable": "ZT_InventoryStatuses",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "saleId"
+          ],
+          "refTable": "ZT_DeviceSales",
           "refColumns": [
             "id"
           ]
@@ -5513,6 +6138,54 @@
           ]
         }
       ]
+    },
+    "ZT_InventoryStatuses": {
+      "className": "ZTInventoryStatus",
+      "tableName": "ZT_InventoryStatuses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "name": {
+          "name": "name",
+          "type": "NVARCHAR(100)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": []
     },
     "ZT_Manufacturers": {
       "className": "ZTManufacturer",
@@ -5591,6 +6264,184 @@
       },
       "indexes": [],
       "foreignKeys": []
+    },
+    "ZT_Marketers": {
+      "className": "ZTMarketer",
+      "tableName": "ZT_Marketers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "fullName": {
+          "name": "fullName",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "mobile": {
+          "name": "mobile",
+          "type": "NVARCHAR(20)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "email": {
+          "name": "email",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nationalCode": {
+          "name": "nationalCode",
+          "type": "NVARCHAR(20)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "defaultCommissionTypeId": {
+          "name": "defaultCommissionTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_CommissionTypes",
+            "key": "id"
+          }
+        },
+        "defaultCommissionValue": {
+          "name": "defaultCommissionValue",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "0",
+          "unique": false,
+          "comment": null
+        },
+        "createdUserId": {
+          "name": "createdUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "updatedUserId": {
+          "name": "updatedUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "defaultCommissionTypeId"
+          ],
+          "refTable": "ZT_CommissionTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "createdUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "updatedUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
     }
   }
 }

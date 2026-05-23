@@ -19,6 +19,13 @@ import { ContractPeriodModule } from './admin/contract-period/contract-period.mo
 import { ContractPeriodDevicePriceModule } from './admin/contract-period-device-price/contract-period-device-price.module';
 import { DeviceModule } from './admin/device/device.module';
 import { ManufacturerModule } from './admin/manufacturer/manufacturer.module';
+import { MarketerModule } from './admin/marketer/marketer.module';
+import { DeviceSalePriceModule } from './admin/device-sale-price/device-sale-price.module';
+import { DeviceSaleModule } from './admin/device-sale/device-sale.module';
+import { CommissionSettlementModule } from './admin/commission-settlement/commission-settlement.module';
+import { CommissionTypeModule } from './admin/commission-type/commission-type.module';
+import { CommissionSettlementStatusModule } from './admin/commission-settlement-status/commission-settlement-status.module';
+import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
 
 @Module({
   imports: [
@@ -36,6 +43,13 @@ import { ManufacturerModule } from './admin/manufacturer/manufacturer.module';
     ContractPeriodDevicePriceModule,
     DeviceModule,
     ManufacturerModule,
+    MarketerModule,
+    DeviceSalePriceModule,
+    DeviceSaleModule,
+    CommissionSettlementModule,
+    CommissionTypeModule,
+    CommissionSettlementStatusModule,
+    InventoryStatusModule,
   ],
 })
 export class ZootagModule implements NestModule {

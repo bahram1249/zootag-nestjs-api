@@ -1268,6 +1268,22 @@ Permission symbols follow the pattern: `zootag.admin.<feature>.<action>`.
 > For the complete step-by-step workflow to create or edit admin modules,
 > see [CREATE_EDIT_MODULE_FLOW.md](/CREATE_EDIT_MODULE_FLOW.md) at the project root.
 
+#### New Financial Modules (added May 2026)
+
+| Module | Path | Type | Key Behavior |
+|--------|------|------|-------------|
+| Marketers | `/api/zootag/admin/marketers` | Simple CRUD | Soft delete, default commission per marketer |
+| Device Sale Prices | `/api/zootag/admin/deviceSalePrices` | Create-Only | Append-only price history, IRR auto-calculation, no update/delete |
+| Device Sales | `/api/zootag/admin/deviceSales` | Create-Only | Transactional snapshot (gross profit, commission, net profit frozen), marks device as sold |
+| Commission Settlements | `/api/zootag/admin/commissionSettlements` | Full CRUD | Track marketer payment settlements (pending/paid/cancelled) |
+
+**Financial invariants:**
+- `ZT_Device.inventoryStatus` = ENUM (`available`, `reserved`, `sold`, `returned`, `damaged`), default `available`
+- `ZT_Device.saleId` = nullable FK to `ZT_DeviceSales`, set when device is sold
+- `ZT_Device` no longer stores `sellingPrice`, `sellingCurrencyId`, `sellingPriceIRR` — selling prices moved to `ZT_DeviceSalePrices`
+- Device purchase cost (`purchasePrice`, `purchasePriceIRR`) remains frozen on device
+- All financial values on `ZT_DeviceSales` are snapshots — never recalculated
+
 #### `client/`
 For authenticated users. Uses `JwtGuard` but typically without `PermissionGuard` — access is controlled by ownership or data-level checks:
 
