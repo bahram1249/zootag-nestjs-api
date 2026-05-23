@@ -24,7 +24,9 @@ export class CurrencyHistoryService {
   ) {}
 
   async findAll(filter: CurrencyHistoryFilterDto) {
-    let qb = new QueryOptionsBuilder().filter({});
+    let qb = new QueryOptionsBuilder()
+      .filter({})
+      .filterIf(!!filter.currencyId, { currencyId: filter.currencyId });
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes([
@@ -35,6 +37,12 @@ export class CurrencyHistoryService {
         'createdAt',
         'updatedAt',
       ])
+      .include([{
+        model: ZTCurrency,
+        as: 'currency',
+        attributes: ['id', 'code', 'name', 'symbol'],
+        required: false,
+      }])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
