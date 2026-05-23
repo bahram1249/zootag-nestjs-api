@@ -63,6 +63,29 @@ export class ContractPeriodDevicePriceController {
   }
 
   @ApiOperation({
+    description:
+      'show available contract period device prices with remaining capacity',
+  })
+  @ApiJsonResponse({
+    type: ContractPeriodDevicePriceResponseDto,
+    isArray: true,
+  })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.contractperioddeviceprices.getall',
+  })
+  @Get('/available')
+  @ApiQuery({
+    name: 'filter',
+    type: ContractPeriodDevicePriceFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async findAvailable(@Query() filter: ContractPeriodDevicePriceFilterDto) {
+    return await this.service.findAvailable(filter);
+  }
+
+  @ApiOperation({
     description: 'show contract period device price by given id',
   })
   @ApiJsonResponse({ type: ContractPeriodDevicePriceResponseDto })

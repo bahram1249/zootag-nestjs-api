@@ -12,6 +12,7 @@ import {
   ZTDevice,
   ZTCompany,
   ZTDeviceType,
+  ZTContract,
   ZTContractPeriod,
   ZTContractPeriodDevicePrice,
   ZTCurrency,
@@ -254,6 +255,28 @@ export class DeviceService {
       new QueryOptionsBuilder()
         .filter({ id: dto.contractPeriodDevicePriceId })
         .filter({ isDeleted: 0 })
+        .include([
+          {
+            model: ZTContractPeriod,
+            as: 'contractPeriod',
+            required: true,
+            include: [
+              {
+                model: ZTContract,
+                as: 'contract',
+                required: true,
+                include: [
+                  {
+                    model: ZTCompany,
+                    as: 'company',
+                    required: true,
+                    attributes: ['id'],
+                  },
+                ],
+              },
+            ],
+          },
+        ])
         .build(),
     );
     if (!priceRecord)
@@ -261,10 +284,6 @@ export class DeviceService {
         this.localizationService.translate(
           'zootag.contract_period_device_price_not_found',
         ),
-      );
-    if (Number(priceRecord.deviceTypeId) !== Number(dto.deviceTypeId))
-      throw new BadRequestException(
-        this.localizationService.translate('zootag.device_type_mismatch'),
       );
     if (priceRecord.maximumQuantity > 0) {
       const deviceCount = await this.repository.count(
@@ -283,6 +302,8 @@ export class DeviceService {
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     const item = await this.repository.create({
       ...mapped,
+      companyId: BigInt(priceRecord.contractPeriod.contract.companyId),
+      deviceTypeId: BigInt(priceRecord.deviceTypeId),
       contractPeriodId: priceRecord.contractPeriodId,
       purchasePrice: priceRecord.purchasePrice,
       currencyId: priceRecord.currencyId,
@@ -315,6 +336,7 @@ export class DeviceService {
     const mapped = this.mapper.map(dto, DeviceDto, ZTDevice).toJSON();
     await item.update({
       ...mapped,
+      companyId: item.companyId,
       contractPeriodDevicePriceId: item.contractPeriodDevicePriceId,
       contractPeriodId: item.contractPeriodId,
       deviceTypeId: item.deviceTypeId,

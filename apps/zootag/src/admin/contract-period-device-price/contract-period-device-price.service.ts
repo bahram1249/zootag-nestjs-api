@@ -6,6 +6,8 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import {
   ZTContractPeriodDevicePrice,
   ZTContractPeriod,
+  ZTContract,
+  ZTCompany,
   ZTDeviceType,
   ZTCurrency,
 } from '@rahino/localdatabase/models';
@@ -102,6 +104,77 @@ export class ContractPeriodDevicePriceService {
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
     const result = await this.repository.findAll(qb.build());
+    return { result, total };
+  }
+
+  async findAvailable(filter: ContractPeriodDevicePriceFilterDto) {
+    const availabilityFilter = Sequelize.literal(`(
+      ZTContractPeriodDevicePrice.maximumQuantity = 0
+      OR ZTContractPeriodDevicePrice.maximumQuantity > (
+        SELECT COUNT(*) FROM ZT_Devices
+        WHERE ZT_Devices.contractPeriodDevicePriceId = ZTContractPeriodDevicePrice.id
+        AND ZT_Devices.isDeleted = 0
+      )
+    )`);
+
+    let qb = new QueryOptionsBuilder()
+      .filter({ isDeleted: 0 })
+      .filter(availabilityFilter)
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        [Op.or]: [
+          { contractPeriodId: { [Op.like]: filter.search } },
+          { deviceTypeId: { [Op.like]: filter.search } },
+        ],
+      });
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .include([
+        {
+          model: ZTContractPeriod,
+          as: 'contractPeriod',
+          required: true,
+          attributes: ['id', 'periodName'],
+          include: [
+            {
+              model: ZTContract,
+              as: 'contract',
+              required: true,
+              attributes: ['id'],
+              include: [
+                {
+                  model: ZTCompany,
+                  as: 'company',
+                  required: true,
+                  attributes: ['id', 'companyName'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: ZTDeviceType,
+          as: 'deviceType',
+          required: true,
+          attributes: ['id', 'typeName', 'modelCode'],
+        },
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = (await this.repository.findAll(qb.build())).map((r) => {
+      const json = r.toJSON();
+      return {
+        ...json,
+        displayName: [
+          json.contractPeriod?.periodName,
+          json.deviceType?.typeName,
+          json.deviceType?.modelCode ? `(${json.deviceType.modelCode})` : null,
+          json.contractPeriod?.contract?.company?.companyName,
+        ]
+          .filter(Boolean)
+          .join(' - '),
+      };
+    });
     return { result, total };
   }
 

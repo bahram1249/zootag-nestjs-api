@@ -38,20 +38,6 @@ export class DeviceDto {
   @Type(() => Number)
   @IsNotEmpty()
   @IsNumber()
-  @ApiProperty({ description: 'company id' })
-  companyId: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsNumber()
-  @ApiProperty({ description: 'device type id' })
-  deviceTypeId: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({ description: 'contract period device price id' })
   contractPeriodDevicePriceId: number;
 
