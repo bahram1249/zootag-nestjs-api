@@ -51,13 +51,6 @@ export class ContractDto {
   @IsInt()
   @Type(() => Number)
   @IsNotEmpty()
-  @ApiProperty({ description: 'currency id' })
-  currencyId: number;
-
-  @AutoMap()
-  @IsInt()
-  @Type(() => Number)
-  @IsNotEmpty()
   @ApiProperty({ description: 'contract status id' })
   contractStatusId: number;
 

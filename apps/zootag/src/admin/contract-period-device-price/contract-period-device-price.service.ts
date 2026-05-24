@@ -60,9 +60,6 @@ export class ContractPeriodDevicePriceService {
         'purchasePriceIRR',
         'minimumQuantity',
         'maximumQuantity',
-        'sellingPrice',
-        'sellingCurrencyId',
-        'sellingPriceIRR',
         'isActive',
       ])
       .include([
@@ -81,12 +78,6 @@ export class ContractPeriodDevicePriceService {
         {
           model: ZTCurrency,
           as: 'currency',
-          attributes: ['id', 'code', 'name', 'symbol'],
-          required: false,
-        },
-        {
-          model: ZTCurrency,
-          as: 'sellingCurrency',
           attributes: ['id', 'code', 'name', 'symbol'],
           required: false,
         },
@@ -199,9 +190,6 @@ export class ContractPeriodDevicePriceService {
           'purchasePriceIRR',
           'minimumQuantity',
           'maximumQuantity',
-          'sellingPrice',
-          'sellingCurrencyId',
-          'sellingPriceIRR',
           'isActive',
         ])
         .include([
@@ -220,12 +208,6 @@ export class ContractPeriodDevicePriceService {
           {
             model: ZTCurrency,
             as: 'currency',
-            attributes: ['id', 'code', 'name', 'symbol'],
-            required: false,
-          },
-          {
-            model: ZTCurrency,
-            as: 'sellingCurrency',
             attributes: ['id', 'code', 'name', 'symbol'],
             required: false,
           },
@@ -257,8 +239,6 @@ export class ContractPeriodDevicePriceService {
    * Business rules:
    * - If purchasePrice + currencyId are provided but purchasePriceIRR is null,
    *   purchasePriceIRR is auto-calculated via currency exchange rate
-   * - If sellingPrice + sellingCurrencyId are provided but sellingPriceIRR is null,
-   *   sellingPriceIRR is auto-calculated similarly
    * - Sets audit fields from authenticated user
    */
   async create(dto: ContractPeriodDevicePriceDto, user: User) {
@@ -273,24 +253,12 @@ export class ContractPeriodDevicePriceService {
         BigInt(dto.currencyId),
       );
     }
-    let sellingPriceIRR = dto.sellingPriceIRR;
-    if (
-      dto.sellingPrice != null &&
-      dto.sellingCurrencyId != null &&
-      sellingPriceIRR == null
-    ) {
-      sellingPriceIRR = await this.currencyCalculationService.convertToIRR(
-        dto.sellingPrice,
-        BigInt(dto.sellingCurrencyId),
-      );
-    }
     const mapped = this.mapper
       .map(dto, ContractPeriodDevicePriceDto, ZTContractPeriodDevicePrice)
       .toJSON();
     const item = await this.repository.create({
       ...mapped,
       purchasePriceIRR: purchasePriceIRR ?? 0,
-      sellingPriceIRR: sellingPriceIRR ?? null,
       createdUserId: BigInt(user.id),
       updatedUserId: BigInt(user.id),
     });
@@ -300,8 +268,8 @@ export class ContractPeriodDevicePriceService {
   /**
    * Business rules:
    * - Only non-deleted price records can be updated
-   * - purchasePriceIRR and sellingPriceIRR are FROZEN after creation — once set,
-   *   they cannot be recalculated via update
+   * - purchasePriceIRR is FROZEN after creation — once set,
+   *   it cannot be recalculated via update
    * - Sets updatedUserId from authenticated user
    */
   async update(id: number, dto: ContractPeriodDevicePriceDto, user: User) {
@@ -320,7 +288,6 @@ export class ContractPeriodDevicePriceService {
     await item.update({
       ...mapped,
       purchasePriceIRR: item.purchasePriceIRR,
-      sellingPriceIRR: item.sellingPriceIRR,
       updatedUserId: BigInt(user.id),
     });
     return { result: item };

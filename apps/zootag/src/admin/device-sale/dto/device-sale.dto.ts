@@ -73,4 +73,10 @@ export class DeviceSaleDto {
   @IsString()
   @ApiProperty({ required: false, description: 'notes' })
   notes?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @Type(() => Number)
+  @ApiProperty({ required: false, description: 'device sale price id' })
+  deviceSalePriceId?: number;
 }

@@ -7,17 +7,6 @@ class CompanyBriefDto {
   companyName: string;
 }
 
-class CurrencyBriefDto {
-  @ApiProperty({ example: 1 })
-  id: number;
-  @ApiProperty({ example: 'USD' })
-  code: string;
-  @ApiProperty({ example: 'US Dollar' })
-  name: string;
-  @ApiProperty({ example: '$' })
-  symbol: string;
-}
-
 class ContractStatusBriefDto {
   @ApiProperty({ example: 1 })
   id: number;
@@ -62,16 +51,6 @@ export class ContractResponseDto {
 
   @ApiProperty({ example: '2026-12-31T00:00:00.000Z', description: 'End date' })
   endDate: Date;
-
-  @ApiProperty({ example: 1, description: 'Currency ID' })
-  currencyId: number;
-
-  @ApiProperty({
-    type: () => CurrencyBriefDto,
-    description: 'Currency',
-    required: false,
-  })
-  currency?: CurrencyBriefDto;
 
   @ApiProperty({ example: 1, description: 'Contract status ID' })
   contractStatusId: number;

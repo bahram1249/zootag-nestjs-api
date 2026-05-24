@@ -8,7 +8,6 @@ import {
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ZTCompany } from './zt-company.entity';
-import { ZTCurrency } from './zt-currency.entity';
 import { ZTContractStatus } from './zt-contract-status.entity';
 import { User } from '@rahino/database';
 
@@ -40,14 +39,6 @@ export class ZTContract extends Model<ZTContract> {
   @AutoMap()
   @Column({ type: DataType.DATE, allowNull: false })
   endDate: Date;
-
-  @AutoMap()
-  @ForeignKey(() => ZTCurrency)
-  @Column({ type: DataType.BIGINT, allowNull: false })
-  currencyId: bigint;
-
-  @BelongsTo(() => ZTCurrency, { foreignKey: 'currencyId', as: 'currency' })
-  currency: ZTCurrency;
 
   @AutoMap()
   @ForeignKey(() => ZTContractStatus)

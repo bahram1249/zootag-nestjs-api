@@ -143,6 +143,13 @@ export class DeviceSaleResponseDto {
   notes?: string;
 
   @ApiProperty({
+    example: 1,
+    description: 'Device sale price ID',
+    required: false,
+  })
+  deviceSalePriceId?: number;
+
+  @ApiProperty({
     type: () => UserBriefDto,
     description: 'Created user',
     required: false,

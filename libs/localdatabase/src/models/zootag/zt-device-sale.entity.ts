@@ -12,6 +12,7 @@ import { ZTMarketer } from './zt-marketer.entity';
 import { ZTCompany } from './zt-company.entity';
 import { ZTCurrency } from './zt-currency.entity';
 import { ZTCommissionType } from './zt-commission-type.entity';
+import { ZTDeviceSalePrice } from './zt-device-sale-price.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ZT_DeviceSales' })
@@ -103,6 +104,17 @@ export class ZTDeviceSale extends Model<ZTDeviceSale> {
   @AutoMap()
   @Column({ type: DataType.TEXT, allowNull: true })
   notes: string;
+
+  @AutoMap()
+  @ForeignKey(() => ZTDeviceSalePrice)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  deviceSalePriceId: bigint;
+
+  @BelongsTo(() => ZTDeviceSalePrice, {
+    foreignKey: 'deviceSalePriceId',
+    as: 'deviceSalePrice',
+  })
+  deviceSalePrice: ZTDeviceSalePrice;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT, allowNull: false })

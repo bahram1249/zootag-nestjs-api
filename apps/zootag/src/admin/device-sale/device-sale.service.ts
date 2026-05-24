@@ -68,6 +68,7 @@ export class DeviceSaleService {
         'commissionAmountIRR',
         'netProfitIRR',
         'notes',
+        'deviceSalePriceId',
       ])
       .include([
         {
@@ -134,6 +135,7 @@ export class DeviceSaleService {
           'commissionAmountIRR',
           'netProfitIRR',
           'notes',
+          'deviceSalePriceId',
         ])
         .include([
           {
@@ -260,6 +262,9 @@ export class DeviceSaleService {
           netProfitIRR,
           notes: dto.notes || null,
           createdUserId: BigInt(user.id),
+          deviceSalePriceId: dto.deviceSalePriceId
+            ? BigInt(dto.deviceSalePriceId)
+            : null,
         },
         { transaction },
       );

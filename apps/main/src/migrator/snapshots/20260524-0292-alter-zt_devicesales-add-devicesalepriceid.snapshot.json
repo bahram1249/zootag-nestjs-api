@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-24T03:25:38.969Z",
+  "generatedAt": "2026-05-24T03:19:08.085Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -4797,6 +4797,20 @@
           "unique": false,
           "comment": null
         },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
         "contractStatusId": {
           "name": "contractStatusId",
           "type": "BIGINT",
@@ -4897,6 +4911,15 @@
             "companyId"
           ],
           "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
           "refColumns": [
             "id"
           ]
@@ -5481,20 +5504,6 @@
           "unique": false,
           "comment": null
         },
-        "deviceSalePriceId": {
-          "name": "deviceSalePriceId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_DeviceSalePrices",
-            "key": "id"
-          }
-        },
         "createdUserId": {
           "name": "createdUserId",
           "type": "BIGINT",
@@ -5506,6 +5515,20 @@
           "comment": null,
           "references": {
             "model": "Users",
+            "key": "id"
+          }
+        },
+        "deviceSalePriceId": {
+          "name": "deviceSalePriceId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceSalePrices",
             "key": "id"
           }
         }
@@ -5553,15 +5576,6 @@
             "commissionTypeId"
           ],
           "refTable": "ZT_CommissionTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "deviceSalePriceId"
-          ],
-          "refTable": "ZT_DeviceSalePrices",
           "refColumns": [
             "id"
           ]

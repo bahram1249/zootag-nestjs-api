@@ -146,6 +146,14 @@ import * as m0278 from './20260523-0278-alter-zt_devices-add-saleid';
 import * as m0279 from './20260523-0279-alter-zt_devices-drop-sellingprice';
 import * as m0280 from './20260523-0280-alter-zt_devices-drop-sellingcurrencyid';
 import * as m0281 from './20260523-0281-alter-zt_devices-drop-sellingpriceirr';
+
+import * as m0289 from './20260524-0289-alter-zt_contractperioddeviceprices-drop-sellingprice';
+import * as m0290 from './20260524-0290-alter-zt_contractperioddeviceprices-drop-sellingcurrencyid';
+import * as m0291 from './20260524-0291-alter-zt_contractperioddeviceprices-drop-sellingpriceirr';
+
+import * as m0292 from './20260524-0292-alter-zt_devicesales-add-devicesalepriceid';
+
+import * as m0293 from './20260524-0293-alter-zt_contracts-drop-currencyid';
 interface Condition {
   key: string;
   values: string[];
@@ -340,4 +348,12 @@ export const migrations: MigrationDefinition[] = [
 
   cond(m0278, 'SITE_NAME', 'Zootag'),
   cond(m0280, 'SITE_NAME', 'Zootag'),
+
+  cond(m0289, 'SITE_NAME', 'Zootag'),
+  cond(m0290, 'SITE_NAME', 'Zootag'),
+  cond(m0291, 'SITE_NAME', 'Zootag'),
+
+  cond(m0292, 'SITE_NAME', 'Zootag'),
+
+  cond(m0293, 'SITE_NAME', 'Zootag'),
 ];

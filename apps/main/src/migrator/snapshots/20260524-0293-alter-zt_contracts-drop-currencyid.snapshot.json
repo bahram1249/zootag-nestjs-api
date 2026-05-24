@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-24T03:25:38.969Z",
+  "generatedAt": "2026-05-24T03:25:38.967Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -4897,6 +4897,15 @@
             "companyId"
           ],
           "refTable": "ZT_Companies",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
           "refColumns": [
             "id"
           ]

@@ -60,27 +60,6 @@ export class ContractPeriodDevicePriceDto {
   maximumQuantity: number;
 
   @AutoMap()
-  @Type(() => Number)
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty({ required: false, description: 'selling price' })
-  sellingPrice?: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsOptional()
-  @IsInt()
-  @ApiProperty({ required: false, description: 'selling currency id' })
-  sellingCurrencyId?: number;
-
-  @AutoMap()
-  @Type(() => Number)
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty({ required: false, description: 'selling price IRR' })
-  sellingPriceIRR?: number;
-
-  @AutoMap()
   @IsOptional()
   @IsString()
   @ApiProperty({ required: false, description: 'notes' })

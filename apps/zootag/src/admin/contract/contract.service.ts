@@ -7,7 +7,6 @@ import { LocalizationMapperService } from '@rahino/zootag/shared/localization-ma
 import {
   ZTContract,
   ZTCompany,
-  ZTCurrency,
   ZTContractStatus,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
@@ -51,7 +50,6 @@ export class ContractService {
         'title',
         'startDate',
         'endDate',
-        'currencyId',
         'contractStatusId',
         'notes',
         'isActive',
@@ -61,12 +59,6 @@ export class ContractService {
           model: ZTCompany,
           as: 'company',
           attributes: ['id', 'companyName'],
-          required: false,
-        },
-        {
-          model: ZTCurrency,
-          as: 'currency',
-          attributes: ['id', 'code', 'name', 'symbol'],
           required: false,
         },
         {
@@ -115,8 +107,7 @@ export class ContractService {
           'title',
           'startDate',
           'endDate',
-          'currencyId',
-          'contractStatusId',
+        'contractStatusId',
           'notes',
           'isActive',
         ])
@@ -125,12 +116,6 @@ export class ContractService {
             model: ZTCompany,
             as: 'company',
             attributes: ['id', 'companyName'],
-            required: false,
-          },
-          {
-            model: ZTCurrency,
-            as: 'currency',
-            attributes: ['id', 'code', 'name', 'symbol'],
             required: false,
           },
           {
