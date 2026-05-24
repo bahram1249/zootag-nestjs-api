@@ -54,12 +54,19 @@ export class DeviceSaleService {
   ) {}
 
   async findAll(filter: DeviceSaleFilterDto) {
-    let qb = new QueryOptionsBuilder().filterIf(
-      !!filter.search && filter.search !== '%%',
-      {
+    let qb = new QueryOptionsBuilder()
+      .filterIf(!!filter.search && filter.search !== '%%', {
         [Op.or]: [],
-      },
-    );
+      })
+      .filterIf(!!filter.startDate, {
+        saleDate: { [Op.gte]: new Date(filter.startDate) },
+      })
+      .filterIf(!!filter.endDate, {
+        saleDate: { [Op.lte]: new Date(filter.endDate) },
+      })
+      .filterIf(!!filter.marketerId, {
+        marketerId: filter.marketerId,
+      });
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes([
