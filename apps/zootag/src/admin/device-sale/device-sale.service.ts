@@ -12,6 +12,7 @@ import {
   ZTDevice,
   ZTMarketer,
   ZTMarketerCommission,
+  ZTDeviceSalePrice,
   ZTCompany,
   ZTCurrency,
   ZTCommissionType,
@@ -20,7 +21,11 @@ import {
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import { CommissionType, InventoryStatus } from '@rahino/zootag/shared/enums';
-import { DeviceSaleFilterDto, DeviceSaleDto } from './dto';
+import {
+  DeviceSaleFilterDto,
+  DeviceSaleDto,
+  DeviceSalePreviewQueryDto,
+} from './dto';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 
@@ -35,6 +40,8 @@ export class DeviceSaleService {
     private readonly marketerRepository: typeof ZTMarketer,
     @InjectModel(ZTMarketerCommission)
     private readonly marketerCommissionRepository: typeof ZTMarketerCommission,
+    @InjectModel(ZTDeviceSalePrice)
+    private readonly deviceSalePriceRepository: typeof ZTDeviceSalePrice,
     @InjectModel(ZTCommissionType)
     private readonly commissionTypeRepository: typeof ZTCommissionType,
     @InjectModel(ZTInventoryStatus)
@@ -187,6 +194,131 @@ export class DeviceSaleService {
     return { result: item };
   }
 
+  async preview(dto: DeviceSalePreviewQueryDto) {
+    const calc = await this.calculatePreview(dto);
+
+    const commissionType = await this.commissionTypeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: calc.commissionTypeId })
+        .attributes(['id', 'name'])
+        .build(),
+    );
+
+    return {
+      result: {
+        salePrice: calc.salePrice,
+        saleCurrencyId: calc.saleCurrencyId,
+        salePriceIRR: calc.salePriceIRR,
+        purchasePriceIRR: calc.purchasePriceIRR,
+        grossProfitIRR: calc.grossProfitIRR,
+        commissionTypeId: calc.commissionTypeId,
+        commissionType: commissionType
+          ? { id: commissionType.id, name: commissionType.name }
+          : undefined,
+        commissionValue: calc.commissionValue,
+        commissionAmountIRR: calc.commissionAmountIRR,
+        netProfitIRR: calc.netProfitIRR,
+      },
+    };
+  }
+
+  private async calculatePreview(dto: {
+    deviceId: number;
+    deviceSalePriceId: number;
+    marketerId: number;
+    saleDate: string;
+  }) {
+    const device = await this.deviceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.deviceId })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!device)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.device_not_found'),
+      );
+
+    const marketer = await this.marketerRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.marketerId }).build(),
+    );
+    if (!marketer)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.marketer_not_found'),
+      );
+
+    const deviceSalePrice = await this.deviceSalePriceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.deviceSalePriceId })
+        .build(),
+    );
+    if (!deviceSalePrice)
+      throw new NotFoundException(
+        this.localizationService.translate(
+          'zootag.device_sale_price_not_found',
+        ),
+      );
+    if (Number(deviceSalePrice.deviceTypeId) !== Number(device.deviceTypeId))
+      throw new BadRequestException(
+        this.localizationService.translate('zootag.device_type_mismatch'),
+      );
+
+    const salePriceIRR = await this.currencyCalculationService.convertToIRR(
+      Number(deviceSalePrice.salePrice),
+      BigInt(deviceSalePrice.currencyId),
+    );
+    const purchasePriceIRR = Number(device.purchasePriceIRR);
+    const grossProfitIRR = salePriceIRR - purchasePriceIRR;
+
+    const matchedCommission =
+      await this.marketerCommissionRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ marketerId: marketer.id })
+          .filter({ isActive: true })
+          .filter({
+            startDate: { [Op.lte]: new Date(dto.saleDate) },
+          })
+          .filter({
+            [Op.or]: [
+              { endDate: null },
+              { endDate: { [Op.gte]: new Date(dto.saleDate) } },
+            ],
+          })
+          .order({ orderBy: 'priority', sortOrder: 'ASC' })
+          .build(),
+      );
+
+    const commissionTypeId =
+      Number(matchedCommission?.commissionTypeId) ||
+      Number(marketer.defaultCommissionTypeId) ||
+      CommissionType.Percent;
+    const commissionValue =
+      matchedCommission?.commissionValue != null
+        ? Number(matchedCommission.commissionValue)
+        : Number(marketer.defaultCommissionValue) || 0;
+
+    let commissionAmountIRR: number;
+    if (commissionTypeId === CommissionType.Percent) {
+      commissionAmountIRR = (grossProfitIRR * commissionValue) / 100;
+    } else {
+      commissionAmountIRR = commissionValue;
+    }
+
+    const netProfitIRR = grossProfitIRR - commissionAmountIRR;
+
+    return {
+      salePrice: Number(deviceSalePrice.salePrice),
+      saleCurrencyId: Number(deviceSalePrice.currencyId),
+      salePriceIRR,
+      purchasePriceIRR,
+      grossProfitIRR,
+      commissionTypeId,
+      commissionValue,
+      commissionAmountIRR,
+      netProfitIRR,
+    };
+  }
+
   /**
    * Business rules:
    * - Validates device is available (not sold)
@@ -211,58 +343,7 @@ export class DeviceSaleService {
         this.localizationService.translate('zootag.device_already_sold'),
       );
 
-    const marketer = await this.marketerRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.marketerId }).build(),
-    );
-    if (!marketer)
-      throw new NotFoundException(
-        this.localizationService.translate('zootag.marketer_not_found'),
-      );
-
-    const salePriceIRR = await this.currencyCalculationService.convertToIRR(
-      dto.salePrice,
-      BigInt(dto.saleCurrencyId),
-    );
-    const purchasePriceIRR = Number(device.purchasePriceIRR);
-    const grossProfitIRR = salePriceIRR - purchasePriceIRR;
-
-    const matchedCommission = await this.marketerCommissionRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ marketerId: marketer.id })
-        .filter({ isActive: true })
-        .filter({
-          startDate: { [Op.lte]: new Date(dto.saleDate) },
-        })
-        .filter({
-          [Op.or]: [
-            { endDate: null },
-            { endDate: { [Op.gte]: new Date(dto.saleDate) } },
-          ],
-        })
-        .order({ orderBy: 'priority', sortOrder: 'ASC' })
-        .build(),
-    );
-
-    const commissionTypeId =
-      dto.commissionTypeId ||
-      Number(matchedCommission?.commissionTypeId) ||
-      Number(marketer.defaultCommissionTypeId) ||
-      CommissionType.Percent;
-    const commissionValue =
-      dto.commissionValue != null
-        ? dto.commissionValue
-        : matchedCommission?.commissionValue != null
-          ? Number(matchedCommission.commissionValue)
-          : Number(marketer.defaultCommissionValue) || 0;
-
-    let commissionAmountIRR: number;
-    if (commissionTypeId === CommissionType.Percent) {
-      commissionAmountIRR = (grossProfitIRR * commissionValue) / 100;
-    } else {
-      commissionAmountIRR = commissionValue;
-    }
-
-    const netProfitIRR = grossProfitIRR - commissionAmountIRR;
+    const calc = await this.calculatePreview(dto);
 
     const transaction = await this.sequelize.transaction();
     try {
@@ -274,20 +355,18 @@ export class DeviceSaleService {
             ? BigInt(dto.customerCompanyId)
             : null,
           saleDate: new Date(dto.saleDate),
-          salePrice: dto.salePrice,
-          saleCurrencyId: BigInt(dto.saleCurrencyId),
-          salePriceIRR,
-          purchasePriceIRR,
-          grossProfitIRR,
-          commissionTypeId: BigInt(commissionTypeId),
-          commissionValue,
-          commissionAmountIRR,
-          netProfitIRR,
+          salePrice: calc.salePrice,
+          saleCurrencyId: BigInt(calc.saleCurrencyId),
+          salePriceIRR: calc.salePriceIRR,
+          purchasePriceIRR: calc.purchasePriceIRR,
+          grossProfitIRR: calc.grossProfitIRR,
+          commissionTypeId: BigInt(calc.commissionTypeId),
+          commissionValue: calc.commissionValue,
+          commissionAmountIRR: calc.commissionAmountIRR,
+          netProfitIRR: calc.netProfitIRR,
           notes: dto.notes || null,
           createdUserId: BigInt(user.id),
-          deviceSalePriceId: dto.deviceSalePriceId
-            ? BigInt(dto.deviceSalePriceId)
-            : null,
+          deviceSalePriceId: BigInt(dto.deviceSalePriceId),
         },
         { transaction },
       );

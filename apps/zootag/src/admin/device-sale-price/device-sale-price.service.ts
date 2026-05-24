@@ -28,7 +28,9 @@ export class DeviceSalePriceService {
   ) {}
 
   async findAll(filter: DeviceSalePriceFilterDto) {
-    let qb = new QueryOptionsBuilder().filterIf(
+    let qb = new QueryOptionsBuilder()
+      .filterIf(!!filter.deviceTypeId, { deviceTypeId: filter.deviceTypeId })
+      .filterIf(
       !!filter.search && filter.search !== '%%',
       {
         [Op.or]: [],

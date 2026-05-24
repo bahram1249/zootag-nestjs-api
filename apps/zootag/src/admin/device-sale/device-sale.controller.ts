@@ -22,7 +22,12 @@ import {
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { DeviceSaleService } from './device-sale.service';
-import { DeviceSaleDto, DeviceSaleFilterDto } from './dto';
+import {
+  DeviceSaleDto,
+  DeviceSaleFilterDto,
+  DeviceSalePreviewQueryDto,
+  DeviceSalePreviewResponseDto,
+} from './dto';
 import { ApiJsonResponse } from '@rahino/response';
 import { DeviceSaleResponseDto } from './dto';
 
@@ -47,6 +52,17 @@ export class DeviceSaleController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: DeviceSaleFilterDto) {
     return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({
+    description: 'preview commission calculation before creating a sale',
+  })
+  @ApiJsonResponse({ type: DeviceSalePreviewResponseDto })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devicesales.create' })
+  @Get('/preview')
+  @HttpCode(HttpStatus.OK)
+  async preview(@Query() dto: DeviceSalePreviewQueryDto) {
+    return await this.service.preview(dto);
   }
 
   @ApiOperation({ description: 'show device sale by given id' })
