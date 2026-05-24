@@ -35,7 +35,7 @@ export class DeviceSalePriceController {
 
   @ApiOperation({ description: 'show all device sale prices' })
   @ApiJsonResponse({ type: DeviceSalePriceResponseDto, isArray: true })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.devicetaleprices.getall' })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devicesaleprices.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -50,7 +50,7 @@ export class DeviceSalePriceController {
 
   @ApiOperation({ description: 'show device sale price by given id' })
   @ApiJsonResponse({ type: DeviceSalePriceResponseDto })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.devicetaleprices.getone' })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devicesaleprices.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') id: number) {
@@ -59,7 +59,7 @@ export class DeviceSalePriceController {
 
   @ApiOperation({ description: 'create device sale price' })
   @ApiJsonResponse({ type: DeviceSalePriceResponseDto, status: 201 })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.devicetaleprices.create' })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devicesaleprices.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: DeviceSalePriceDto) {

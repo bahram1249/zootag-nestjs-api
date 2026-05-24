@@ -1,4 +1,4 @@
-export const name = '20260523-0287-ZootagDeviceSales';
+export const name = '20260524-0296-ZootagDeviceSales';
 import { Sequelize } from 'sequelize';
 import { createCrudPermissions } from '../permission-helper';
 
@@ -12,4 +12,4 @@ export async function up(sequelize: Sequelize): Promise<void> {
     menuUrl: '/admin/zootag/device-sales',
   });
 }
-export async function down(): Promise<void> {}
+export async function down(_sequelize: Sequelize): Promise<void> {}
