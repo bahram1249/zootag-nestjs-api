@@ -10,19 +10,20 @@ import {
 import { AutoMap } from 'automapper-classes';
 import { Type } from 'class-transformer';
 
-export class DeviceStatusDto {
+export class PetTypeDto {
+
   @AutoMap()
+  @IsInt()
   @Type(() => Number)
-  @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({ description: 'device status id' })
+  @ApiProperty({ description: 'contract id' })
   id: number;
 
   @AutoMap()
   @MinLength(2)
-  @MaxLength(100)
+  @MaxLength(50)
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ description: 'device status name' })
+  @ApiProperty({ description: 'PetType name' })
   name: string;
 }

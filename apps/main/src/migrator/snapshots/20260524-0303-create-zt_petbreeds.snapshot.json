@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-24T09:59:44.802Z",
+  "generatedAt": "2026-05-24T09:59:44.797Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6581,7 +6581,7 @@
         }
       ]
     },
-    "ZT_PetBreeds": {
+    "ZTPetBreed": {
       "className": "ZTPetBreed",
       "tableName": "ZT_PetBreeds",
       "columns": {
@@ -6652,54 +6652,6 @@
           ]
         }
       ]
-    },
-    "ZT_PetTypes": {
-      "className": "ZTPetType",
-      "tableName": "ZT_PetTypes",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "name": {
-          "name": "name",
-          "type": "NVARCHAR(50)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "isActive": {
-          "name": "isActive",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "true",
-          "unique": false,
-          "comment": null
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": []
     }
   }
 }

@@ -1,14 +1,14 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 
-@Table({ tableName: 'ZT_DeviceStatuses' })
-export class ZTDeviceStatus extends Model<ZTDeviceStatus> {
+@Table({ tableName: 'ZT_PetTypes' })
+export class ZTPetType extends Model<ZTPetType> {
   @AutoMap()
   @Column({ type: DataType.BIGINT, primaryKey: true })
   id: bigint;
 
   @AutoMap()
-  @Column({ type: DataType.STRING(100), allowNull: false })
+  @Column({ type: DataType.STRING(50), allowNull: false })
   name: string;
 
   @AutoMap()

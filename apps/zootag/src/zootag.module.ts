@@ -27,6 +27,8 @@ import { CommissionSettlementModule } from './admin/commission-settlement/commis
 import { CommissionTypeModule } from './admin/commission-type/commission-type.module';
 import { CommissionSettlementStatusModule } from './admin/commission-settlement-status/commission-settlement-status.module';
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
+import { PetTypeModule } from './admin/pet-type/pet-type.module';
+import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
 
 @Module({
   imports: [
@@ -52,12 +54,14 @@ import { InventoryStatusModule } from './admin/inventory-status/inventory-status
     CommissionTypeModule,
     CommissionSettlementStatusModule,
     InventoryStatusModule,
+    PetTypeModule,
+    PetBreedModule
   ],
 })
 export class ZootagModule implements NestModule {
-  constructor() {}
+  constructor() { }
   private app: INestApplication;
-  configure(consumer: MiddlewareConsumer) {}
+  configure(consumer: MiddlewareConsumer) { }
   setApp(app: INestApplication<any>) {
     this.app = app;
     const coreConfig = new DocumentBuilder()

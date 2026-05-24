@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-24T09:59:44.802Z",
+  "generatedAt": "2026-05-24T09:59:44.800Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6581,7 +6581,7 @@
         }
       ]
     },
-    "ZT_PetBreeds": {
+    "ZTPetBreed": {
       "className": "ZTPetBreed",
       "tableName": "ZT_PetBreeds",
       "columns": {
@@ -6653,7 +6653,7 @@
         }
       ]
     },
-    "ZT_PetTypes": {
+    "ZTPetType": {
       "className": "ZTPetType",
       "tableName": "ZT_PetTypes",
       "columns": {
