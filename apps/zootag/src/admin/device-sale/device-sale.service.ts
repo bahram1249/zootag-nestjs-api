@@ -11,6 +11,7 @@ import {
   ZTDeviceSale,
   ZTDevice,
   ZTMarketer,
+  ZTMarketerCommission,
   ZTCompany,
   ZTCurrency,
   ZTCommissionType,
@@ -32,6 +33,8 @@ export class DeviceSaleService {
     private readonly deviceRepository: typeof ZTDevice,
     @InjectModel(ZTMarketer)
     private readonly marketerRepository: typeof ZTMarketer,
+    @InjectModel(ZTMarketerCommission)
+    private readonly marketerCommissionRepository: typeof ZTMarketerCommission,
     @InjectModel(ZTCommissionType)
     private readonly commissionTypeRepository: typeof ZTCommissionType,
     @InjectModel(ZTInventoryStatus)
@@ -223,14 +226,34 @@ export class DeviceSaleService {
     const purchasePriceIRR = Number(device.purchasePriceIRR);
     const grossProfitIRR = salePriceIRR - purchasePriceIRR;
 
+    const matchedCommission = await this.marketerCommissionRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ marketerId: marketer.id })
+        .filter({ isActive: true })
+        .filter({
+          startDate: { [Op.lte]: new Date(dto.saleDate) },
+        })
+        .filter({
+          [Op.or]: [
+            { endDate: null },
+            { endDate: { [Op.gte]: new Date(dto.saleDate) } },
+          ],
+        })
+        .order({ orderBy: 'priority', sortOrder: 'ASC' })
+        .build(),
+    );
+
     const commissionTypeId =
       dto.commissionTypeId ||
+      Number(matchedCommission?.commissionTypeId) ||
       Number(marketer.defaultCommissionTypeId) ||
       CommissionType.Percent;
     const commissionValue =
       dto.commissionValue != null
         ? dto.commissionValue
-        : Number(marketer.defaultCommissionValue) || 0;
+        : matchedCommission?.commissionValue != null
+          ? Number(matchedCommission.commissionValue)
+          : Number(marketer.defaultCommissionValue) || 0;
 
     let commissionAmountIRR: number;
     if (commissionTypeId === CommissionType.Percent) {

@@ -16,4 +16,5 @@ export * from './zt-device-sale.entity';
 export * from './zt-commission-settlement.entity';
 export * from './zt-commission-type.entity';
 export * from './zt-commission-settlement-status.entity';
+export * from './zt-marketer-commission.entity';
 export * from './zt-inventory-status.entity';

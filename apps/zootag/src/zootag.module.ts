@@ -20,6 +20,7 @@ import { ContractPeriodDevicePriceModule } from './admin/contract-period-device-
 import { DeviceModule } from './admin/device/device.module';
 import { ManufacturerModule } from './admin/manufacturer/manufacturer.module';
 import { MarketerModule } from './admin/marketer/marketer.module';
+import { MarketerCommissionModule } from './admin/marketer-commission/marketer-commission.module';
 import { DeviceSalePriceModule } from './admin/device-sale-price/device-sale-price.module';
 import { DeviceSaleModule } from './admin/device-sale/device-sale.module';
 import { CommissionSettlementModule } from './admin/commission-settlement/commission-settlement.module';
@@ -44,6 +45,7 @@ import { InventoryStatusModule } from './admin/inventory-status/inventory-status
     DeviceModule,
     ManufacturerModule,
     MarketerModule,
+    MarketerCommissionModule,
     DeviceSalePriceModule,
     DeviceSaleModule,
     CommissionSettlementModule,

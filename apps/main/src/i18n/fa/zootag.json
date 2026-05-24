@@ -15,6 +15,7 @@
   "device_type_mismatch": "رکورد قیمت انتخاب شده با نوع دستگاه مطابقت ندارد",
   "maximum_quantity_reached": "حداکثر تعداد دستگاه برای این رکورد قیمت به اتمام رسیده است",
   "marketer_not_found": "بازاریاب مورد نظر یافت نشد",
+  "marketer_commission_not_found": "کمیسیون بازاریاب مورد نظر یافت نشد",
   "device_sale_price_not_found": "قیمت فروش دستگاه مورد نظر یافت نشد",
   "device_sale_not_found": "فروش دستگاه مورد نظر یافت نشد",
   "commission_settlement_not_found": "تسویه کمیسیون مورد نظر یافت نشد",

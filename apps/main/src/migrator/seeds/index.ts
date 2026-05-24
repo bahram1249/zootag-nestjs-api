@@ -150,6 +150,7 @@ import * as s0297 from '../permissions/20260524-0297-ZootagCommissionSettlements
 import * as s0298 from '../permissions/20260524-0298-ZootagCommissionSettlementStatuses';
 import * as s0299 from '../permissions/20260524-0299-ZootagCommissionTypes';
 import * as s0300 from '../permissions/20260524-0300-ZootagInventoryStatuses';
+import * as s0302 from '../permissions/20260524-0302-ZootagMarketerCommissions';
 
 
 interface Condition {
@@ -365,4 +366,6 @@ export const seeds: SeedDefinition[] = [
   cond(s0299, 'SITE_NAME', 'Zootag'),
 
   cond(s0300, 'SITE_NAME', 'Zootag'),
+
+  cond(s0302, 'SITE_NAME', 'Zootag'),
 ];

@@ -15,6 +15,7 @@
   "device_type_mismatch": "the selected price record does not match the device type",
   "maximum_quantity_reached": "the maximum number of devices for this price record has been reached",
   "marketer_not_found": "marketer not found",
+  "marketer_commission_not_found": "marketer commission not found",
   "device_sale_price_not_found": "device sale price not found",
   "device_sale_not_found": "device sale not found",
   "commission_settlement_not_found": "commission settlement not found",

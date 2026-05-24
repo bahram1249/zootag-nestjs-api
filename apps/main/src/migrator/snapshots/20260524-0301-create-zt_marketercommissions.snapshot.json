@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-24T04:20:04.147Z",
+  "generatedAt": "2026-05-24T04:20:04.146Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6222,7 +6222,185 @@
       "indexes": [],
       "foreignKeys": []
     },
-    "ZT_MarketerCommissions": {
+    "ZT_Marketers": {
+      "className": "ZTMarketer",
+      "tableName": "ZT_Marketers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "fullName": {
+          "name": "fullName",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "mobile": {
+          "name": "mobile",
+          "type": "NVARCHAR(20)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "email": {
+          "name": "email",
+          "type": "NVARCHAR(200)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "nationalCode": {
+          "name": "nationalCode",
+          "type": "NVARCHAR(20)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "defaultCommissionTypeId": {
+          "name": "defaultCommissionTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_CommissionTypes",
+            "key": "id"
+          }
+        },
+        "defaultCommissionValue": {
+          "name": "defaultCommissionValue",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "0",
+          "unique": false,
+          "comment": null
+        },
+        "createdUserId": {
+          "name": "createdUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "updatedUserId": {
+          "name": "updatedUserId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          }
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "defaultCommissionTypeId"
+          ],
+          "refTable": "ZT_CommissionTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "createdUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "updatedUserId"
+          ],
+          "refTable": "Users",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "ZTMarketerCommission": {
       "className": "ZTMarketerCommission",
       "tableName": "ZT_MarketerCommissions",
       "columns": {
@@ -6377,184 +6555,6 @@
         {
           "columns": [
             "commissionTypeId"
-          ],
-          "refTable": "ZT_CommissionTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "createdUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "updatedUserId"
-          ],
-          "refTable": "Users",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
-    },
-    "ZT_Marketers": {
-      "className": "ZTMarketer",
-      "tableName": "ZT_Marketers",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": true,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "fullName": {
-          "name": "fullName",
-          "type": "NVARCHAR(200)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "mobile": {
-          "name": "mobile",
-          "type": "NVARCHAR(20)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "email": {
-          "name": "email",
-          "type": "NVARCHAR(200)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "nationalCode": {
-          "name": "nationalCode",
-          "type": "NVARCHAR(20)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "defaultCommissionTypeId": {
-          "name": "defaultCommissionTypeId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_CommissionTypes",
-            "key": "id"
-          }
-        },
-        "defaultCommissionValue": {
-          "name": "defaultCommissionValue",
-          "type": "DECIMAL(18, 2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "isActive": {
-          "name": "isActive",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "true",
-          "unique": false,
-          "comment": null
-        },
-        "isDeleted": {
-          "name": "isDeleted",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "0",
-          "unique": false,
-          "comment": null
-        },
-        "createdUserId": {
-          "name": "createdUserId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "Users",
-            "key": "id"
-          }
-        },
-        "updatedUserId": {
-          "name": "updatedUserId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "Users",
-            "key": "id"
-          }
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "defaultCommissionTypeId"
           ],
           "refTable": "ZT_CommissionTypes",
           "refColumns": [

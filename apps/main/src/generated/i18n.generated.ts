@@ -192,6 +192,7 @@ export type I18nTranslations = {
         "device_type_mismatch": string;
         "maximum_quantity_reached": string;
         "marketer_not_found": string;
+        "marketer_commission_not_found": string;
         "device_sale_price_not_found": string;
         "device_sale_not_found": string;
         "commission_settlement_not_found": string;
