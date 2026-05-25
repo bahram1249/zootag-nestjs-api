@@ -3,6 +3,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 import { ZTMarketer, ZTCommissionType } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { MarketerFilterDto, MarketerDto } from './dto';
@@ -15,6 +16,7 @@ export class MarketerService {
     @InjectModel(ZTMarketer)
     private readonly repository: typeof ZTMarketer,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -52,7 +54,10 @@ export class MarketerService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      { defaultCommissionType: 'commissionType' },
+    );
     return { result, total };
   }
 
@@ -85,7 +90,11 @@ export class MarketerService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.marketer_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeItem(item.toJSON(), {
+        defaultCommissionType: 'commissionType',
+      }),
+    };
   }
 
   async create(dto: MarketerDto, user: User) {

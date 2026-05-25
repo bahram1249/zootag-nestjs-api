@@ -27,6 +27,7 @@ import {
   DeviceSaleDto,
   DeviceSalePreviewQueryDto,
 } from './dto';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 
@@ -50,6 +51,7 @@ export class DeviceSaleService {
     @InjectModel(ZTMarketerDeviceSalePrice)
     private readonly marketerPriceRepository: typeof ZTMarketerDeviceSalePrice,
     private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -131,7 +133,10 @@ export class DeviceSaleService {
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const result = await this.repository.findAll(qb.build());
+    const result = this.localizationMapperService.localizeItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      { commissionType: 'commissionType' },
+    );
     return { result, total };
   }
 
@@ -201,7 +206,11 @@ export class DeviceSaleService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_sale_not_found'),
       );
-    return { result: item };
+    return {
+      result: this.localizationMapperService.localizeItem(item.toJSON(), {
+        commissionType: 'commissionType',
+      }),
+    };
   }
 
   async preview(dto: DeviceSalePreviewQueryDto) {
