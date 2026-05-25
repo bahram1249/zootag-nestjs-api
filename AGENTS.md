@@ -414,6 +414,38 @@ await createCrudPermissions(sequelize, {
 });
 ```
 
+##### Menu Icons (`icon`, `parentIcon`, `cssClass`, `parentCssClass`)
+
+Every menu item in the sidebar can have an icon and CSS class. These are stored in the `Menus` table (`icon` and `className` columns).
+
+**Auto-assignment** — `createCrudPermissions` automatically assigns an icon to every menu based on its Persian name via the built-in `DEFAULT_ICONS` map in `permission-helper.ts`. Unknown names get `'circle'` as a fallback. Override with explicit params:
+
+```typescript
+await createCrudPermissions(sequelize, {
+  entityName: 'ZootagMarketers',
+  groupName: 'zootag.admin.marketers',
+  findParentMenu: true,
+  parentMenuName: 'اطلاعات پایه',
+  menuName: 'بازاریاب‌ها',
+  menuUrl: '/admin/zootag/marketers',
+  icon: 'users',                    // overrides auto-assigned icon
+  cssClass: 'my-custom-class',      // optional CSS class
+  parentIcon: 'database',           // icon for the parent menu (only when creating a new parent)
+  parentCssClass: 'parent-class',   // optional CSS class for parent
+});
+```
+
+- `icon` / `parentIcon` — string identifiers mapped to SVG icons on the frontend (e.g. `'users'`, `'settings'`, `'package'`, `'database'`, `'shield'`)
+- `cssClass` / `parentCssClass` — custom CSS class names applied to the menu's `<a>` element
+- If `findParentMenu: true`, `parentIcon`/`parentCssClass` are ignored (the parent already exists)
+- All params are optional — the helper falls back to the auto-assigned icon
+
+**CLI usage** — when generating a new permission file:
+
+```bash
+npm run create:permission -- ZootagFeature --icon "fas fa-users" --css-class "my-class"
+```
+
 #### Mapper (`automapper-classes`)
 
 Use `@AutoMap()` on entity model fields and DTO fields for automatic mapping:

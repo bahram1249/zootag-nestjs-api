@@ -29,6 +29,7 @@ import { CommissionSettlementStatusModule } from './admin/commission-settlement-
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
 import { PetTypeModule } from './admin/pet-type/pet-type.module';
 import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
+import { MarketerDeviceSalePriceModule } from './admin/marketer-device-sale-price/marketer-device-sale-price.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
     InventoryStatusModule,
     PetTypeModule,
     PetBreedModule,
+    MarketerDeviceSalePriceModule,
   ],
 })
 export class ZootagModule implements NestModule {

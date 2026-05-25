@@ -9,6 +9,8 @@ import {
   ZTCompany,
   ZTContractPeriod,
   ZTCurrency,
+  ZTMarketerDeviceSalePrice,
+  ZTMarketer,
 } from '@rahino/localdatabase/models';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import { DeviceSalePriceFilterDto, DeviceSalePriceDto } from './dto';
@@ -20,6 +22,8 @@ export class DeviceSalePriceService {
   constructor(
     @InjectModel(ZTDeviceSalePrice)
     private readonly repository: typeof ZTDeviceSalePrice,
+    @InjectModel(ZTMarketerDeviceSalePrice)
+    private readonly marketerPriceRepository: typeof ZTMarketerDeviceSalePrice,
     private readonly localizationService: LocalizationService,
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
@@ -78,6 +82,114 @@ export class DeviceSalePriceService {
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
     const result = await this.repository.findAll(qb.build());
     return { result, total };
+  }
+
+  async findEffective(deviceTypeId: number, marketerId?: number) {
+    const now = new Date();
+    if (marketerId) {
+      const marketerPrices = await this.marketerPriceRepository.findAll(
+        new QueryOptionsBuilder()
+          .filter({ isDeleted: 0 })
+          .filter({ marketerId })
+          .filter({ deviceTypeId })
+          .filter({ isActive: true })
+          .filter({ validFrom: { [Op.lte]: now } })
+          .filter({
+            [Op.or]: [
+              { validTo: null },
+              { validTo: { [Op.gte]: now } },
+            ],
+          })
+          .attributes([
+            'id', 'marketerId', 'deviceTypeId', 'currencyId',
+            'salePrice', 'salePriceIRR', 'validFrom', 'validTo', 'isActive',
+          ])
+          .include([
+            {
+              model: ZTMarketer,
+              as: 'marketer',
+              attributes: ['id', 'fullName'],
+              required: false,
+            },
+            {
+              model: ZTDeviceType,
+              as: 'deviceType',
+              attributes: ['id', 'typeName', 'modelCode'],
+              required: false,
+            },
+            {
+              model: ZTCurrency,
+              as: 'currency',
+              attributes: ['id', 'code', 'name', 'symbol'],
+              required: false,
+            },
+          ])
+          .build(),
+      );
+      if (marketerPrices.length > 0) {
+        return {
+          result: marketerPrices.map((p) => ({
+            ...p.toJSON(),
+            priceType: 'marketer' as const,
+          })),
+          total: marketerPrices.length,
+        };
+      }
+    }
+
+    const qb = new QueryOptionsBuilder()
+      .filter({ deviceTypeId })
+      .filter({ isActive: true })
+      .filter({ validFrom: { [Op.lte]: now } })
+      .filter({
+        [Op.or]: [
+          { validTo: null },
+          { validTo: { [Op.gte]: now } },
+        ],
+      });
+    const total = await this.repository.count(qb.build());
+    const result = await this.repository.findAll(
+      qb
+        .attributes([
+          'id', 'deviceTypeId', 'companyId', 'contractPeriodId',
+          'currencyId', 'salePrice', 'salePriceIRR',
+          'validFrom', 'validTo', 'isActive',
+        ])
+        .include([
+          {
+            model: ZTDeviceType,
+            as: 'deviceType',
+            attributes: ['id', 'typeName', 'modelCode'],
+            required: false,
+          },
+          {
+            model: ZTCompany,
+            as: 'company',
+            attributes: ['id', 'companyName'],
+            required: false,
+          },
+          {
+            model: ZTContractPeriod,
+            as: 'contractPeriod',
+            attributes: ['id', 'periodName'],
+            required: false,
+          },
+          {
+            model: ZTCurrency,
+            as: 'currency',
+            attributes: ['id', 'code', 'name', 'symbol'],
+            required: false,
+          },
+        ])
+        .build(),
+    );
+    return {
+      result: result.map((p) => ({
+        ...p.toJSON(),
+        priceType: 'default' as const,
+      })),
+      total,
+    };
   }
 
   async findById(id: number) {

@@ -21,6 +21,7 @@ import {
   ZTInventoryStatus,
   ZTPetBreed,
   ZTPetType,
+  ZTMarketerDeviceSalePrice,
 } from '@rahino/localdatabase/models';
 
 export const zootagModels = [
@@ -46,4 +47,5 @@ export const zootagModels = [
   ZTInventoryStatus,
   ZTPetBreed,
   ZTPetType,
+  ZTMarketerDeviceSalePrice,
 ];

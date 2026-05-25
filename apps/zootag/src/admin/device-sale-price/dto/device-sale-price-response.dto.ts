@@ -34,6 +34,52 @@ class CurrencyBriefDto {
   symbol: string;
 }
 
+export class EffectivePriceResponseDto {
+  @ApiProperty({ example: 1, description: 'Price ID (device-sale-price or marketer-device-sale-price)' })
+  id: number;
+
+  @ApiProperty({ example: 1, description: 'Device type ID' })
+  deviceTypeId: number;
+
+  @ApiProperty({
+    type: () => DeviceTypeBriefDto,
+    description: 'Device type',
+    required: false,
+  })
+  deviceType?: DeviceTypeBriefDto;
+
+  @ApiProperty({ example: 1, description: 'Marketer ID', required: false })
+  marketerId?: number;
+
+  @ApiProperty({ example: 1, description: 'Currency ID' })
+  currencyId: number;
+
+  @ApiProperty({
+    type: () => CurrencyBriefDto,
+    description: 'Currency',
+    required: false,
+  })
+  currency?: CurrencyBriefDto;
+
+  @ApiProperty({ example: 2500.0, description: 'Sale price' })
+  salePrice: number;
+
+  @ApiProperty({ example: 87500000, description: 'Sale price IRR' })
+  salePriceIRR: number;
+
+  @ApiProperty({ example: '2026-01-01', description: 'Valid from' })
+  validFrom: string;
+
+  @ApiProperty({ example: '2026-12-31', description: 'Valid to', required: false })
+  validTo?: string;
+
+  @ApiProperty({ example: true, description: 'Is active' })
+  isActive: boolean;
+
+  @ApiProperty({ example: 'marketer', description: 'Price type: default or marketer', required: false })
+  priceType?: string;
+}
+
 export class DeviceSalePriceResponseDto {
   @ApiProperty({ example: 1, description: 'Device sale price ID' })
   id: number;
@@ -100,4 +146,7 @@ export class DeviceSalePriceResponseDto {
 
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
+
+  @ApiProperty({ example: 'default', description: 'Price type: default or marketer', required: false })
+  priceType?: string;
 }

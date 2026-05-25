@@ -30,7 +30,7 @@ export class ZTDeviceSale extends Model<ZTDeviceSale> {
 
   @AutoMap()
   @ForeignKey(() => ZTMarketer)
-  @Column({ type: DataType.BIGINT, allowNull: false })
+  @Column({ type: DataType.BIGINT, allowNull: true })
   marketerId: bigint;
 
   @BelongsTo(() => ZTMarketer, { foreignKey: 'marketerId', as: 'marketer' })
@@ -80,7 +80,7 @@ export class ZTDeviceSale extends Model<ZTDeviceSale> {
 
   @AutoMap()
   @ForeignKey(() => ZTCommissionType)
-  @Column({ type: DataType.BIGINT, allowNull: false })
+  @Column({ type: DataType.BIGINT, allowNull: true })
   commissionTypeId: bigint;
 
   @BelongsTo(() => ZTCommissionType, {

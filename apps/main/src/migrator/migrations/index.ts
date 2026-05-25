@@ -159,6 +159,12 @@ import * as m0301 from './20260524-0301-create-zt_marketercommissions';
 
 import * as m0303 from './20260524-0303-create-zt_petbreeds';
 import * as m0304 from './20260524-0304-create-zt_pettypes';
+
+import * as m0308 from './20260525-0308-create-zt_marketerdevicesaleprices';
+import * as m0309 from './20260525-0309-alter-zt_devicesales-modify-marketerid';
+import * as m0310 from './20260525-0310-alter-zt_devicesales-modify-commissiontypeid';
+
+import * as m0312 from './20260525-0312-alter-zt_marketerdevicesaleprices-add-isdeleted';
 interface Condition {
   key: string;
   values: string[];
@@ -366,4 +372,10 @@ export const migrations: MigrationDefinition[] = [
 
   cond(m0304, 'SITE_NAME', 'Zootag'),
   cond(m0303, 'SITE_NAME', 'Zootag'),
+
+  cond(m0308, 'SITE_NAME', 'Zootag'),
+  cond(m0309, 'SITE_NAME', 'Zootag'),
+  cond(m0310, 'SITE_NAME', 'Zootag'),
+
+  cond(m0312, 'SITE_NAME', 'Zootag'),
 ];

@@ -23,6 +23,7 @@ import {
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
 import { InventoryStatus } from '@rahino/zootag/shared/enums';
+import { InventoryStatus as InventoryStatusEnum } from '@rahino/zootag/shared/enums';
 import { DeviceFilterDto, DeviceDto } from './dto';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
@@ -143,6 +144,70 @@ export class DeviceService {
       (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
       { deviceStatus: 'deviceStatus' },
     );
+    return { result, total };
+  }
+
+  async findAvailable(filter: DeviceFilterDto) {
+    let qb = new QueryOptionsBuilder()
+      .filter({ isDeleted: 0 })
+      .filter({ inventoryStatusId: InventoryStatusEnum.Available })
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        [Op.or]: [
+          { serialNumber: { [Op.like]: filter.search } },
+          { imei: { [Op.like]: filter.search } },
+        ],
+      });
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .attributes([
+        'id',
+        'serialNumber',
+        'imei',
+        'macAddress',
+        'companyId',
+        'deviceTypeId',
+        'contractPeriodId',
+        'contractPeriodDevicePriceId',
+        'purchasePrice',
+        'currencyId',
+        'purchasePriceIRR',
+        'inventoryStatusId',
+        'saleId',
+        'purchaseDate',
+        'warrantyEndDate',
+        'deviceStatusId',
+        'isActive',
+      ])
+      .include([
+        {
+          model: ZTCompany,
+          as: 'company',
+          attributes: ['id', 'companyName'],
+          required: false,
+        },
+        {
+          model: ZTDeviceType,
+          as: 'deviceType',
+          attributes: ['id', 'typeName', 'modelCode'],
+          required: false,
+        },
+        {
+          model: ZTContractPeriod,
+          as: 'contractPeriod',
+          attributes: ['id', 'periodName'],
+          required: false,
+        },
+        {
+          model: ZTInventoryStatus,
+          as: 'inventoryStatus',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = await this.repository.findAll(qb.build());
     return { result, total };
   }
 

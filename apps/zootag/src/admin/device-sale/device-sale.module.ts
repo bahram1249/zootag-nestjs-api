@@ -10,6 +10,7 @@ import {
   ZTCurrency,
   ZTCommissionType,
   ZTInventoryStatus,
+  ZTMarketerDeviceSalePrice,
 } from '@rahino/localdatabase/models';
 import { Permission, User } from '@rahino/database';
 import { DeviceSaleController } from './device-sale.controller';
@@ -28,6 +29,7 @@ import { DeviceSaleProfile } from './mapper';
       ZTInventoryStatus,
       ZTMarketerCommission,
       ZTDeviceSalePrice,
+      ZTMarketerDeviceSalePrice,
       User,
       Permission,
     ]),

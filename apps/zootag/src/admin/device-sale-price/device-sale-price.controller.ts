@@ -21,9 +21,9 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { DeviceSalePriceService } from './device-sale-price.service';
-import { DeviceSalePriceDto, DeviceSalePriceFilterDto } from './dto';
+import { DeviceSalePriceDto, DeviceSalePriceFilterDto, EffectivePriceQueryDto } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
-import { DeviceSalePriceResponseDto } from './dto';
+import { DeviceSalePriceResponseDto, EffectivePriceResponseDto } from './dto';
 
 @ApiTags('Zootag-Admin-DeviceSalePrices')
 @ApiBearerAuth()
@@ -46,6 +46,17 @@ export class DeviceSalePriceController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: DeviceSalePriceFilterDto) {
     return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({
+    description: 'show effective prices (marketer-specific first, fallback to default)',
+  })
+  @ApiJsonResponse({ type: EffectivePriceResponseDto, isArray: true })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devicesaleprices.getall' })
+  @Get('/effective')
+  @HttpCode(HttpStatus.OK)
+  async findEffective(@Query() query: EffectivePriceQueryDto) {
+    return await this.service.findEffective(query.deviceTypeId, query.marketerId);
   }
 
   @ApiOperation({ description: 'show device sale price by given id' })

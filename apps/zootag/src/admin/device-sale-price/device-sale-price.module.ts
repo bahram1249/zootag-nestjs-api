@@ -6,6 +6,8 @@ import {
   ZTCompany,
   ZTContractPeriod,
   ZTCurrency,
+  ZTMarketerDeviceSalePrice,
+  ZTMarketer,
 } from '@rahino/localdatabase/models';
 import { Permission, User } from '@rahino/database';
 import { DeviceSalePriceController } from './device-sale-price.controller';
@@ -20,6 +22,8 @@ import { DeviceSalePriceProfile } from './mapper';
       ZTCompany,
       ZTContractPeriod,
       ZTCurrency,
+      ZTMarketerDeviceSalePrice,
+      ZTMarketer,
       User,
       Permission,
     ]),

@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-25T15:57:43.585Z",
+  "generatedAt": "2026-05-25T15:24:29.828Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -5340,7 +5340,7 @@
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": true,
+          "allowNull": false,
           "defaultValue": null,
           "unique": false,
           "comment": null,
@@ -5432,7 +5432,7 @@
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": true,
+          "allowNull": false,
           "defaultValue": null,
           "unique": false,
           "comment": null,
@@ -6403,154 +6403,6 @@
         }
       ]
     },
-    "ZT_MarketerDeviceSalePrices": {
-      "className": "ZTMarketerDeviceSalePrice",
-      "tableName": "ZT_MarketerDeviceSalePrices",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "BIGINT",
-          "primaryKey": true,
-          "autoIncrement": true,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "marketerId": {
-          "name": "marketerId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Marketers",
-            "key": "id"
-          }
-        },
-        "deviceTypeId": {
-          "name": "deviceTypeId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_DeviceTypes",
-            "key": "id"
-          }
-        },
-        "currencyId": {
-          "name": "currencyId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Currencies",
-            "key": "id"
-          }
-        },
-        "salePrice": {
-          "name": "salePrice",
-          "type": "DECIMAL(18, 2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "salePriceIRR": {
-          "name": "salePriceIRR",
-          "type": "DECIMAL(18, 2)",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "validFrom": {
-          "name": "validFrom",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "validTo": {
-          "name": "validTo",
-          "type": "DATETIME",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null
-        },
-        "isActive": {
-          "name": "isActive",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "true",
-          "unique": false,
-          "comment": null
-        },
-        "isDeleted": {
-          "name": "isDeleted",
-          "type": "BIT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": false,
-          "defaultValue": "0",
-          "unique": false,
-          "comment": null
-        }
-      },
-      "indexes": [],
-      "foreignKeys": [
-        {
-          "columns": [
-            "marketerId"
-          ],
-          "refTable": "ZT_Marketers",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "deviceTypeId"
-          ],
-          "refTable": "ZT_DeviceTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "currencyId"
-          ],
-          "refTable": "ZT_Currencies",
-          "refColumns": [
-            "id"
-          ]
-        }
-      ]
-    },
     "ZT_Marketers": {
       "className": "ZTMarketer",
       "tableName": "ZT_Marketers",
@@ -6848,6 +6700,144 @@
       },
       "indexes": [],
       "foreignKeys": []
+    },
+    "ZTMarketerDeviceSalePrice": {
+      "className": "ZTMarketerDeviceSalePrice",
+      "tableName": "ZT_MarketerDeviceSalePrices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "BIGINT",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "marketerId": {
+          "name": "marketerId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Marketers",
+            "key": "id"
+          }
+        },
+        "deviceTypeId": {
+          "name": "deviceTypeId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_DeviceTypes",
+            "key": "id"
+          }
+        },
+        "currencyId": {
+          "name": "currencyId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Currencies",
+            "key": "id"
+          }
+        },
+        "salePrice": {
+          "name": "salePrice",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "salePriceIRR": {
+          "name": "salePriceIRR",
+          "type": "DECIMAL(18, 2)",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "validFrom": {
+          "name": "validFrom",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "validTo": {
+          "name": "validTo",
+          "type": "DATETIME",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "BIT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": false,
+          "defaultValue": "true",
+          "unique": false,
+          "comment": null
+        }
+      },
+      "indexes": [],
+      "foreignKeys": [
+        {
+          "columns": [
+            "marketerId"
+          ],
+          "refTable": "ZT_Marketers",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "deviceTypeId"
+          ],
+          "refTable": "ZT_DeviceTypes",
+          "refColumns": [
+            "id"
+          ]
+        },
+        {
+          "columns": [
+            "currencyId"
+          ],
+          "refTable": "ZT_Currencies",
+          "refColumns": [
+            "id"
+          ]
+        }
+      ]
     }
   }
 }

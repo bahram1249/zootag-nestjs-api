@@ -18,11 +18,11 @@ export class DeviceSaleDto {
   deviceId: number;
 
   @AutoMap()
+  @IsOptional()
   @Type(() => Number)
-  @IsNotEmpty()
   @IsNumber()
-  @ApiProperty({ description: 'marketer id' })
-  marketerId: number;
+  @ApiProperty({ required: false, description: 'marketer id (optional)' })
+  marketerId?: number;
 
   @AutoMap()
   @IsOptional()

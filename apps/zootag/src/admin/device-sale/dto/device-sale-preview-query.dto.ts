@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class DeviceSalePreviewQueryDto {
@@ -15,11 +15,11 @@ export class DeviceSalePreviewQueryDto {
   @ApiProperty({ description: 'device sale price id' })
   deviceSalePriceId: number;
 
+  @IsOptional()
   @Type(() => Number)
-  @IsNotEmpty()
   @IsNumber()
-  @ApiProperty({ description: 'marketer id' })
-  marketerId: number;
+  @ApiProperty({ required: false, description: 'marketer id (optional)' })
+  marketerId?: number;
 
   @IsNotEmpty()
   @IsDateString()

@@ -197,6 +197,8 @@ export type I18nTranslations = {
         "device_sale_not_found": string;
         "commission_settlement_not_found": string;
         "device_already_sold": string;
+        "marketer_device_sale_price_not_found": string;
+        "marketer_device_sale_price_duplicate": string;
         "commissionType": {
             "percent": string;
             "fixed": string;

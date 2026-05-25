@@ -51,6 +51,21 @@ export class DeviceController {
     return await this.service.findAll(filter);
   }
 
+  @ApiOperation({ description: 'show available devices (inventory = available)' })
+  @ApiJsonResponse({ type: DeviceResponseDto, isArray: true })
+  @CheckPermission({ permissionSymbol: 'zootag.admin.devices.getall' })
+  @Get('/available')
+  @ApiQuery({
+    name: 'filter',
+    type: DeviceFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async findAvailable(@Query() filter: DeviceFilterDto) {
+    return await this.service.findAvailable(filter);
+  }
+
   @ApiOperation({ description: 'show device by given id' })
   @ApiJsonResponse({ type: DeviceResponseDto })
   @CheckPermission({ permissionSymbol: 'zootag.admin.devices.getone' })

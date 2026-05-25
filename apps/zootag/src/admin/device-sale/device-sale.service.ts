@@ -17,6 +17,7 @@ import {
   ZTCurrency,
   ZTCommissionType,
   ZTInventoryStatus,
+  ZTMarketerDeviceSalePrice,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { CurrencyCalculationService } from '@rahino/zootag/shared/currency-calculation';
@@ -46,6 +47,8 @@ export class DeviceSaleService {
     private readonly commissionTypeRepository: typeof ZTCommissionType,
     @InjectModel(ZTInventoryStatus)
     private readonly inventoryStatusRepository: typeof ZTInventoryStatus,
+    @InjectModel(ZTMarketerDeviceSalePrice)
+    private readonly marketerPriceRepository: typeof ZTMarketerDeviceSalePrice,
     private readonly localizationService: LocalizationService,
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
@@ -204,12 +207,14 @@ export class DeviceSaleService {
   async preview(dto: DeviceSalePreviewQueryDto) {
     const calc = await this.calculatePreview(dto);
 
-    const commissionType = await this.commissionTypeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: calc.commissionTypeId })
-        .attributes(['id', 'name'])
-        .build(),
-    );
+    const commissionType = calc.commissionTypeId
+      ? await this.commissionTypeRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: calc.commissionTypeId })
+            .attributes(['id', 'name'])
+            .build(),
+        )
+      : null;
 
     return {
       result: {
@@ -229,10 +234,33 @@ export class DeviceSaleService {
     };
   }
 
+  private async resolvePrice(deviceTypeId: number, marketerId?: number) {
+    if (marketerId) {
+      const now = new Date();
+      const marketerPrice = await this.marketerPriceRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ marketerId })
+          .filter({ deviceTypeId })
+          .filter({ isActive: true })
+          .filter({ validFrom: { [Op.lte]: now } })
+          .filter({
+            [Op.or]: [
+              { validTo: null },
+              { validTo: { [Op.gte]: now } },
+            ],
+          })
+          .order({ orderBy: 'validFrom', sortOrder: 'DESC' })
+          .build(),
+      );
+      if (marketerPrice) return marketerPrice;
+    }
+    return null;
+  }
+
   private async calculatePreview(dto: {
     deviceId: number;
     deviceSalePriceId: number;
-    marketerId: number;
+    marketerId?: number;
     saleDate: string;
   }) {
     const device = await this.deviceRepository.findOne(
@@ -244,14 +272,6 @@ export class DeviceSaleService {
     if (!device)
       throw new NotFoundException(
         this.localizationService.translate('zootag.device_not_found'),
-      );
-
-    const marketer = await this.marketerRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.marketerId }).build(),
-    );
-    if (!marketer)
-      throw new NotFoundException(
-        this.localizationService.translate('zootag.marketer_not_found'),
       );
 
     const deviceSalePrice = await this.deviceSalePriceRepository.findOne(
@@ -268,38 +288,57 @@ export class DeviceSaleService {
         this.localizationService.translate('zootag.device_type_mismatch'),
       );
 
+    const marketerPrice = await this.resolvePrice(
+      Number(device.deviceTypeId),
+      dto.marketerId,
+    );
+
+    const effectivePrice = marketerPrice || deviceSalePrice;
+
     const salePriceIRR = await this.currencyCalculationService.convertToIRR(
-      Number(deviceSalePrice.salePrice),
-      BigInt(deviceSalePrice.currencyId),
+      Number(effectivePrice.salePrice),
+      BigInt(effectivePrice.currencyId),
     );
     const purchasePriceIRR = Number(device.purchasePriceIRR);
     const grossProfitIRR = salePriceIRR - purchasePriceIRR;
 
-    const matchedCommission = await this.marketerCommissionRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ marketerId: marketer.id })
-        .filter({ isActive: true })
-        .filter({
-          startDate: { [Op.lte]: new Date(dto.saleDate) },
-        })
-        .filter({
-          [Op.or]: [
-            { endDate: null },
-            { endDate: { [Op.gte]: new Date(dto.saleDate) } },
-          ],
-        })
-        .order({ orderBy: 'priority', sortOrder: 'ASC' })
-        .build(),
-    );
+    let marketer: ZTMarketer | null = null;
+    if (dto.marketerId) {
+      marketer = await this.marketerRepository.findOne(
+        new QueryOptionsBuilder().filter({ id: dto.marketerId }).build(),
+      );
+    }
 
-    const commissionTypeId =
-      Number(matchedCommission?.commissionTypeId) ||
-      Number(marketer.defaultCommissionTypeId) ||
-      CommissionType.Percent;
-    const commissionValue =
-      matchedCommission?.commissionValue != null
-        ? Number(matchedCommission.commissionValue)
-        : Number(marketer.defaultCommissionValue) || 0;
+    let commissionTypeId = CommissionType.Percent;
+    let commissionValue = 0;
+
+    if (marketer) {
+      const matchedCommission = await this.marketerCommissionRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ marketerId: marketer.id })
+          .filter({ isActive: true })
+          .filter({
+            startDate: { [Op.lte]: new Date(dto.saleDate) },
+          })
+          .filter({
+            [Op.or]: [
+              { endDate: null },
+              { endDate: { [Op.gte]: new Date(dto.saleDate) } },
+            ],
+          })
+          .order({ orderBy: 'priority', sortOrder: 'ASC' })
+          .build(),
+      );
+
+      commissionTypeId =
+        Number(matchedCommission?.commissionTypeId) ||
+        Number(marketer.defaultCommissionTypeId) ||
+        CommissionType.Percent;
+      commissionValue =
+        matchedCommission?.commissionValue != null
+          ? Number(matchedCommission.commissionValue)
+          : Number(marketer.defaultCommissionValue) || 0;
+    }
 
     let commissionAmountIRR: number;
     if (commissionTypeId === CommissionType.Percent) {
@@ -311,8 +350,8 @@ export class DeviceSaleService {
     const netProfitIRR = grossProfitIRR - commissionAmountIRR;
 
     return {
-      salePrice: Number(deviceSalePrice.salePrice),
-      saleCurrencyId: Number(deviceSalePrice.currencyId),
+      salePrice: Number(effectivePrice.salePrice),
+      saleCurrencyId: Number(effectivePrice.currencyId),
       salePriceIRR,
       purchasePriceIRR,
       grossProfitIRR,
@@ -354,7 +393,7 @@ export class DeviceSaleService {
       const sale = await this.repository.create(
         {
           deviceId: BigInt(dto.deviceId),
-          marketerId: BigInt(dto.marketerId),
+          marketerId: dto.marketerId ? BigInt(dto.marketerId) : null,
           customerCompanyId: dto.customerCompanyId
             ? BigInt(dto.customerCompanyId)
             : null,
@@ -364,7 +403,7 @@ export class DeviceSaleService {
           salePriceIRR: calc.salePriceIRR,
           purchasePriceIRR: calc.purchasePriceIRR,
           grossProfitIRR: calc.grossProfitIRR,
-          commissionTypeId: BigInt(calc.commissionTypeId),
+          commissionTypeId: calc.commissionTypeId ? BigInt(calc.commissionTypeId) : null,
           commissionValue: calc.commissionValue,
           commissionAmountIRR: calc.commissionAmountIRR,
           netProfitIRR: calc.netProfitIRR,
