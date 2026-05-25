@@ -142,7 +142,7 @@ export class DeviceService {
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
     const result = this.localizationMapperService.localizeItems(
       (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
-      { deviceStatus: 'deviceStatus' },
+      { deviceStatus: 'deviceStatus', inventoryStatus: 'inventoryStatus' },
     );
     return { result, total };
   }
@@ -314,6 +314,7 @@ export class DeviceService {
     return {
       result: this.localizationMapperService.localizeItem(item.toJSON(), {
         deviceStatus: 'deviceStatus',
+        inventoryStatus: 'inventoryStatus',
       }),
     };
   }
