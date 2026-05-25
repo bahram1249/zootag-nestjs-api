@@ -10,8 +10,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'AdminUsers',
     groupName: 'core.admin.users',
     parentMenuName: 'مدیریت',
+    parentIcon: 'settings',
     menuName: 'کاربران',
     menuUrl: '/admin/core/users',
+    icon: 'user',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

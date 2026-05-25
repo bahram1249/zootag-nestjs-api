@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'فروشنده',
     menuName: 'سفارشات کنسل شده',
     menuUrl: '/admin/ecommerce/cancellOrders',
+    icon: 'x-circle',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

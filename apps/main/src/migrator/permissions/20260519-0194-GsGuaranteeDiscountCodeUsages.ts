@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'گزارش استفاده از کد تخفیف',
     menuUrl: '/admin/gs/discountCodeUsages',
+    icon: 'percent',
     includePermissions: ['showmenu', 'getall'],
   });
 }

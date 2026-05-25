@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'انواع دستگاه',
     menuUrl: '/admin/zootag/devicetypes',
+    icon: 'cpu',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

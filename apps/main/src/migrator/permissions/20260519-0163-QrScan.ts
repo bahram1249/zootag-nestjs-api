@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'کافه و رستوران',
     menuName: 'اسکن بارکد',
     menuUrl: '/discountcoffe/admin/qrscan',
+    icon: 'camera',
     includePermissions: ['showmenu'],
   });
 }

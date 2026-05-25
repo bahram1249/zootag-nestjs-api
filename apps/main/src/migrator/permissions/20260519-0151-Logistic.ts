@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'پرداخت و حمل و نقل',
     menuName: 'لاجستیک',
     menuUrl: '/admin/ecommerce/logistics',
+    icon: 'package',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

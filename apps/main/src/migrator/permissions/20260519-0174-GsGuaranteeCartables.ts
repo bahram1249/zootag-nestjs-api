@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'GuaranteeCartables',
     groupName: 'gs.admin.cartables',
     parentMenuName: 'عملیات',
+    parentIcon: 'clipboard',
     menuName: 'کارتابل',
     menuUrl: '/admin/gs/cartables',
+    icon: 'inbox',
     includePermissions: ['showmenu', 'getall'],
   });
 }

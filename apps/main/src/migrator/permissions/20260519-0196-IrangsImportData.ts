@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'ورود اطلاعات ایران جی اس',
     menuUrl: '/admin/gs/irangs-import-data',
+    icon: 'upload',
     includePermissions: ['showmenu', 'getall', 'create'],
   });
 }

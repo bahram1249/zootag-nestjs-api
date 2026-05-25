@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'گزارش افراد فنی',
     menuUrl: '/admin/gs/technicalPersonReports',
+    icon: 'users',
     includePermissions: ['showmenu', 'getall'],
   });
 }

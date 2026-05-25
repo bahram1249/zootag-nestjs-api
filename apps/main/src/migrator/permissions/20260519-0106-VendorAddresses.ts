@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'VendorAddresses',
     groupName: 'ecommerce.vendoraddresses',
     parentMenuName: 'فروشنده',
+    parentIcon: 'store',
     menuName: 'آدرس ها',
     menuUrl: '/admin/ecommerce/vendoraddresses',
+    icon: 'circle',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

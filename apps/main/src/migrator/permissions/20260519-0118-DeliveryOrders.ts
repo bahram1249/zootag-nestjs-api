@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'DeliveryOrders',
     groupName: 'ecommerce.admin.deliveryorders',
     parentMenuName: 'پیک',
+    parentIcon: 'truck',
     menuName: 'سفارشات منتظر ارسال به مشتری',
     menuUrl: '/admin/ecommerce/deliveryOrders',
+    icon: 'circle',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'عملیات',
     menuName: 'فاکتور ها',
     menuUrl: '/admin/gs/factors',
+    icon: 'file-text',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

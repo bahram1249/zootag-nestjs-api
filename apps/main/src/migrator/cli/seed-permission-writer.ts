@@ -78,6 +78,8 @@ export function generatePermissionFile(
   name: string,
   seqNum: number,
   site?: string,
+  icon?: string,
+  cssClass?: string,
 ): string {
   const prefix = datePrefix();
   const pascalName = toPascalCase(name);
@@ -98,6 +100,9 @@ export function generatePermissionFile(
   if (!(await checkSetting('key', ['SITE_NAME']))) return;
 `;
 
+  const iconLine = icon ? `    icon: '${icon}',\n` : '';
+  const cssClassLine = cssClass ? `    cssClass: '${cssClass}',\n` : '';
+
   return `export const name = '${fileName}';
 import { Sequelize } from 'sequelize';
 import { createCrudPermissions } from '../permission-helper';
@@ -108,8 +113,7 @@ ${checkGuard}  await createCrudPermissions(sequelize, {
     groupName: '<domain>.<group>',
     parentMenuName: '<Parent Menu>',
     menuName: '<Menu Name>',
-    menuUrl: ${menuUrlPlaceholder},
-  });
+    menuUrl: ${menuUrlPlaceholder},${iconLine}${cssClassLine}  });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}
 `;
@@ -243,6 +247,8 @@ export function createPermission(
   migratorRoot: string,
   name: string,
   site?: string,
+  icon?: string,
+  cssClass?: string,
 ): CreatedFile | null {
   const permsDir = path.resolve(migratorRoot, 'permissions');
   if (!fs.existsSync(permsDir)) {
@@ -256,7 +262,7 @@ export function createPermission(
   const fileName = `${prefix}-${pad(seqNum)}-${pascalName}.ts`;
   const filePath = path.join(permsDir, fileName);
 
-  const content = generatePermissionFile(name, seqNum, site);
+  const content = generatePermissionFile(name, seqNum, site, icon, cssClass);
   fs.writeFileSync(filePath, content, 'utf-8');
 
   const indexFilePath = path.resolve(migratorRoot, 'seeds', 'index.ts');

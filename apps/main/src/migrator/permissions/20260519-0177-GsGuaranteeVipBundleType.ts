@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'انواع کارت های گارانتی',
     menuUrl: '/admin/gs/vipBundleTypes',
+    icon: 'layers',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

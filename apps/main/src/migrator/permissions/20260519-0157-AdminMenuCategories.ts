@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'کافه و رستوران',
     menuName: 'لیست دسته بندی های منو',
     menuUrl: '/discountcoffe/admin/menucategories',
+    icon: 'list',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

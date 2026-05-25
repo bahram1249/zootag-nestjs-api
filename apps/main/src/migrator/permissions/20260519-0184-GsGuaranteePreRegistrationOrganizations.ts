@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'عملیات',
     menuName: 'لیست ثبت نام نمایندگان',
     menuUrl: '/admin/gs/preRegistrationOrganizations',
+    icon: 'clipboard',
     includePermissions: ['showmenu', 'getall', 'getone', 'update', 'delete'],
   });
 }

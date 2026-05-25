@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'صددور کارت گارانتی وی آی پی',
     menuUrl: '/admin/gs/vipGenerators',
+    icon: 'award',
     includePermissions: ['showmenu', 'getall', 'getone', 'create'],
   });
 }

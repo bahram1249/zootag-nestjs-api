@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'عملیات',
     menuName: 'پیگیری درخواست',
     menuUrl: '/admin/gs/trackingRequests',
+    icon: 'search',
     includePermissions: ['showmenu', 'getall'],
   });
 }

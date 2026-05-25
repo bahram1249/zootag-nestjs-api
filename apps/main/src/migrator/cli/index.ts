@@ -34,6 +34,8 @@ Options:
   --output-dir <path>   Path to output migrations (default: ./migrator/migrations)
   --dry-run             Show what would be generated without writing
   --site <name>         Site name for conditional seed/permission (used with create:seed / create:permission)
+  --icon <name>         Menu icon class name (used with create:permission)
+  --css-class <class>   Menu CSS class name (used with create:permission)
 
 Examples:
   npx ts-node apps/main/src/migrator/cli/index.ts snapshot
@@ -43,6 +45,7 @@ Examples:
   npx ts-node apps/main/src/migrator/cli/index.ts create:seed user-roles
   npx ts-node apps/main/src/migrator/cli/index.ts create:seed blog-categories --site zootag
   npx ts-node apps/main/src/migrator/cli/index.ts create:permission ZootagFeature
+  npx ts-node apps/main/src/migrator/cli/index.ts create:permission ZootagFeature --icon fas fa-users --css-class my-menu-class
 `);
 }
 
@@ -656,10 +659,14 @@ async function main(): Promise<void> {
     case 'create:permission': {
       const permName = args[1];
       if (!permName) {
-        console.error('Usage: create:permission <name> [--site <site>]');
+        console.error(
+          'Usage: create:permission <name> [--site <site>] [--icon <icon>] [--css-class <class>]',
+        );
         process.exit(1);
       }
       const permSite = findArg(args, '--site');
+      const permIcon = findArg(args, '--icon');
+      const permCssClass = findArg(args, '--css-class');
       const permMigratorRoot = path.resolve(
         __dirname,
         '..',
@@ -673,6 +680,8 @@ async function main(): Promise<void> {
         permMigratorRoot,
         permName,
         permSite,
+        permIcon,
+        permCssClass,
       );
       if (createdPerm) {
         console.log(`Permission file created: ${createdPerm.fileName}`);

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'مدیریت',
     menuName: 'تنظیمات قیمت لحظه ای',
     menuUrl: '/admin/ecommerce/goldCurrentPrices',
+    icon: 'dollar-sign',
     includePermissions: ['showmenu', 'getall', 'update'],
   });
 }

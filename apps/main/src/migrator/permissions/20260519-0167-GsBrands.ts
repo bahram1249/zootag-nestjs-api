@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'Brands',
     groupName: 'gs.admin.brands',
     parentMenuName: 'اطلاعات پایه گارانتی',
+    parentIcon: 'shield',
     menuName: 'برند ها',
     menuUrl: '/admin/gs/brands',
+    icon: 'building',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

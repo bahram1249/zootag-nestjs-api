@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'GuaranteeResponse',
     groupName: 'gs.admin.response',
     parentMenuName: 'گزارشات',
+    parentIcon: 'bar-chart',
     menuName: 'نظر سنجی ها',
     menuUrl: '/admin/gs/surveys',
+    icon: 'message-square',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

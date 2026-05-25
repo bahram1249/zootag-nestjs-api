@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'محصول',
     menuName: 'صفحه ساز دسته بندی و برندها',
     menuUrl: '/admin/ecommerce/linkedEntityTypeBrands',
+    icon: 'layout',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'انواع پت',
     menuUrl: '/admin/zootag/petTypes',
+    icon: 'paw-print',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

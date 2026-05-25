@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'تسویه‌های کمیسیون',
     menuUrl: '/admin/zootag/commission-settlements',
+    icon: 'credit-card',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

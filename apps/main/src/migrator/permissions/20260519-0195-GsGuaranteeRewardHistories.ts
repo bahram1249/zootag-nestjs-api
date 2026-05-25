@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'تاریخچه پاداش',
     menuUrl: '/guarantee/report/rewardHistories',
+    icon: 'award',
     includePermissions: ['showmenu', 'getall'],
   });
 }

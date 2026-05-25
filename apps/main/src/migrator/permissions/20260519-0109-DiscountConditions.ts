@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'محصول',
     menuName: 'شرط تخفیف',
     menuUrl: '/admin/ecommerce/discounts',
+    icon: 'filter',
     includePermissions: ['getall', 'getone', 'create', 'delete'],
   });
 }

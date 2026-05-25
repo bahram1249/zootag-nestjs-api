@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'کمیسیون درگاه',
     menuUrl: '/admin/ecommerce/report/paymentTransactions',
+    icon: 'credit-card',
     includePermissions: ['showmenu', 'getall'],
   });
 }

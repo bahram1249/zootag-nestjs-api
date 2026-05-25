@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'گزارش درآمدی',
     menuUrl: '/admin/gs/incomeReports',
+    icon: 'trending-up',
     includePermissions: ['showmenu', 'getall'],
   });
 }

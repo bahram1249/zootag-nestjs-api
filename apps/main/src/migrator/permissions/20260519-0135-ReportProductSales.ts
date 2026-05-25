@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'گزارش تعداد فروش کالا',
     menuUrl: '/admin/ecommerce/report/productSales',
+    icon: 'shopping-cart',
     includePermissions: ['showmenu', 'getall'],
   });
 }

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'وبلاگ',
     menuName: 'مطالب',
     menuUrl: '/admin/eav/posts',
+    icon: 'file-text',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

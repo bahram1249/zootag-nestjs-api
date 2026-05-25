@@ -8,8 +8,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'EntityTypes',
     groupName: 'eav.admin.entitytype',
     parentMenuName: 'محصول',
+    parentIcon: 'package',
     menuName: 'دسته بندی ها',
     menuUrl: '/admin/eav/entityTypes',
+    icon: 'folder-tree',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

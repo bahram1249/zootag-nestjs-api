@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'سازنده‌ها',
     menuUrl: '/admin/zootag/manufacturers',
+    icon: 'building',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

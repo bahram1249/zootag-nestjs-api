@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'مدیریت',
     menuName: 'سوالات متداول',
     menuUrl: '/admin/gs/faqs',
+    icon: 'help-circle',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

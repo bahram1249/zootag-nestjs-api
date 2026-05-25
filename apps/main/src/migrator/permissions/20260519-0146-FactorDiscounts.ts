@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'محصول',
     menuName: 'تخفیف ارسال رایگان',
     menuUrl: '/admin/ecommerce/factorDiscounts',
+    icon: 'truck',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

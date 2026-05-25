@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'Transactions',
     groupName: 'ecommerce.admin.transactions',
     parentMenuName: 'پرداخت و حمل و نقل',
+    parentIcon: 'credit-card',
     menuName: 'تراکنش ها',
     menuUrl: '/admin/ecommerce/transactions',
+    icon: 'credit-card',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

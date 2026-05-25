@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'AdminBuffets',
     groupName: 'discountcoffe.admin.buffets',
     parentMenuName: 'کافه و رستوران',
+    parentIcon: 'coffee',
     menuName: 'لیست کافه و رستوران',
     menuUrl: '/discountcoffe/admin/buffets',
+    icon: 'coffee',
     includePermissions: [
       'showmenu',
       'getall',

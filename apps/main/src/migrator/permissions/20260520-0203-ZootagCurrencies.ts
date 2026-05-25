@@ -8,8 +8,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     groupName: 'zootag.admin.currencies',
     findParentMenu: false,
     parentMenuName: 'اطلاعات پایه',
+    parentIcon: 'database',
     menuName: 'ارزها',
     menuUrl: '/admin/zootag/currencies',
+    icon: 'dollar-sign',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

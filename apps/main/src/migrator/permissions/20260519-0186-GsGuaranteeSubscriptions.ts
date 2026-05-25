@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'GuaranteeSubscriptions',
     groupName: 'gs.admin.subscriptions',
     parentMenuName: 'باشگاه مشتریان',
+    parentIcon: 'users',
     menuName: 'لیست ثبت نام',
     menuUrl: '/admin/gs/subscriptions',
+    icon: 'circle',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

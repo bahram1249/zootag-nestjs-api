@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'شرایط مازاد گارانتی',
     menuUrl: '/admin/gs/additionalPackages',
+    icon: 'file-plus',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

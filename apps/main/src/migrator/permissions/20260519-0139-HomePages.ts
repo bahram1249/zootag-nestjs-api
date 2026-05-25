@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'مدیریت',
     menuName: 'تنظیمات صفحه اصلی',
     menuUrl: '/admin/ecommerce/homePages',
+    icon: 'home',
     includePermissions: ['showmenu', 'getall', 'create'],
   });
 }

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'تخفیف',
     menuName: 'قوانین پاداش',
     menuUrl: '/admin/gs/rewardRules',
+    icon: 'award',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

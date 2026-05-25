@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'ReportAdminSales',
     groupName: 'ecommerce.report.adminsales',
     parentMenuName: 'گزارشات',
+    parentIcon: 'bar-chart',
     menuName: 'میزان فروش و درآمد (ادمین)',
     menuUrl: '/admin/ecommerce/report/adminSales',
+    icon: 'bar-chart',
     includePermissions: ['showmenu', 'getall'],
   });
 }

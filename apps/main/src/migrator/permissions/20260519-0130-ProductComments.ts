@@ -7,8 +7,10 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'ProductComments',
     groupName: 'ecommerce.admin.productcomments',
     parentMenuName: 'کامنت و بازخورد',
+    parentIcon: 'message-circle',
     menuName: 'کامنت ها',
     menuUrl: '/admin/ecommerce/productComments',
+    icon: 'circle',
     includePermissions: ['showmenu', 'getall', 'getone'],
   });
 }

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'نمایندگان',
     menuUrl: '/admin/gs/guaranteeOrganizations',
+    icon: 'building',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

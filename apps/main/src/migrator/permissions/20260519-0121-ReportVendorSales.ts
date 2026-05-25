@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'گزارشات',
     menuName: 'میزان فروش و درآمد (فروشنده)',
     menuUrl: '/admin/ecommerce/report/vendorSales',
+    icon: 'bar-chart',
     includePermissions: ['showmenu', 'getall'],
   });
 }

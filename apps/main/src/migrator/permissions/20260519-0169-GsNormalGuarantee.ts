@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه گارانتی',
     menuName: 'کارت گارانتی های عادی',
     menuUrl: '/admin/gs/normalGuarantee',
+    icon: 'shield-check',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

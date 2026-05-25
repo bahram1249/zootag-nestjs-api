@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'پرداخت و حمل و نقل',
     menuName: 'نرخ پستی',
     menuUrl: '/admin/ecommerce/postageFees',
+    icon: 'dollar-sign',
     includePermissions: ['showmenu', 'getall'],
   });
 }

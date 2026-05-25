@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'کافه و رستوران',
     menuName: 'اعلام روز های تعطیل',
     menuUrl: '/discountcoffe/admin/holidays',
+    icon: 'calendar',
     includePermissions: ['showmenu'],
   });
 }

@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'محصول',
     menuName: 'رنگ ها',
     menuUrl: '/admin/ecommerce/colors',
+    icon: 'palette',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

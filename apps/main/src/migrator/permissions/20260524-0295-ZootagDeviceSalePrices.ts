@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'قیمت‌های فروش دستگاه',
     menuUrl: '/admin/zootag/device-sale-prices',
+    icon: 'dollar-sign',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}

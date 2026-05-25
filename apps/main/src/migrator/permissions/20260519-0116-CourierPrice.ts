@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'پرداخت و حمل و نقل',
     menuName: 'نرخ پیک',
     menuUrl: '/admin/ecommerce/courierPrices',
+    icon: 'dollar-sign',
     includePermissions: ['showmenu', 'getone', 'update'],
   });
 }

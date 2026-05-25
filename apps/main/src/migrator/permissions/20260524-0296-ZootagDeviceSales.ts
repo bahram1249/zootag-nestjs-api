@@ -10,6 +10,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     parentMenuName: 'اطلاعات پایه',
     menuName: 'فروش دستگاه‌ها',
     menuUrl: '/admin/zootag/device-sales',
+    icon: 'shopping-cart',
   });
 }
 export async function down(_sequelize: Sequelize): Promise<void> {}
