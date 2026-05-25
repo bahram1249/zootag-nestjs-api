@@ -40,6 +40,9 @@ export class MarketerCommissionDto {
   @Type(() => Number)
   @IsOptional()
   @IsInt()
-  @ApiProperty({ required: false, description: 'priority (lower = higher priority)' })
+  @ApiProperty({
+    required: false,
+    description: 'priority (lower = higher priority)',
+  })
   priority?: number;
 }

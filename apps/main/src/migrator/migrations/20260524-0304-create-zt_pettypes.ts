@@ -6,13 +6,16 @@ export const name = '20260524-0304-create-zt_pettypes';
 export async function up(sequelize: Sequelize): Promise<void> {
   const { createTable, nv, bit, dt } = createDialectHelpers(sequelize);
 
-  await createTable('ZT_PetTypes', [
-    'id BIGINT NOT NULL PRIMARY KEY',
-    'name ' + nv('50') + ' NOT NULL',
-    'isActive ' + bit() + ' NOT NULL DEFAULT 1',
-    '[createdAt] DATETIME NOT NULL',
-    '[updatedAt] ' + dt(),
-  ].join(',\n'));
+  await createTable(
+    'ZT_PetTypes',
+    [
+      'id BIGINT NOT NULL PRIMARY KEY',
+      'name ' + nv('50') + ' NOT NULL',
+      'isActive ' + bit() + ' NOT NULL DEFAULT 1',
+      '[createdAt] DATETIME NOT NULL',
+      '[updatedAt] ' + dt(),
+    ].join(',\n'),
+  );
 }
 
 export async function down(sequelize: Sequelize): Promise<void> {

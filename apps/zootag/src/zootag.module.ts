@@ -55,13 +55,13 @@ import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
     CommissionSettlementStatusModule,
     InventoryStatusModule,
     PetTypeModule,
-    PetBreedModule
+    PetBreedModule,
   ],
 })
 export class ZootagModule implements NestModule {
-  constructor() { }
+  constructor() {}
   private app: INestApplication;
-  configure(consumer: MiddlewareConsumer) { }
+  configure(consumer: MiddlewareConsumer) {}
   setApp(app: INestApplication<any>) {
     this.app = app;
     const coreConfig = new DocumentBuilder()

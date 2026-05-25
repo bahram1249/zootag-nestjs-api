@@ -11,7 +11,6 @@ import { AutoMap } from 'automapper-classes';
 import { Type } from 'class-transformer';
 
 export class PetTypeDto {
-
   @AutoMap()
   @IsInt()
   @Type(() => Number)

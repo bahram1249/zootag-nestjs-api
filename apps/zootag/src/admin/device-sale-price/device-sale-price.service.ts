@@ -30,12 +30,9 @@ export class DeviceSalePriceService {
   async findAll(filter: DeviceSalePriceFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filterIf(!!filter.deviceTypeId, { deviceTypeId: filter.deviceTypeId })
-      .filterIf(
-      !!filter.search && filter.search !== '%%',
-      {
+      .filterIf(!!filter.search && filter.search !== '%%', {
         [Op.or]: [],
-      },
-    );
+      });
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes([

@@ -19,7 +19,7 @@ export class PetBreedService {
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
-  ) { }
+  ) {}
 
   /**
    * Business rules:
@@ -36,7 +36,7 @@ export class PetBreedService {
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes(['id', 'name', 'isActive'])
-      .include({ model: ZTPetType, as: "petType", attributes: ['id', 'name'] })
+      .include({ model: ZTPetType, as: 'petType', attributes: ['id', 'name'] })
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -56,7 +56,11 @@ export class PetBreedService {
       new QueryOptionsBuilder()
         .filter({ id })
         .attributes(['id', 'name', 'isActive'])
-        .include({ model: ZTPetType, as: "petType", attributes: ['id', 'name'] })
+        .include({
+          model: ZTPetType,
+          as: 'petType',
+          attributes: ['id', 'name'],
+        })
         .build(),
     );
     if (!item)
@@ -86,9 +90,7 @@ export class PetBreedService {
       throw new NotFoundException(
         this.localizationService.translate('core.not_found'),
       );
-    await item.update(
-      this.mapper.map(dto, PetBreedDto, ZTPetBreed).toJSON(),
-    );
+    await item.update(this.mapper.map(dto, PetBreedDto, ZTPetBreed).toJSON());
     return { result: item };
   }
 

@@ -7,7 +7,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
   const { nowVal, ns, top } = createDialectHelpers(sequelize);
   for (const row of [
     { id: 1, name: 'DOG' },
-    { id: 2, name: 'CAT' }
+    { id: 2, name: 'CAT' },
   ]) {
     const [existing]: any = await sequelize.query(
       top(1, `SELECT 1 FROM ZT_PetTypes WHERE id = ${row.id}`),

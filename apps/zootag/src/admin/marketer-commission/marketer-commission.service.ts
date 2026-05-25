@@ -77,13 +77,17 @@ export class MarketerCommissionService {
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.marketer_commission_not_found'),
+        this.localizationService.translate(
+          'zootag.marketer_commission_not_found',
+        ),
       );
     return { result: item };
   }
 
   async create(marketerId: number, dto: MarketerCommissionDto, user: User) {
-    const mapped = this.mapper.map(dto, MarketerCommissionDto, ZTMarketerCommission).toJSON();
+    const mapped = this.mapper
+      .map(dto, MarketerCommissionDto, ZTMarketerCommission)
+      .toJSON();
     const item = await this.repository.create({
       ...mapped,
       marketerId: BigInt(marketerId),
@@ -94,15 +98,24 @@ export class MarketerCommissionService {
     return { result: item };
   }
 
-  async update(marketerId: number, id: number, dto: MarketerCommissionDto, user: User) {
+  async update(
+    marketerId: number,
+    id: number,
+    dto: MarketerCommissionDto,
+    user: User,
+  ) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ id }).filter({ marketerId }).build(),
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.marketer_commission_not_found'),
+        this.localizationService.translate(
+          'zootag.marketer_commission_not_found',
+        ),
       );
-    const mapped = this.mapper.map(dto, MarketerCommissionDto, ZTMarketerCommission).toJSON();
+    const mapped = this.mapper
+      .map(dto, MarketerCommissionDto, ZTMarketerCommission)
+      .toJSON();
     await item.update({
       ...mapped,
       priority: dto.priority ?? 0,
@@ -117,7 +130,9 @@ export class MarketerCommissionService {
     );
     if (!item)
       throw new NotFoundException(
-        this.localizationService.translate('zootag.marketer_commission_not_found'),
+        this.localizationService.translate(
+          'zootag.marketer_commission_not_found',
+        ),
       );
     await item.destroy();
     return { result: item };

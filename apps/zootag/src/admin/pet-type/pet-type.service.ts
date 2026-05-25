@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -8,7 +12,7 @@ import { PetTypeFilterDto, PetTypeDto } from './dto';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
 @Injectable()
 export class PetTypeService {
@@ -20,7 +24,7 @@ export class PetTypeService {
     @InjectMapper() private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
-  ) { }
+  ) {}
 
   /**
    * Business rules:
@@ -71,9 +75,11 @@ export class PetTypeService {
   }
 
   async create(dto: PetTypeDto) {
-
     const found = await this.repository.findByPk(dto.id);
-    if (found) throw new BadRequestException(this.localizationService.translate('core.duplicate_request'))
+    if (found)
+      throw new BadRequestException(
+        this.localizationService.translate('core.duplicate_request'),
+      );
 
     const item = await this.repository.create(
       JSON.parse(JSON.stringify(_.pick(dto, ['id', 'name']))),
@@ -89,9 +95,7 @@ export class PetTypeService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.not_found'),
       );
-    await item.update(
-      this.mapper.map(dto, PetTypeDto, ZTPetType).toJSON(),
-    );
+    await item.update(this.mapper.map(dto, PetTypeDto, ZTPetType).toJSON());
     return { result: item };
   }
 

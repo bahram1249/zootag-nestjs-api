@@ -14,11 +14,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { MarketerCommissionService } from './marketer-commission.service';
@@ -36,7 +32,9 @@ export class MarketerCommissionController {
   constructor(private readonly service: MarketerCommissionService) {}
 
   @ApiOperation({ description: 'show all commissions for a marketer' })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.marketercommissions.getall' })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketercommissions.getall',
+  })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@Param('marketerId') marketerId: number) {
@@ -44,7 +42,9 @@ export class MarketerCommissionController {
   }
 
   @ApiOperation({ description: 'show commission by given id' })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.marketercommissions.getone' })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketercommissions.getone',
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(
@@ -55,7 +55,9 @@ export class MarketerCommissionController {
   }
 
   @ApiOperation({ description: 'create commission' })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.marketercommissions.create' })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketercommissions.create',
+  })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -67,7 +69,9 @@ export class MarketerCommissionController {
   }
 
   @ApiOperation({ description: 'update commission' })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.marketercommissions.update' })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketercommissions.update',
+  })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async update(
@@ -80,7 +84,9 @@ export class MarketerCommissionController {
   }
 
   @ApiOperation({ description: 'delete commission' })
-  @CheckPermission({ permissionSymbol: 'zootag.admin.marketercommissions.delete' })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketercommissions.delete',
+  })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async deleteById(

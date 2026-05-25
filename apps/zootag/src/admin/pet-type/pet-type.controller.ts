@@ -33,7 +33,7 @@ import { PetTypeService } from './pet-type.service';
 @Controller({ path: '/api/zootag/admin/PetTypes', version: ['1'] })
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PetTypeController {
-  constructor(private readonly service: PetTypeService) { }
+  constructor(private readonly service: PetTypeService) {}
 
   @ApiOperation({ description: 'show all pet types' })
   @ApiJsonResponse({ type: PetTypeResponseDto, isArray: true })

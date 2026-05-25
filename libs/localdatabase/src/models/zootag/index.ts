@@ -20,4 +20,3 @@ export * from './zt-marketer-commission.entity';
 export * from './zt-inventory-status.entity';
 export * from './zt-pet-type.entity';
 export * from './zt-pet-breed.entity';
-

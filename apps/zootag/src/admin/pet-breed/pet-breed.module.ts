@@ -11,4 +11,4 @@ import { PetBreedService } from './pet-breed.service';
   controllers: [PetBreedController],
   providers: [PetBreedService, PetBreedProfile],
 })
-export class PetBreedModule { }
+export class PetBreedModule {}

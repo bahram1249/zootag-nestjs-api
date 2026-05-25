@@ -45,5 +45,5 @@ export const zootagModels = [
   ZTCommissionSettlementStatus,
   ZTInventoryStatus,
   ZTPetBreed,
-  ZTPetType
+  ZTPetType,
 ];

@@ -6,7 +6,9 @@ import { MarketerCommissionController } from './marketer-commission.controller';
 import { MarketerCommissionService } from './marketer-commission.service';
 
 @Module({
-  imports: [SequelizeModule.forFeature([ZTMarketerCommission, User, Permission])],
+  imports: [
+    SequelizeModule.forFeature([ZTMarketerCommission, User, Permission]),
+  ],
   controllers: [MarketerCommissionController],
   providers: [MarketerCommissionService],
 })

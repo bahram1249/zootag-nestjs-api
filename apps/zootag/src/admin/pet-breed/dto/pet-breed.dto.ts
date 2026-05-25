@@ -21,5 +21,4 @@ export class PetBreedDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'petType Id' })
   petTypeId: number;
-
 }

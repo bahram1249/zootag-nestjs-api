@@ -12,8 +12,15 @@ export class PetTypeProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, PetTypeDto, ZTPetType, forMember(d => d.id, mapFrom(src => BigInt(src.id))))
-
+      createMap(
+        mapper,
+        PetTypeDto,
+        ZTPetType,
+        forMember(
+          (d) => d.id,
+          mapFrom((src) => BigInt(src.id)),
+        ),
+      );
     };
   }
 }

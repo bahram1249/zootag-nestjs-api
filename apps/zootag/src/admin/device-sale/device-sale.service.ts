@@ -255,9 +255,7 @@ export class DeviceSaleService {
       );
 
     const deviceSalePrice = await this.deviceSalePriceRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.deviceSalePriceId })
-        .build(),
+      new QueryOptionsBuilder().filter({ id: dto.deviceSalePriceId }).build(),
     );
     if (!deviceSalePrice)
       throw new NotFoundException(
@@ -277,23 +275,22 @@ export class DeviceSaleService {
     const purchasePriceIRR = Number(device.purchasePriceIRR);
     const grossProfitIRR = salePriceIRR - purchasePriceIRR;
 
-    const matchedCommission =
-      await this.marketerCommissionRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ marketerId: marketer.id })
-          .filter({ isActive: true })
-          .filter({
-            startDate: { [Op.lte]: new Date(dto.saleDate) },
-          })
-          .filter({
-            [Op.or]: [
-              { endDate: null },
-              { endDate: { [Op.gte]: new Date(dto.saleDate) } },
-            ],
-          })
-          .order({ orderBy: 'priority', sortOrder: 'ASC' })
-          .build(),
-      );
+    const matchedCommission = await this.marketerCommissionRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ marketerId: marketer.id })
+        .filter({ isActive: true })
+        .filter({
+          startDate: { [Op.lte]: new Date(dto.saleDate) },
+        })
+        .filter({
+          [Op.or]: [
+            { endDate: null },
+            { endDate: { [Op.gte]: new Date(dto.saleDate) } },
+          ],
+        })
+        .order({ orderBy: 'priority', sortOrder: 'ASC' })
+        .build(),
+    );
 
     const commissionTypeId =
       Number(matchedCommission?.commissionTypeId) ||

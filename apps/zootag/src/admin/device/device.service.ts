@@ -118,18 +118,20 @@ export class DeviceService {
         {
           model: ZTDeviceSale,
           as: 'sale',
-          attributes: ['id', 'salePrice'],
+          attributes: ['id', 'salePrice', 'salePriceIRR'],
           required: false,
+          include: [
+            {
+              model: ZTCurrency,
+              as: 'saleCurrency',
+              attributes: ['id', 'code', 'name', 'symbol'],
+              required: false,
+            },
+          ],
         },
         {
           model: User,
           as: 'createdUser',
-          attributes: ['id', 'firstname', 'lastname'],
-          required: false,
-        },
-        {
-          model: User,
-          as: 'updatedUser',
           attributes: ['id', 'firstname', 'lastname'],
           required: false,
         },
@@ -214,8 +216,16 @@ export class DeviceService {
           {
             model: ZTDeviceSale,
             as: 'sale',
-            attributes: ['id', 'salePrice'],
+            attributes: ['id', 'salePrice', 'salePriceIRR'],
             required: false,
+            include: [
+              {
+                model: ZTCurrency,
+                as: 'saleCurrency',
+                attributes: ['id', 'code', 'name', 'symbol'],
+                required: false,
+              },
+            ],
           },
           {
             model: User,

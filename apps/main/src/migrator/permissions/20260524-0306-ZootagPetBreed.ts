@@ -3,7 +3,6 @@ import { Sequelize } from 'sequelize';
 import { createCrudPermissions } from '../permission-helper';
 
 export async function up(sequelize: Sequelize): Promise<void> {
-
   await createCrudPermissions(sequelize, {
     entityName: 'ZootagPetBreed',
     groupName: 'zootag.admin.petbreeds',
@@ -13,4 +12,4 @@ export async function up(sequelize: Sequelize): Promise<void> {
     menuUrl: '/admin/zootag/petBreeds',
   });
 }
-export async function down(_sequelize: Sequelize): Promise<void> { }
+export async function down(_sequelize: Sequelize): Promise<void> {}

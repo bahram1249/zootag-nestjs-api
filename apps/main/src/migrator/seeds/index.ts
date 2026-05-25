@@ -155,7 +155,6 @@ import * as s0305 from '../permissions/20260524-0305-ZootagPetType';
 import * as s0306 from '../permissions/20260524-0306-ZootagPetBreed';
 import * as s0307 from './20260524-0307-seed-populate-pet-types';
 
-
 interface Condition {
   key: string;
   values: string[];
@@ -354,7 +353,6 @@ export const seeds: SeedDefinition[] = [
   cond(s0283, 'SITE_NAME', 'Zootag'),
 
   cond(s0284, 'SITE_NAME', 'Zootag'),
-
 
   cond(s0294, 'SITE_NAME', 'Zootag'),
 

@@ -107,7 +107,7 @@ export class ContractService {
           'title',
           'startDate',
           'endDate',
-        'contractStatusId',
+          'contractStatusId',
           'notes',
           'isActive',
         ])

@@ -6,10 +6,9 @@ import { PetTypeProfile } from './mapper';
 import { PetTypeController } from './pet-type.controller';
 import { PetTypeService } from './pet-type.service';
 
-
 @Module({
   imports: [SequelizeModule.forFeature([ZTPetType, User, Permission])],
   controllers: [PetTypeController],
   providers: [PetTypeService, PetTypeProfile],
 })
-export class PetTypeModule { }
+export class PetTypeModule {}

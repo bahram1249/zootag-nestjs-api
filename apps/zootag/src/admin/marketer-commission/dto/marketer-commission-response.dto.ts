@@ -30,10 +30,17 @@ export class MarketerCommissionResponseDto {
   @ApiProperty({ example: '2026-01-01', description: 'Start date' })
   startDate: Date;
 
-  @ApiProperty({ example: '2026-12-31', description: 'End date', required: false })
+  @ApiProperty({
+    example: '2026-12-31',
+    description: 'End date',
+    required: false,
+  })
   endDate?: Date;
 
-  @ApiProperty({ example: 0, description: 'Priority (lower = higher priority)' })
+  @ApiProperty({
+    example: 0,
+    description: 'Priority (lower = higher priority)',
+  })
   priority: number;
 
   @ApiProperty({ example: true, description: 'Is active' })
