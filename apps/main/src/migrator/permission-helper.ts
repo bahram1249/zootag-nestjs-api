@@ -117,6 +117,7 @@ const DEFAULT_ICONS: Record<string, string> = {
   قراردادها: 'file-contract',
   دستگاه‌ها: 'cpu',
   سازنده‌ها: 'building',
+  'مالی و فروش': 'dollar-sign',
   بازاریاب‌ها: 'users',
   'قیمت‌های فروش دستگاه': 'dollar-sign',
   'فروش دستگاه‌ها': 'shopping-cart',

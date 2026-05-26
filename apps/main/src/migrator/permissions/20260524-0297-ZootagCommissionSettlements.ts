@@ -7,7 +7,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     entityName: 'ZootagCommissionSettlements',
     groupName: 'zootag.admin.commissionsettlements',
     findParentMenu: true,
-    parentMenuName: 'اطلاعات پایه',
+    parentMenuName: 'مالی و فروش',
     menuName: 'تسویه‌های کمیسیون',
     menuUrl: '/admin/zootag/commission-settlements',
     icon: 'credit-card',
