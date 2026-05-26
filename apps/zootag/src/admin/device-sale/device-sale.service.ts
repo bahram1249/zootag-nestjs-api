@@ -243,22 +243,13 @@ export class DeviceSaleService {
     };
   }
 
-  private async resolvePrice(deviceTypeId: number, marketerId?: number) {
+  private async resolvePrice(deviceSalePriceId: number, marketerId?: number) {
     if (marketerId) {
-      const now = new Date();
       const marketerPrice = await this.marketerPriceRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ marketerId })
-          .filter({ deviceTypeId })
+          .filter({ deviceSalePriceId })
           .filter({ isActive: true })
-          .filter({ validFrom: { [Op.lte]: now } })
-          .filter({
-            [Op.or]: [
-              { validTo: null },
-              { validTo: { [Op.gte]: now } },
-            ],
-          })
-          .order({ orderBy: 'validFrom', sortOrder: 'DESC' })
           .build(),
       );
       if (marketerPrice) return marketerPrice;
@@ -298,7 +289,7 @@ export class DeviceSaleService {
       );
 
     const marketerPrice = await this.resolvePrice(
-      Number(device.deviceTypeId),
+      dto.deviceSalePriceId,
       dto.marketerId,
     );
 

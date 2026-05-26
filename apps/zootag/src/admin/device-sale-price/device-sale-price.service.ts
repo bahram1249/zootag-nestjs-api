@@ -86,56 +86,6 @@ export class DeviceSalePriceService {
 
   async findEffective(deviceTypeId: number, marketerId?: number) {
     const now = new Date();
-    if (marketerId) {
-      const marketerPrices = await this.marketerPriceRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter({ isDeleted: 0 })
-          .filter({ marketerId })
-          .filter({ deviceTypeId })
-          .filter({ isActive: true })
-          .filter({ validFrom: { [Op.lte]: now } })
-          .filter({
-            [Op.or]: [
-              { validTo: null },
-              { validTo: { [Op.gte]: now } },
-            ],
-          })
-          .attributes([
-            'id', 'marketerId', 'deviceTypeId', 'currencyId',
-            'salePrice', 'salePriceIRR', 'validFrom', 'validTo', 'isActive',
-          ])
-          .include([
-            {
-              model: ZTMarketer,
-              as: 'marketer',
-              attributes: ['id', 'fullName'],
-              required: false,
-            },
-            {
-              model: ZTDeviceType,
-              as: 'deviceType',
-              attributes: ['id', 'typeName', 'modelCode'],
-              required: false,
-            },
-            {
-              model: ZTCurrency,
-              as: 'currency',
-              attributes: ['id', 'code', 'name', 'symbol'],
-              required: false,
-            },
-          ])
-          .build(),
-      );
-      if (marketerPrices.length > 0) {
-        return {
-          result: marketerPrices.map((p) => ({
-            ...p.toJSON(),
-            priceType: 'marketer' as const,
-          })),
-          total: marketerPrices.length,
-        };
-      }
-    }
 
     const qb = new QueryOptionsBuilder()
       .filter({ deviceTypeId })
@@ -148,7 +98,7 @@ export class DeviceSalePriceService {
         ],
       });
     const total = await this.repository.count(qb.build());
-    const result = await this.repository.findAll(
+    const deviceSalePrices = await this.repository.findAll(
       qb
         .attributes([
           'id', 'deviceTypeId', 'companyId', 'contractPeriodId',
@@ -183,8 +133,40 @@ export class DeviceSalePriceService {
         ])
         .build(),
     );
+
+    if (marketerId && deviceSalePrices.length > 0) {
+      const deviceSalePriceIds = deviceSalePrices.map((p) => Number(p.id));
+      const marketerPrices = await this.marketerPriceRepository.findAll(
+        new QueryOptionsBuilder()
+          .filter({ isDeleted: 0 })
+          .filter({ marketerId })
+          .filter({ isActive: true })
+          .filter({ deviceSalePriceId: { [Op.in]: deviceSalePriceIds } })
+          .attributes([
+            'id', 'marketerId', 'deviceSalePriceId', 'currencyId',
+            'salePrice', 'salePriceIRR', 'isActive',
+          ])
+          .build(),
+      );
+
+      const overrideMap = new Map<number, (typeof marketerPrices)[0]>();
+      for (const mp of marketerPrices) {
+        overrideMap.set(Number(mp.deviceSalePriceId), mp);
+      }
+
+      const merged = deviceSalePrices.map((dsp) => {
+        const override = overrideMap.get(Number(dsp.id));
+        if (override) {
+          return { ...override.toJSON(), priceType: 'marketer' as const };
+        }
+        return { ...dsp.toJSON(), priceType: 'default' as const };
+      });
+
+      return { result: merged, total: merged.length };
+    }
+
     return {
-      result: result.map((p) => ({
+      result: deviceSalePrices.map((p) => ({
         ...p.toJSON(),
         priceType: 'default' as const,
       })),

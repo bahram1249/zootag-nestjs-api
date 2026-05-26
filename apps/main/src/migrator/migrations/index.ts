@@ -165,6 +165,12 @@ import * as m0309 from './20260525-0309-alter-zt_devicesales-modify-marketerid';
 import * as m0310 from './20260525-0310-alter-zt_devicesales-modify-commissiontypeid';
 
 import * as m0312 from './20260525-0312-alter-zt_marketerdevicesaleprices-add-isdeleted';
+
+import * as m0313 from './20260525-0313-alter-zt_marketerdevicesaleprices-drop-validfrom';
+import * as m0314 from './20260525-0314-alter-zt_marketerdevicesaleprices-drop-validto';
+
+import * as m0315 from './20260525-0315-alter-zt_marketerdevicesaleprices-add-devicesalepriceid';
+import * as m0316 from './20260525-0316-alter-zt_marketerdevicesaleprices-drop-devicetypeid';
 interface Condition {
   key: string;
   values: string[];
@@ -378,4 +384,10 @@ export const migrations: MigrationDefinition[] = [
   cond(m0310, 'SITE_NAME', 'Zootag'),
 
   cond(m0312, 'SITE_NAME', 'Zootag'),
+  cond(m0313, 'SITE_NAME', 'Zootag'),
+
+  cond(m0314, 'SITE_NAME', 'Zootag'),
+  cond(m0315, 'SITE_NAME', 'Zootag'),
+
+  cond(m0316, 'SITE_NAME', 'Zootag'),
 ];

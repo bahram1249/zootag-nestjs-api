@@ -22,13 +22,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { MarketerDeviceSalePriceService } from './marketer-device-sale-price.service';
 import {
+  BatchMarketerDeviceSalePriceDto,
   MarketerDeviceSalePriceDto,
   MarketerDeviceSalePriceFilterDto,
   MarketerDeviceSalePriceResponseDto,
 } from './dto';
-import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Zootag-Admin-MarketerDeviceSalePrices')
 @ApiBearerAuth()
@@ -56,6 +57,17 @@ export class MarketerDeviceSalePriceController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: MarketerDeviceSalePriceFilterDto) {
     return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'batch upsert marketer device sale prices' })
+  @ApiJsonResponse({ type: MarketerDeviceSalePriceResponseDto, isArray: true, status: 200 })
+  @CheckPermission({
+    permissionSymbol: 'zootag.admin.marketerdevicesaleprices.create',
+  })
+  @Post('/batch')
+  @HttpCode(HttpStatus.OK)
+  async batchUpsert(@Body() dto: BatchMarketerDeviceSalePriceDto) {
+    return await this.service.batchUpsert(dto);
   }
 
   @ApiOperation({

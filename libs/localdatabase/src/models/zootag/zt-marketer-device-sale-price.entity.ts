@@ -7,7 +7,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
-import { ZTDeviceType } from './zt-device-type.entity';
+import { ZTDeviceSalePrice } from './zt-device-sale-price.entity';
 import { ZTMarketer } from './zt-marketer.entity';
 import { ZTCurrency } from './zt-currency.entity';
 
@@ -28,15 +28,15 @@ export class ZTMarketerDeviceSalePrice extends Model<ZTMarketerDeviceSalePrice> 
   marketer: ZTMarketer;
 
   @AutoMap()
-  @ForeignKey(() => ZTDeviceType)
+  @ForeignKey(() => ZTDeviceSalePrice)
   @Column({ type: DataType.BIGINT, allowNull: false })
-  deviceTypeId: bigint;
+  deviceSalePriceId: bigint;
 
-  @BelongsTo(() => ZTDeviceType, {
-    foreignKey: 'deviceTypeId',
-    as: 'deviceType',
+  @BelongsTo(() => ZTDeviceSalePrice, {
+    foreignKey: 'deviceSalePriceId',
+    as: 'deviceSalePrice',
   })
-  deviceType: ZTDeviceType;
+  deviceSalePrice: ZTDeviceSalePrice;
 
   @AutoMap()
   @ForeignKey(() => ZTCurrency)
@@ -53,14 +53,6 @@ export class ZTMarketerDeviceSalePrice extends Model<ZTMarketerDeviceSalePrice> 
   @AutoMap()
   @Column({ type: DataType.DECIMAL(18, 2), allowNull: false })
   salePriceIRR: number;
-
-  @AutoMap()
-  @Column({ type: DataType.DATE, allowNull: false })
-  validFrom: Date;
-
-  @AutoMap()
-  @Column({ type: DataType.DATE, allowNull: true })
-  validTo: Date;
 
   @AutoMap()
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })

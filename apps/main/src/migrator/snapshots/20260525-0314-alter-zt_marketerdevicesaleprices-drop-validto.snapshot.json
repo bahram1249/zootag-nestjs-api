@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-25T19:50:31.363Z",
+  "generatedAt": "2026-05-25T19:33:35.652Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6431,8 +6431,8 @@
             "key": "id"
           }
         },
-        "deviceSalePriceId": {
-          "name": "deviceSalePriceId",
+        "deviceTypeId": {
+          "name": "deviceTypeId",
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
@@ -6441,7 +6441,7 @@
           "unique": false,
           "comment": null,
           "references": {
-            "model": "ZT_DeviceSalePrices",
+            "model": "ZT_DeviceTypes",
             "key": "id"
           }
         },
@@ -6513,9 +6513,9 @@
         },
         {
           "columns": [
-            "deviceSalePriceId"
+            "deviceTypeId"
           ],
-          "refTable": "ZT_DeviceSalePrices",
+          "refTable": "ZT_DeviceTypes",
           "refColumns": [
             "id"
           ]
