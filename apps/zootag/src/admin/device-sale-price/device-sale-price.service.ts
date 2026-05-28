@@ -92,18 +92,22 @@ export class DeviceSalePriceService {
       .filter({ isActive: true })
       .filter({ validFrom: { [Op.lte]: now } })
       .filter({
-        [Op.or]: [
-          { validTo: null },
-          { validTo: { [Op.gte]: now } },
-        ],
+        [Op.or]: [{ validTo: null }, { validTo: { [Op.gte]: now } }],
       });
     const total = await this.repository.count(qb.build());
     const deviceSalePrices = await this.repository.findAll(
       qb
         .attributes([
-          'id', 'deviceTypeId', 'companyId', 'contractPeriodId',
-          'currencyId', 'salePrice', 'salePriceIRR',
-          'validFrom', 'validTo', 'isActive',
+          'id',
+          'deviceTypeId',
+          'companyId',
+          'contractPeriodId',
+          'currencyId',
+          'salePrice',
+          'salePriceIRR',
+          'validFrom',
+          'validTo',
+          'isActive',
         ])
         .include([
           {
@@ -143,8 +147,13 @@ export class DeviceSalePriceService {
           .filter({ isActive: true })
           .filter({ deviceSalePriceId: { [Op.in]: deviceSalePriceIds } })
           .attributes([
-            'id', 'marketerId', 'deviceSalePriceId', 'currencyId',
-            'salePrice', 'salePriceIRR', 'isActive',
+            'id',
+            'marketerId',
+            'deviceSalePriceId',
+            'currencyId',
+            'salePrice',
+            'salePriceIRR',
+            'isActive',
           ])
           .build(),
       );

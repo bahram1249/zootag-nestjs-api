@@ -10,7 +10,10 @@ export class MarketerDeviceSalePriceFilterDto extends IntersectionType(
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  @ApiProperty({ required: false, description: 'filter by device sale price id' })
+  @ApiProperty({
+    required: false,
+    description: 'filter by device sale price id',
+  })
   deviceSalePriceId?: number;
 
   @IsOptional()

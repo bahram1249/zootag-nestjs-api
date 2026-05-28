@@ -23,6 +23,9 @@ export class EffectivePriceQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @ApiProperty({ required: false, description: 'marketer id for override lookup' })
+  @ApiProperty({
+    required: false,
+    description: 'marketer id for override lookup',
+  })
   marketerId?: number;
 }

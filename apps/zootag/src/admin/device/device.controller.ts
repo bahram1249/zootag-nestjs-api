@@ -51,7 +51,9 @@ export class DeviceController {
     return await this.service.findAll(filter);
   }
 
-  @ApiOperation({ description: 'show available devices (inventory = available)' })
+  @ApiOperation({
+    description: 'show available devices (inventory = available)',
+  })
   @ApiJsonResponse({ type: DeviceResponseDto, isArray: true })
   @CheckPermission({ permissionSymbol: 'zootag.admin.devices.getall' })
   @Get('/available')

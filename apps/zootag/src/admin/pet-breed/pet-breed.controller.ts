@@ -27,13 +27,13 @@ import { ApiJsonResponse } from '@rahino/response';
 import { PetBreedResponseDto } from './dto';
 import { PetBreedService } from './pet-breed.service';
 
-@ApiTags('Zootag-Admin-PetBreedes')
+@ApiTags('Zootag-Admin-PetBreeds')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller({ path: '/api/zootag/admin/PetBreedes', version: ['1'] })
+@Controller({ path: '/api/zootag/admin/PetBreeds', version: ['1'] })
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PetBreedController {
-  constructor(private readonly service: PetBreedService) {}
+  constructor(private readonly service: PetBreedService) { }
 
   @ApiOperation({ description: 'show all pet breedes' })
   @ApiJsonResponse({ type: PetBreedResponseDto, isArray: true })

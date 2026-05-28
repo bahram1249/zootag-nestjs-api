@@ -171,6 +171,10 @@ import * as m0314 from './20260525-0314-alter-zt_marketerdevicesaleprices-drop-v
 
 import * as m0315 from './20260525-0315-alter-zt_marketerdevicesaleprices-add-devicesalepriceid';
 import * as m0316 from './20260525-0316-alter-zt_marketerdevicesaleprices-drop-devicetypeid';
+
+import * as m0317 from './20260528-0317-create-zt_pets';
+
+import * as m0319 from './20260528-0319-alter-zt_pets-modify-breedid';
 interface Condition {
   key: string;
   values: string[];
@@ -390,4 +394,8 @@ export const migrations: MigrationDefinition[] = [
   cond(m0315, 'SITE_NAME', 'Zootag'),
 
   cond(m0316, 'SITE_NAME', 'Zootag'),
+
+  cond(m0317, 'SITE_NAME', 'Zootag'),
+
+  cond(m0319, 'SITE_NAME', 'Zootag'),
 ];

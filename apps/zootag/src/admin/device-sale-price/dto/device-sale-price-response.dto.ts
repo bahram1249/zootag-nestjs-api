@@ -35,7 +35,10 @@ class CurrencyBriefDto {
 }
 
 export class EffectivePriceResponseDto {
-  @ApiProperty({ example: 1, description: 'Price ID (device-sale-price or marketer-device-sale-price)' })
+  @ApiProperty({
+    example: 1,
+    description: 'Price ID (device-sale-price or marketer-device-sale-price)',
+  })
   id: number;
 
   @ApiProperty({ example: 1, description: 'Device type ID' })
@@ -70,13 +73,21 @@ export class EffectivePriceResponseDto {
   @ApiProperty({ example: '2026-01-01', description: 'Valid from' })
   validFrom: string;
 
-  @ApiProperty({ example: '2026-12-31', description: 'Valid to', required: false })
+  @ApiProperty({
+    example: '2026-12-31',
+    description: 'Valid to',
+    required: false,
+  })
   validTo?: string;
 
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ example: 'marketer', description: 'Price type: default or marketer', required: false })
+  @ApiProperty({
+    example: 'marketer',
+    description: 'Price type: default or marketer',
+    required: false,
+  })
   priceType?: string;
 }
 
@@ -147,6 +158,10 @@ export class DeviceSalePriceResponseDto {
   @ApiProperty({ example: true, description: 'Is active' })
   isActive: boolean;
 
-  @ApiProperty({ example: 'default', description: 'Price type: default or marketer', required: false })
+  @ApiProperty({
+    example: 'default',
+    description: 'Price type: default or marketer',
+    required: false,
+  })
   priceType?: string;
 }

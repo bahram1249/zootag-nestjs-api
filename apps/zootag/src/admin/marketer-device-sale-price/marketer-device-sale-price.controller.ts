@@ -60,7 +60,11 @@ export class MarketerDeviceSalePriceController {
   }
 
   @ApiOperation({ description: 'batch upsert marketer device sale prices' })
-  @ApiJsonResponse({ type: MarketerDeviceSalePriceResponseDto, isArray: true, status: 200 })
+  @ApiJsonResponse({
+    type: MarketerDeviceSalePriceResponseDto,
+    isArray: true,
+    status: 200,
+  })
   @CheckPermission({
     permissionSymbol: 'zootag.admin.marketerdevicesaleprices.create',
   })
@@ -101,7 +105,10 @@ export class MarketerDeviceSalePriceController {
   })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: MarketerDeviceSalePriceDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() dto: MarketerDeviceSalePriceDto,
+  ) {
     return await this.service.update(id, dto);
   }
 

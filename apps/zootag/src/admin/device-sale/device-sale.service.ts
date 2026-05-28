@@ -403,7 +403,9 @@ export class DeviceSaleService {
           salePriceIRR: calc.salePriceIRR,
           purchasePriceIRR: calc.purchasePriceIRR,
           grossProfitIRR: calc.grossProfitIRR,
-          commissionTypeId: calc.commissionTypeId ? BigInt(calc.commissionTypeId) : null,
+          commissionTypeId: calc.commissionTypeId
+            ? BigInt(calc.commissionTypeId)
+            : null,
           commissionValue: calc.commissionValue,
           commissionAmountIRR: calc.commissionAmountIRR,
           netProfitIRR: calc.netProfitIRR,
