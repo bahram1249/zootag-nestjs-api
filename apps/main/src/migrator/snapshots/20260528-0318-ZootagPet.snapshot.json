@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-28T08:28:33.747Z",
+  "generatedAt": "2026-05-28T07:48:55.564Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6872,7 +6872,7 @@
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": false,
+          "allowNull": true,
           "defaultValue": null,
           "unique": false,
           "comment": null,

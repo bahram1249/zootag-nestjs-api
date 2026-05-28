@@ -9,7 +9,7 @@ export async function up(sequelize: Sequelize): Promise<void> {
     findParentMenu: true,
     parentMenuName: 'اطلاعات پایه',
     menuName: 'انواع نژاد',
-    menuUrl: '/admin/zootag/petBreeds',
+    menuUrl: '/admin/zootag/pet-breeds',
     icon: 'dna',
   });
 }

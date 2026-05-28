@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-28T08:28:33.747Z",
+  "generatedAt": "2026-05-28T07:44:14.078Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6829,7 +6829,7 @@
       "indexes": [],
       "foreignKeys": []
     },
-    "ZT_Pets": {
+    "ZTPet": {
       "className": "ZTPet",
       "tableName": "ZT_Pets",
       "columns": {
@@ -6872,7 +6872,7 @@
           "type": "BIGINT",
           "primaryKey": false,
           "autoIncrement": false,
-          "allowNull": false,
+          "allowNull": true,
           "defaultValue": null,
           "unique": false,
           "comment": null,

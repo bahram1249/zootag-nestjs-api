@@ -29,6 +29,7 @@ import { CommissionSettlementStatusModule } from './admin/commission-settlement-
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
 import { PetTypeModule } from './admin/pet-type/pet-type.module';
 import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
+import { PetModule } from './admin/pet/pet.module';
 import { MarketerDeviceSalePriceModule } from './admin/marketer-device-sale-price/marketer-device-sale-price.module';
 
 @Module({
@@ -57,6 +58,7 @@ import { MarketerDeviceSalePriceModule } from './admin/marketer-device-sale-pric
     InventoryStatusModule,
     PetTypeModule,
     PetBreedModule,
+    PetModule,
     MarketerDeviceSalePriceModule,
   ],
 })

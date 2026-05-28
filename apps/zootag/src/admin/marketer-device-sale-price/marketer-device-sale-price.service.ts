@@ -39,7 +39,9 @@ export class MarketerDeviceSalePriceService {
   async findAll(filter: MarketerDeviceSalePriceFilterDto) {
     let qb = new QueryOptionsBuilder()
       .filter({ isDeleted: 0 })
-      .filterIf(!!filter.deviceSalePriceId, { deviceSalePriceId: filter.deviceSalePriceId })
+      .filterIf(!!filter.deviceSalePriceId, {
+        deviceSalePriceId: filter.deviceSalePriceId,
+      })
       .filterIf(!!filter.marketerId, { marketerId: filter.marketerId })
       .filterIf(!!filter.search && filter.search !== '%%', {
         [Op.or]: [],
@@ -47,8 +49,13 @@ export class MarketerDeviceSalePriceService {
     const total = await this.repository.count(qb.build());
     qb = qb
       .attributes([
-        'id', 'marketerId', 'deviceSalePriceId', 'currencyId',
-        'salePrice', 'salePriceIRR', 'isActive',
+        'id',
+        'marketerId',
+        'deviceSalePriceId',
+        'currencyId',
+        'salePrice',
+        'salePriceIRR',
+        'isActive',
       ])
       .include([
         {
@@ -83,8 +90,13 @@ export class MarketerDeviceSalePriceService {
         .filter({ id })
         .filter({ isDeleted: 0 })
         .attributes([
-          'id', 'marketerId', 'deviceSalePriceId', 'currencyId',
-          'salePrice', 'salePriceIRR', 'isActive',
+          'id',
+          'marketerId',
+          'deviceSalePriceId',
+          'currencyId',
+          'salePrice',
+          'salePriceIRR',
+          'isActive',
         ])
         .include([
           {
@@ -175,11 +187,10 @@ export class MarketerDeviceSalePriceService {
     try {
       const results: any[] = [];
       for (const item of dto.items) {
-        const salePriceIRR =
-          await this.currencyCalculationService.convertToIRR(
-            item.salePrice,
-            BigInt(item.currencyId),
-          );
+        const salePriceIRR = await this.currencyCalculationService.convertToIRR(
+          item.salePrice,
+          BigInt(item.currencyId),
+        );
 
         const existing = await this.repository.findOne(
           new QueryOptionsBuilder()

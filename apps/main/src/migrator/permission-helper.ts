@@ -51,7 +51,7 @@ const DEFAULT_ICONS: Record<string, string> = {
   'همه ی سفارشات': 'shopping-cart',
   'سفارشات منتظر ارسال به پیک': 'truck',
   'سفارشات کنسل شده': 'x-circle',
-  'مطالب': 'file-text',
+  مطالب: 'file-text',
   'انواع محصول': 'cpu',
   'کارت گارانتی های عادی': 'shield-check',
   'مدل دستگاه ها': 'cpu',
