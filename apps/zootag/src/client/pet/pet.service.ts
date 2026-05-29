@@ -1,0 +1,187 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Op, Sequelize } from 'sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
+import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
+import { ZTPet, ZTPetBreed, ZTPetType } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
+import { PetFilterDto, PetDto } from './dto';
+import { InjectMapper } from 'automapper-nestjs';
+import { Mapper } from 'automapper-core';
+
+@Injectable()
+export class PetService {
+  constructor(
+    @InjectModel(ZTPet)
+    private readonly repository: typeof ZTPet,
+    @InjectModel(ZTPetBreed)
+    private readonly breedRepository: typeof ZTPetBreed,
+    private readonly localizationService: LocalizationService,
+    private readonly localizationMapperService: LocalizationMapperService,
+    @InjectMapper() private readonly mapper: Mapper,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+  ) {}
+
+  async findAll(filter: PetFilterDto, user: User) {
+    let qb = new QueryOptionsBuilder()
+      .filter({ isDeleted: 0 })
+      .filter({ ownerId: user.id })
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        name: { [Op.like]: filter.search },
+      });
+    const total = await this.repository.count(qb.build());
+    qb = qb
+      .attributes([
+        'id',
+        'name',
+        'ownerId',
+        'breedId',
+        'petTypeId',
+        'birthDate',
+        'isActive',
+      ])
+      .include([
+        {
+          model: ZTPetBreed,
+          as: 'breed',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: ZTPetType,
+          as: 'petType',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: User,
+          as: 'owner',
+          attributes: ['id', 'username', 'firstname', 'lastname'],
+          required: false,
+        },
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const result = this.localizationMapperService.localizeItems(
+      (await this.repository.findAll(qb.build())).map((r) => r.toJSON()),
+      { breed: 'petBreed', petType: 'petType' },
+    );
+    return { result, total };
+  }
+
+  async findById(id: number, user: User) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ ownerId: user.id })
+        .filter({ isDeleted: 0 })
+        .attributes([
+          'id',
+          'name',
+          'ownerId',
+          'breedId',
+          'petTypeId',
+          'birthDate',
+          'isActive',
+        ])
+        .include([
+          {
+            model: ZTPetBreed,
+            as: 'breed',
+            attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: ZTPetType,
+            as: 'petType',
+            attributes: ['id', 'name'],
+            required: false,
+          },
+          {
+            model: User,
+            as: 'owner',
+            attributes: ['id', 'username', 'firstname', 'lastname'],
+            required: false,
+          },
+        ])
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.pet_not_found'),
+      );
+    return {
+      result: this.localizationMapperService.localizeItem(item.toJSON(), {
+        breed: 'petBreed',
+        petType: 'petType',
+      }),
+    };
+  }
+
+  async create(dto: PetDto, user: User) {
+    const breed = await this.breedRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.breedId }).build(),
+    );
+    if (!breed)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.pet_not_found'),
+      );
+    const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
+    const item = await this.repository.create({
+      ...mapped,
+      ownerId: BigInt(user.id),
+      petTypeId: breed.petTypeId,
+      createdUserId: BigInt(user.id),
+      updatedUserId: BigInt(user.id),
+    });
+    return { result: item };
+  }
+
+  async update(id: number, dto: PetDto, user: User) {
+    const breed = await this.breedRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.breedId }).build(),
+    );
+    if (!breed)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.pet_not_found'),
+      );
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ ownerId: user.id })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.pet_not_found'),
+      );
+    const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
+    await item.update({
+      ...mapped,
+      ownerId: BigInt(user.id),
+      petTypeId: breed.petTypeId,
+      updatedUserId: BigInt(user.id),
+    });
+    return { result: item };
+  }
+
+  async deleteById(id: number, user: User) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter({ ownerId: user.id })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.pet_not_found'),
+      );
+    await item.update({ isDeleted: true });
+    return { result: item };
+  }
+}

@@ -155,7 +155,6 @@ import * as s0305 from '../permissions/20260524-0305-ZootagPetType';
 import * as s0306 from '../permissions/20260524-0306-ZootagPetBreed';
 import * as s0307 from './20260524-0307-seed-populate-pet-types';
 import * as s0311 from '../permissions/20260525-0311-ZootagMarketerDeviceSalePrices';
-import * as s0318 from '../permissions/20260528-0318-ZootagPet';
 import * as s0320 from './20260528-0320-seed-fix-pettype-petbreed-menu-urls';
 
 interface Condition {
@@ -380,8 +379,6 @@ export const seeds: SeedDefinition[] = [
   cond(s0307, 'SITE_NAME', 'Zootag'),
 
   cond(s0311, 'SITE_NAME', 'Zootag'),
-
-  cond(s0318, 'SITE_NAME', 'Zootag'),
 
   cond(s0320, 'SITE_NAME', 'Zootag'),
 ];

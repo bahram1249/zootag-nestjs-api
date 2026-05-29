@@ -30,6 +30,7 @@ import { InventoryStatusModule } from './admin/inventory-status/inventory-status
 import { PetTypeModule } from './admin/pet-type/pet-type.module';
 import { PetBreedModule } from './admin/pet-breed/pet-breed.module';
 import { PetModule } from './admin/pet/pet.module';
+import { ClientPetModule } from './client/pet/pet.module';
 import { MarketerDeviceSalePriceModule } from './admin/marketer-device-sale-price/marketer-device-sale-price.module';
 
 @Module({
@@ -59,6 +60,7 @@ import { MarketerDeviceSalePriceModule } from './admin/marketer-device-sale-pric
     PetTypeModule,
     PetBreedModule,
     PetModule,
+    ClientPetModule,
     MarketerDeviceSalePriceModule,
   ],
 })
