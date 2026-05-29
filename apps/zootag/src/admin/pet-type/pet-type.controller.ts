@@ -30,7 +30,7 @@ import { PetTypeService } from './pet-type.service';
 @ApiTags('Zootag-Admin-PetTypes')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller({ path: '/api/zootag/admin/PetTypes', version: ['1'] })
+@Controller({ path: '/api/zootag/admin/petTypes', version: ['1'] })
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PetTypeController {
   constructor(private readonly service: PetTypeService) {}
