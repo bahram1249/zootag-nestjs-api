@@ -38,6 +38,12 @@ export class PetDto {
 
   @AutoMap()
   @IsOptional()
+  @Type(() => Number)
+  @ApiProperty({ required: false, description: 'device id' })
+  deviceId?: number;
+
+  @AutoMap()
+  @IsOptional()
   @IsString()
   @ApiProperty({ required: false, description: 'birth date (YYYY-MM-DD)' })
   birthDate?: string;

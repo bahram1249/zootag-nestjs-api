@@ -22,6 +22,8 @@
   "device_already_sold": "این دستگاه قبلاً فروخته شده است",
   "marketer_device_sale_price_not_found": "قیمت فروش بازاریاب مورد نظر یافت نشد",
   "pet_not_found": "پت مورد نظر یافت نشد",
+  "device_not_sold": "این دستگاه فروخته نشده است",
+  "device_already_assigned_to_pet": "این دستگاه قبلاً به یک پت دیگر متصل شده است",
   "marketer_device_sale_price_duplicate": "برای این بازاریاب و نوع دستگاه قبلاً قیمت ثبت شده است",
   "commissionType": {
     "percent": "درصدی",

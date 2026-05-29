@@ -25,6 +25,7 @@ import { PetService } from './pet.service';
 import { PetDto, PetFilterDto } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
 import { PetResponseDto } from './dto';
+import { DeviceLookupResponseDto } from './dto';
 
 @ApiTags('Zootag-Client-Pets')
 @ApiBearerAuth()
@@ -33,6 +34,14 @@ import { PetResponseDto } from './dto';
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PetController {
   constructor(private readonly service: PetService) {}
+
+  @ApiOperation({ description: 'lookup device by serial number' })
+  @ApiJsonResponse({ type: DeviceLookupResponseDto })
+  @Get('/device-lookup/:serial')
+  @HttpCode(HttpStatus.OK)
+  async lookupDevice(@Param('serial') serial: string) {
+    return await this.service.lookupDevice(serial);
+  }
 
   @ApiOperation({ description: 'show all my pets' })
   @ApiJsonResponse({ type: PetResponseDto, isArray: true })

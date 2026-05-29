@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-29T09:55:16.716Z",
+  "generatedAt": "2026-05-29T09:55:16.715Z",
   "models": {
     "Attachments": {
       "className": "Attachment",
@@ -6895,20 +6895,6 @@
             "key": "id"
           }
         },
-        "deviceId": {
-          "name": "deviceId",
-          "type": "BIGINT",
-          "primaryKey": false,
-          "autoIncrement": false,
-          "allowNull": true,
-          "defaultValue": null,
-          "unique": false,
-          "comment": null,
-          "references": {
-            "model": "ZT_Devices",
-            "key": "id"
-          }
-        },
         "birthDate": {
           "name": "birthDate",
           "type": "DATE",
@@ -6986,6 +6972,20 @@
           "defaultValue": null,
           "unique": false,
           "comment": null
+        },
+        "deviceId": {
+          "name": "deviceId",
+          "type": "BIGINT",
+          "primaryKey": false,
+          "autoIncrement": false,
+          "allowNull": true,
+          "defaultValue": null,
+          "unique": false,
+          "comment": null,
+          "references": {
+            "model": "ZT_Devices",
+            "key": "id"
+          }
         }
       },
       "indexes": [],
@@ -7013,15 +7013,6 @@
             "petTypeId"
           ],
           "refTable": "ZT_PetTypes",
-          "refColumns": [
-            "id"
-          ]
-        },
-        {
-          "columns": [
-            "deviceId"
-          ],
-          "refTable": "ZT_Devices",
           "refColumns": [
             "id"
           ]

@@ -4,7 +4,7 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
-import { ZTPet, ZTPetBreed, ZTPetType } from '@rahino/localdatabase/models';
+import { ZTPet, ZTPetBreed, ZTPetType, ZTDevice } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { PetFilterDto, PetDto } from './dto';
 import { InjectMapper } from 'automapper-nestjs';
@@ -36,6 +36,7 @@ export class PetService {
         'ownerId',
         'breedId',
         'petTypeId',
+        'deviceId',
         'birthDate',
         'isActive',
       ])
@@ -56,6 +57,12 @@ export class PetService {
           model: User,
           as: 'owner',
           attributes: ['id', 'username', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: ZTDevice,
+          as: 'device',
+          attributes: ['id', 'serialNumber'],
           required: false,
         },
       ])
@@ -80,6 +87,7 @@ export class PetService {
           'ownerId',
           'breedId',
           'petTypeId',
+          'deviceId',
           'birthDate',
           'isActive',
         ])
@@ -100,6 +108,12 @@ export class PetService {
             model: User,
             as: 'owner',
             attributes: ['id', 'username', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: ZTDevice,
+            as: 'device',
+            attributes: ['id', 'serialNumber'],
             required: false,
           },
         ])

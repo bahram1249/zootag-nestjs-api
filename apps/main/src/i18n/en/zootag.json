@@ -22,6 +22,8 @@
   "device_already_sold": "this device has already been sold",
   "marketer_device_sale_price_not_found": "marketer device sale price not found",
   "pet_not_found": "pet not found",
+  "device_not_sold": "this device has not been sold",
+  "device_already_assigned_to_pet": "this device is already assigned to another pet",
   "marketer_device_sale_price_duplicate": "a price for this marketer and device type already exists",
   "commissionType": {
     "percent": "Percent",

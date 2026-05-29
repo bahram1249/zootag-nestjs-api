@@ -10,6 +10,7 @@ import { AutoMap } from 'automapper-classes';
 import { User } from '@rahino/database';
 import { ZTPetBreed } from './zt-pet-breed.entity';
 import { ZTPetType } from './zt-pet-type.entity';
+import { ZTDevice } from './zt-device.entity';
 
 @Table({ tableName: 'ZT_Pets' })
 export class ZTPet extends Model<ZTPet> {
@@ -43,6 +44,14 @@ export class ZTPet extends Model<ZTPet> {
 
   @BelongsTo(() => ZTPetType, { foreignKey: 'petTypeId', as: 'petType' })
   petType: ZTPetType;
+
+  @AutoMap()
+  @ForeignKey(() => ZTDevice)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  deviceId: bigint;
+
+  @BelongsTo(() => ZTDevice, { foreignKey: 'deviceId', as: 'device' })
+  device: ZTDevice;
 
   @AutoMap()
   @Column({ type: DataType.DATEONLY, allowNull: true })

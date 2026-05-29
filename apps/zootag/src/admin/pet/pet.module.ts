@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ZTPet } from '@rahino/localdatabase/models';
+import { ZTPet, ZTDevice } from '@rahino/localdatabase/models';
 import { Permission, User } from '@rahino/database';
 import { PetController } from './pet.controller';
 import { PetService } from './pet.service';

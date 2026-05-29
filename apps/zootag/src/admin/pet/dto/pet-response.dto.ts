@@ -14,6 +14,13 @@ class PetTypeBriefDto {
   name: string;
 }
 
+class DeviceBriefDto {
+  @ApiProperty({ example: 1 })
+  id: number;
+  @ApiProperty({ example: 'SN-12345' })
+  serialNumber: string;
+}
+
 class OwnerBriefDto {
   @ApiProperty({ example: 1 })
   id: number;
@@ -47,6 +54,9 @@ export class PetResponseDto {
 
   @ApiProperty({ description: 'Pet type', type: () => PetTypeBriefDto })
   petType: PetTypeBriefDto;
+
+  @ApiProperty({ description: 'Device', required: false, type: () => DeviceBriefDto })
+  device?: DeviceBriefDto;
 
   @ApiProperty({
     example: '2024-01-15',

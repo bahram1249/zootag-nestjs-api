@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LocalizationMapperService } from '@rahino/zootag/shared/localization-mapper';
-import { ZTPet, ZTPetBreed, ZTPetType } from '@rahino/localdatabase/models';
+import { ZTPet, ZTPetBreed, ZTPetType, ZTDevice, ZTDeviceType } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
-import { PetFilterDto, PetDto } from './dto';
+import { PetFilterDto, PetDto, DeviceLookupResponseDto } from './dto';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 
@@ -17,6 +21,8 @@ export class PetService {
     private readonly repository: typeof ZTPet,
     @InjectModel(ZTPetBreed)
     private readonly breedRepository: typeof ZTPetBreed,
+    @InjectModel(ZTDevice)
+    private readonly deviceRepository: typeof ZTDevice,
     private readonly localizationService: LocalizationService,
     private readonly localizationMapperService: LocalizationMapperService,
     @InjectMapper() private readonly mapper: Mapper,
@@ -39,6 +45,7 @@ export class PetService {
         'ownerId',
         'breedId',
         'petTypeId',
+        'deviceId',
         'birthDate',
         'isActive',
       ])
@@ -59,6 +66,12 @@ export class PetService {
           model: User,
           as: 'owner',
           attributes: ['id', 'username', 'firstname', 'lastname'],
+          required: false,
+        },
+        {
+          model: ZTDevice,
+          as: 'device',
+          attributes: ['id', 'serialNumber'],
           required: false,
         },
       ])
@@ -84,6 +97,7 @@ export class PetService {
           'ownerId',
           'breedId',
           'petTypeId',
+          'deviceId',
           'birthDate',
           'isActive',
         ])
@@ -104,6 +118,12 @@ export class PetService {
             model: User,
             as: 'owner',
             attributes: ['id', 'username', 'firstname', 'lastname'],
+            required: false,
+          },
+          {
+            model: ZTDevice,
+            as: 'device',
+            attributes: ['id', 'serialNumber'],
             required: false,
           },
         ])
@@ -129,6 +149,34 @@ export class PetService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.pet_not_found'),
       );
+
+    // Validate device
+    const device = await this.deviceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.deviceId })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!device)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.device_not_found'),
+      );
+    if (!device.saleId)
+      throw new BadRequestException(
+        this.localizationService.translate('zootag.device_not_sold'),
+      );
+
+    const existingPet = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ deviceId: dto.deviceId })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (existingPet)
+      throw new BadRequestException(
+        this.localizationService.translate('zootag.device_already_assigned_to_pet'),
+      );
+
     const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
     const item = await this.repository.create({
       ...mapped,
@@ -159,6 +207,36 @@ export class PetService {
       throw new NotFoundException(
         this.localizationService.translate('zootag.pet_not_found'),
       );
+
+    // Validate device if changed
+    if (dto.deviceId && dto.deviceId !== Number(item.deviceId)) {
+      const device = await this.deviceRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: dto.deviceId })
+          .filter({ isDeleted: 0 })
+          .build(),
+      );
+      if (!device)
+        throw new NotFoundException(
+          this.localizationService.translate('zootag.device_not_found'),
+        );
+      if (!device.saleId)
+        throw new BadRequestException(
+          this.localizationService.translate('zootag.device_not_sold'),
+        );
+      const existingPet = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ deviceId: dto.deviceId })
+          .filter({ id: { [Op.ne]: id } })
+          .filter({ isDeleted: 0 })
+          .build(),
+      );
+      if (existingPet)
+        throw new BadRequestException(
+          this.localizationService.translate('zootag.device_already_assigned_to_pet'),
+        );
+    }
+
     const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
     await item.update({
       ...mapped,
@@ -183,5 +261,52 @@ export class PetService {
       );
     await item.update({ isDeleted: true });
     return { result: item };
+  }
+
+  async lookupDevice(serial: string): Promise<{ result: DeviceLookupResponseDto }> {
+    const device = await this.deviceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serialNumber: serial })
+        .filter({ isDeleted: 0 })
+        .include([
+          {
+            model: ZTDeviceType,
+            as: 'deviceType',
+            attributes: ['id', 'typeName', 'modelCode'],
+            required: false,
+          },
+        ])
+        .build(),
+    );
+
+    if (!device) {
+      return {
+        result: {
+          id: 0,
+          serialNumber: serial,
+          available: false,
+        },
+      };
+    }
+
+    // Check if already assigned to a pet
+    const existingPet = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ deviceId: device.id })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+
+    const available = !!device.saleId && !existingPet;
+
+    return {
+      result: {
+        id: Number(device.id),
+        serialNumber: device.serialNumber,
+        available,
+        deviceTypeName: device.deviceType?.typeName,
+        modelCode: device.deviceType?.modelCode,
+      },
+    };
   }
 }
