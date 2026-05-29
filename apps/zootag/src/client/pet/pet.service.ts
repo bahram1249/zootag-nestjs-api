@@ -150,10 +150,10 @@ export class PetService {
         this.localizationService.translate('zootag.pet_not_found'),
       );
 
-    // Validate device
+    // Look up device by serial number
     const device = await this.deviceRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ id: dto.deviceId })
+        .filter({ serialNumber: dto.serialNumber })
         .filter({ isDeleted: 0 })
         .build(),
     );
@@ -168,7 +168,7 @@ export class PetService {
 
     const existingPet = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .filter({ deviceId: dto.deviceId })
+        .filter({ deviceId: device.id })
         .filter({ isDeleted: 0 })
         .build(),
     );
@@ -180,6 +180,7 @@ export class PetService {
     const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
     const item = await this.repository.create({
       ...mapped,
+      deviceId: device.id,
       ownerId: BigInt(user.id),
       petTypeId: breed.petTypeId,
       createdUserId: BigInt(user.id),
@@ -208,25 +209,27 @@ export class PetService {
         this.localizationService.translate('zootag.pet_not_found'),
       );
 
-    // Validate device if changed
-    if (dto.deviceId && dto.deviceId !== Number(item.deviceId)) {
-      const device = await this.deviceRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: dto.deviceId })
-          .filter({ isDeleted: 0 })
-          .build(),
+    // Look up device by serial number
+    const device = await this.deviceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serialNumber: dto.serialNumber })
+        .filter({ isDeleted: 0 })
+        .build(),
+    );
+    if (!device)
+      throw new NotFoundException(
+        this.localizationService.translate('zootag.device_not_found'),
       );
-      if (!device)
-        throw new NotFoundException(
-          this.localizationService.translate('zootag.device_not_found'),
-        );
-      if (!device.saleId)
-        throw new BadRequestException(
-          this.localizationService.translate('zootag.device_not_sold'),
-        );
+    if (!device.saleId)
+      throw new BadRequestException(
+        this.localizationService.translate('zootag.device_not_sold'),
+      );
+
+    // Check device not already assigned to another pet
+    if (Number(device.id) !== Number(item.deviceId)) {
       const existingPet = await this.repository.findOne(
         new QueryOptionsBuilder()
-          .filter({ deviceId: dto.deviceId })
+          .filter({ deviceId: device.id })
           .filter({ id: { [Op.ne]: id } })
           .filter({ isDeleted: 0 })
           .build(),
@@ -240,6 +243,7 @@ export class PetService {
     const mapped = this.mapper.map(dto, PetDto, ZTPet).toJSON();
     await item.update({
       ...mapped,
+      deviceId: device.id,
       ownerId: BigInt(user.id),
       petTypeId: breed.petTypeId,
       updatedUserId: BigInt(user.id),

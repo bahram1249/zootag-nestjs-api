@@ -25,9 +25,10 @@ export class PetDto {
   breedId: number;
 
   @AutoMap()
-  @Type(() => Number)
-  @ApiProperty({ description: 'device id' })
-  deviceId: number;
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ description: 'device serial number' })
+  serialNumber: string;
 
   @AutoMap()
   @IsOptional()
